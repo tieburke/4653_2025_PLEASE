@@ -1,6 +1,6 @@
 package frc.lib.math;
 
-public class conversions {
+public class Conversions {
 
     /**
      * @param positionCounts CANCoder Position Counts
