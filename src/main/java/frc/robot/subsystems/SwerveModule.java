@@ -59,16 +59,16 @@ public SwerveModule(int moduleNumber, SwerveModuleConstants moduleConstants){
 
     //Works for drivetrain using canandmag encoders for modules 0, 1, and 2
 
-    if(moduleNumber < 3) {
-        /* Canandmag */
-        canandmag = new Canandmag(moduleConstants.cancoderID);
-    }
+    // if(moduleNumber < 3) {
+    //     /* Canandmag */
+    //     canandmag = new Canandmag(moduleConstants.cancoderID);
+    // }
     
-    else {
+    // else {
         /* Absolute Encoder */
         absoluteEncoder = new CANcoder(moduleConstants.cancoderID);
         configAngleEncoder();
-    }
+    // }
     
     /* Angle Motor */
     mAngleMotor = new SparkMax(moduleConstants.angleMotorID, MotorType.kBrushless);
@@ -118,14 +118,14 @@ private Rotation2d getAngle(){
 }
 
 public Rotation2d getAbsoluteAngle(){
-    if(moduleNumber < 3)
-    {
-        return Rotation2d.fromDegrees(canandmag.getAbsPosition());
-    }
-    else
-    {
+    // if(moduleNumber < 3)
+    // {
+    //     return Rotation2d.fromDegrees(canandmag.getAbsPosition());
+    // }
+    // else
+    // {
         return Rotation2d.fromDegrees(absoluteEncoder.getAbsolutePosition().getValueAsDouble()*360);
-    }
+    // }
 }
 
 public void resetToAbsolute(){
@@ -182,11 +182,13 @@ public SwerveModuleState getState(){
 }
 
 public Rotation2d getCanCoder(){
-    if(moduleNumber < 3)
-    {
-        return Rotation2d.fromDegrees(canandmag.getAbsPosition()*360);
-    }
+    // if(moduleNumber < 3)
+    // {
+    //     return Rotation2d.fromDegrees(canandmag.getAbsPosition()*360);
+    // }
+    // else{
     return Rotation2d.fromDegrees(absoluteEncoder.getAbsolutePosition().getValueAsDouble()*360);
+    // }
 }
 
 
