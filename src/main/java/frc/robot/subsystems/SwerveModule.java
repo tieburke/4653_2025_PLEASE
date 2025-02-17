@@ -1,4 +1,4 @@
-package frc.robot;
+package frc.robot.subsystems;
 
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -8,30 +8,44 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.math.Conversions;
 import frc.lib.util.CTREModuleState;
 import frc.lib.util.SwerveModuleConstants;
+import frc.robot.Constants;
+import frc.robot.Robot;
+import frc.robot.Constants.Swerve;
 
-import com.ctre.phoenix6.hardware.TalonFX;
+import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
+
+import static edu.wpi.first.units.Units.Rotation;
+
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.hardware.CANcoder;
-import com.revrobotics.CANSparkMax;
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.SparkPIDController;
-import com.revrobotics.CANSparkBase.ControlType;
-import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.spark.ClosedLoopSlot;
+import com.revrobotics.spark.SparkBase.ControlType;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.reduxrobotics.canand.CanandEventLoop;
+import com.reduxrobotics.sensors.canandmag.Canandmag;
+
 
 public class SwerveModule {
 public int moduleNumber;
 private Rotation2d angleOffset;
 private Rotation2d lastAngle = Rotation2d.fromDegrees(0);
 
-private CANSparkMax mAngleMotor;
-private CANSparkMax mDriveMotor;
+private SparkMax mAngleMotor;
+private SparkMax mDriveMotor;
 private CANcoder absoluteEncoder;
+
+private Canandmag canandmag;
 
 private RelativeEncoder mDriveEncoder;
 private RelativeEncoder mAngleEncoder;
 
-private SparkPIDController mDrivePIDController;
-private SparkPIDController mAnglePIDController;
+private SparkMaxConfig mAngleConfig;
+private SparkMaxConfig mDriveConfig;
 
 SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(Constants.Swerve.driveKS, Constants.Swerve.driveKV, Constants.Swerve.driveKA);
 
@@ -42,21 +56,28 @@ private Rotation2d simAngleCache = Rotation2d.fromDegrees(0);
 public SwerveModule(int moduleNumber, SwerveModuleConstants moduleConstants){
     this.moduleNumber = moduleNumber;
     this.angleOffset = moduleConstants.angleOffset;
-    
-    /* Absolute Encoder */
-    absoluteEncoder = new CANcoder(moduleConstants.cancoderID);
-    configAngleEncoder();
 
+    //Works for drivetrain using canandmag encoders for modules 0, 1, and 2
+
+    if(moduleNumber < 3) {
+        /* Canandmag */
+        canandmag = new Canandmag(moduleConstants.cancoderID);
+    }
+    
+    else {
+        /* Absolute Encoder */
+        absoluteEncoder = new CANcoder(moduleConstants.cancoderID);
+        configAngleEncoder();
+    }
+    
     /* Angle Motor */
-    mAngleMotor = new CANSparkMax(moduleConstants.angleMotorID, MotorType.kBrushless);
+    mAngleMotor = new SparkMax(moduleConstants.angleMotorID, MotorType.kBrushless);
     mAngleEncoder = mAngleMotor.getEncoder();
-    mAnglePIDController = mAngleMotor.getPIDController();
     configAngleMotor();
 
     /* Drive motor */
-    mDriveMotor = new CANSparkMax(moduleConstants.driveMotorID, MotorType.kBrushless);
+    mDriveMotor = new SparkMax(moduleConstants.driveMotorID, MotorType.kBrushless);
     mDriveEncoder = mDriveMotor.getEncoder();
-    mDrivePIDController = mDriveMotor.getPIDController();
     configDriveMotor();
 
     lastAngle = getState().angle;
@@ -78,7 +99,8 @@ private void setSpeed(SwerveModuleState desiredState, boolean isOpenLoop){
         mDriveMotor.set(percentOutput);
     }
     else {
-        mDriveMotor.getPIDController().setReference(desiredState.speedMetersPerSecond, ControlType.kVelocity, 0, feedforward.calculate(desiredState.speedMetersPerSecond));
+        //TODO: get rid of this comment if the "kslot0" thing works
+        mDriveMotor.getClosedLoopController().setReference(desiredState.speedMetersPerSecond, ControlType.kVelocity, ClosedLoopSlot.kSlot0, feedforward.calculate(desiredState.speedMetersPerSecond));
         // mDriveMotor.set(ControlMode.Velocity, desiredState.speedMetersPerSecond, DemandType.ArbitraryFeedForward, feedforward.calculate(desiredState.speedMetersPerSecond));
     }
 }
@@ -86,7 +108,7 @@ private void setSpeed(SwerveModuleState desiredState, boolean isOpenLoop){
 private void setAngle(SwerveModuleState desiredState){
     Rotation2d angle = (Math.abs(desiredState.speedMetersPerSecond) <= (Constants.Swerve.maxSpeed * 0.01)) ? lastAngle : desiredState.angle; //Prevent rotating module if speed is less than 1%. Prevents Jittering.
     // mAngleMotor_ctre.set(ControlMode.Position, Conversions.degreesToFalcon(angle.getDegrees(), Constants.DriveSubsystem.angleGearRatio));
-    mAngleMotor.getPIDController().setReference(angle.getDegrees(), ControlType.kPosition);
+    mAngleMotor.getClosedLoopController().setReference(angle.getDegrees(), ControlType.kPosition);
     lastAngle = angle;
 }
 
@@ -96,7 +118,14 @@ private Rotation2d getAngle(){
 }
 
 public Rotation2d getAbsoluteAngle(){
-    return Rotation2d.fromDegrees(absoluteEncoder.getAbsolutePosition().getValue()*360);
+    if(moduleNumber < 3)
+    {
+        return Rotation2d.fromDegrees(canandmag.getAbsPosition());
+    }
+    else
+    {
+        return Rotation2d.fromDegrees(absoluteEncoder.getAbsolutePosition().getValueAsDouble()*360);
+    }
 }
 
 public void resetToAbsolute(){
@@ -104,50 +133,45 @@ public void resetToAbsolute(){
     // mAngleEncoder.setPosition(0);
 }
 
-private void configAngleEncoder(){        
+private void configAngleEncoder(){
     absoluteEncoder.getConfigurator().apply(new CANcoderConfiguration());
     absoluteEncoder.getConfigurator().apply(Robot.ctreConfigs.swerveCanCoderConfig);
 }
 
 public void configAngleMotor() {
-    mAngleMotor.restoreFactoryDefaults();
-    mAngleMotor.setSmartCurrentLimit(Constants.Swerve.angleContinuousCurrentLimit);
-    mAngleMotor.setSecondaryCurrentLimit(Constants.Swerve.anglePeakCurrentLimit);
-    mAngleMotor.setInverted(Constants.Swerve.angleMotorInvert);
-    mAngleMotor.setIdleMode(Constants.Swerve.angleNeutralMode);
-    
-    mAngleEncoder.setPositionConversionFactor((1/Constants.Swerve.chosenModule.angleGearRatio) // We do 1 over the gear ratio because 1 rotation of the motor is < 1 rotation of the module
+    mAngleConfig = new SparkMaxConfig();
+
+    mAngleConfig.smartCurrentLimit(Constants.Swerve.angleContinuousCurrentLimit);
+    mAngleConfig.secondaryCurrentLimit(Constants.Swerve.anglePeakCurrentLimit);
+    mAngleConfig.inverted(Constants.Swerve.angleMotorInvert);
+
+    mAngleConfig.encoder.positionConversionFactor((1/Constants.Swerve.chosenModule.angleGearRatio) // We do 1 over the gear ratio because 1 rotation of the motor is < 1 rotation of the module
             * 360); // 1/360 rotations is 1 degree, 1 rotation is 360 degrees.
     resetToAbsolute();
 
-    mAnglePIDController.setP(Constants.Swerve.angleKP);
-    mAnglePIDController.setI(Constants.Swerve.angleKI);
-    mAnglePIDController.setD(Constants.Swerve.angleKD);
-    mAnglePIDController.setFF(Constants.Swerve.angleKF);
+    mAngleConfig.closedLoop.feedbackSensor(FeedbackSensor.kAlternateOrExternalEncoder)
+    .pidf(Constants.Swerve.angleKP, Constants.Swerve.angleKI, 
+    Constants.Swerve.angleKD, Constants.Swerve.angleKF);
 
-    mAngleMotor.burnFlash();
+    mAngleMotor.configure(mAngleConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 }
 
 public void configDriveMotor(){       
-    mDriveMotor.restoreFactoryDefaults();
-    mDriveMotor.setSmartCurrentLimit(Constants.Swerve.driveContinuousCurrentLimit);
-    mDriveMotor.setSecondaryCurrentLimit(Constants.Swerve.drivePeakCurrentLimit);
-    mDriveMotor.setInverted(Constants.Swerve.driveMotorInvert);
-    mDriveMotor.setIdleMode(Constants.Swerve.driveNeutralMode);
-    mDriveMotor.setOpenLoopRampRate(Constants.Swerve.openLoopRamp);
-    mDriveMotor.setClosedLoopRampRate(Constants.Swerve.closedLoopRamp);
+    mDriveConfig = new SparkMaxConfig();
 
-    mDriveEncoder.setVelocityConversionFactor(1/Constants.Swerve.chosenModule.driveGearRatio // 1/gear ratio because the wheel spins slower than the motor.
-            * Constants.Swerve.chosenModule.wheelCircumference // Multiply by the circumference to get meters per minute
-            / 60); // Divide by 60 to get meters per second.
-    mDriveEncoder.setPositionConversionFactor(4096);
-    mDriveEncoder.setPosition(0);
-    mDrivePIDController.setP(Constants.Swerve.driveKP);
-    mDrivePIDController.setI(Constants.Swerve.driveKI);
-    mDrivePIDController.setD(Constants.Swerve.driveKD);
-    mDrivePIDController.setFF(Constants.Swerve.driveKF); // Not actually used because we specify our feedforward when we set our speed.
-    mDriveMotor.burnFlash();
+    mDriveConfig.smartCurrentLimit(Constants.Swerve.driveContinuousCurrentLimit);
+    mDriveConfig.secondaryCurrentLimit(Constants.Swerve.drivePeakCurrentLimit);
+    mDriveConfig.inverted(Constants.Swerve.driveMotorInvert);
 
+    mDriveConfig.encoder.positionConversionFactor((1/Constants.Swerve.chosenModule.driveGearRatio) // We do 1 over the gear ratio because 1 rotation of the motor is < 1 rotation of the module
+            * 360); // 1/360 rotations is 1 degree, 1 rotation is 360 degrees.
+    resetToAbsolute();
+
+    mDriveConfig.closedLoop.feedbackSensor(FeedbackSensor.kAlternateOrExternalEncoder)
+    .pidf(Constants.Swerve.driveKP, Constants.Swerve.driveKI, 
+    Constants.Swerve.driveKD, Constants.Swerve.driveKF);
+
+    mDriveMotor.configure(mDriveConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 }
 
 public SwerveModuleState getState(){
@@ -158,7 +182,11 @@ public SwerveModuleState getState(){
 }
 
 public Rotation2d getCanCoder(){
-    return Rotation2d.fromDegrees(absoluteEncoder.getAbsolutePosition().getValue()*360);
+    if(moduleNumber < 3)
+    {
+        return Rotation2d.fromDegrees(canandmag.getAbsPosition()*360);
+    }
+    return Rotation2d.fromDegrees(absoluteEncoder.getAbsolutePosition().getValueAsDouble()*360);
 }
 
 

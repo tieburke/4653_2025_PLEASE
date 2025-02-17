@@ -58,9 +58,6 @@ public class RobotContainer {
     /* Field Oriented Toggle */
     private boolean isFieldOriented = false;
 
-    /* Licker Toggle */
-    private boolean lick = false, grabThang = true, lowPressure = true;
-
     /* Driver Buttons */
     private final JoystickButton flipAxes = new JoystickButton(driver, XboxController.Button.kA.value);
     private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
