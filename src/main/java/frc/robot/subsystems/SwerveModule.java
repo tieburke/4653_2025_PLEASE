@@ -120,7 +120,7 @@ private Rotation2d getAngle(){
 public Rotation2d getAbsoluteAngle(){
     if(moduleNumber < 3)
     {
-        return Rotation2d.fromDegrees(canandmag.getAbsPosition());
+        return Rotation2d.fromDegrees(canandmag.getAbsPosition()*360);
     }
     else
     {
