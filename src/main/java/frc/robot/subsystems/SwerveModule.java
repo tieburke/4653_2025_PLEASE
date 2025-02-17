@@ -59,16 +59,16 @@ public SwerveModule(int moduleNumber, SwerveModuleConstants moduleConstants){
 
     //Works for drivetrain using canandmag encoders for modules 0, 1, and 2
 
-    // if(moduleNumber < 3) {
-    //     /* Canandmag */
-    //     canandmag = new Canandmag(moduleConstants.cancoderID);
-    // }
+    if(moduleNumber < 3) {
+         /* Canandmag */
+        canandmag = new Canandmag(moduleConstants.cancoderID);
+    }
     
-    // else {
+    else {
         /* Absolute Encoder */
         absoluteEncoder = new CANcoder(moduleConstants.cancoderID);
         configAngleEncoder();
-    // }
+    }
     
     /* Angle Motor */
     mAngleMotor = new SparkMax(moduleConstants.angleMotorID, MotorType.kBrushless);
@@ -118,14 +118,14 @@ private Rotation2d getAngle(){
 }
 
 public Rotation2d getAbsoluteAngle(){
-    // if(moduleNumber < 3)
-    // {
-    //     return Rotation2d.fromDegrees(canandmag.getAbsPosition());
-    // }
-    // else
-    // {
+    if(moduleNumber < 3)
+    {
+        return Rotation2d.fromDegrees(canandmag.getAbsPosition());
+    }
+    else
+    {
         return Rotation2d.fromDegrees(absoluteEncoder.getAbsolutePosition().getValueAsDouble()*360);
-    // }
+    }
 }
 
 public void resetToAbsolute(){
@@ -149,7 +149,7 @@ public void configAngleMotor() {
             * 360); // 1/360 rotations is 1 degree, 1 rotation is 360 degrees.
     resetToAbsolute();
 
-    mAngleConfig.closedLoop.feedbackSensor(FeedbackSensor.kAlternateOrExternalEncoder)
+    mAngleConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)//TODO: Change this to absolute encoder
     .pidf(Constants.Swerve.angleKP, Constants.Swerve.angleKI, 
     Constants.Swerve.angleKD, Constants.Swerve.angleKF);
 
@@ -167,7 +167,7 @@ public void configDriveMotor(){
             * 360); // 1/360 rotations is 1 degree, 1 rotation is 360 degrees.
     resetToAbsolute();
 
-    mDriveConfig.closedLoop.feedbackSensor(FeedbackSensor.kAlternateOrExternalEncoder)
+    mDriveConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
     .pidf(Constants.Swerve.driveKP, Constants.Swerve.driveKI, 
     Constants.Swerve.driveKD, Constants.Swerve.driveKF);
 
@@ -182,13 +182,13 @@ public SwerveModuleState getState(){
 }
 
 public Rotation2d getCanCoder(){
-    // if(moduleNumber < 3)
-    // {
-    //     return Rotation2d.fromDegrees(canandmag.getAbsPosition()*360);
-    // }
-    // else{
+    if(moduleNumber < 3)
+    {
+         return Rotation2d.fromDegrees(canandmag.getAbsPosition()*360);
+    }
+    else{
     return Rotation2d.fromDegrees(absoluteEncoder.getAbsolutePosition().getValueAsDouble()*360);
-    // }
+    }
 }
 
 
