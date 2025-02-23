@@ -132,20 +132,23 @@ public final class Constants {
         }
     }
 
-    public static final class Shooter{
-        // IDs for the 5 shooter motors
-        public static final int frontRightMotorID = 16;
-        public static final int frontLeftMotorID = 14;
-        public static final int backRightMotorID = 17;
-        public static final int backLeftMotorID = 15;
+    public static final class Elevator{
+        public static final int winchMotorID = 9;
+        //TODO: see if these limits make sense
+        public static final int winchMotorContinuousCurrentLimit = 25;
+        public static final int winchMotorPeakCurrentLimit = 40;
+        public static final boolean winchMotorInvert = false;
 
-        public static final int leftArticulatorID = 19;
-        public static final int rightArticulatorID = 20;
+        public static final double winchMotorKP = 0.1;
+        public static final double winchMotorKI = 0;
+        public static final double winchMotorKD = 0;
+        
+        public static final int positionL1 = 1000;
+        public static final int positionL2 = 1000;
+        public static final int positionL3 = 1000;
+        public static final int positionL4 = 1000;
 
-        public static final int feedID = 18;
-
-        public static final double speakerPosition = 265000;
-        public static final double ampPosition = 177000;
+        public static final double manualSpeed = 0.2;
     }
 
     public static final class Intake{

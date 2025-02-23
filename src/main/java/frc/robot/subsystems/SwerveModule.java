@@ -141,6 +141,7 @@ private void configAngleEncoder(){
 public void configAngleMotor() {
     mAngleConfig = new SparkMaxConfig();
 
+    //TODO: see if the secondary thing works
     mAngleConfig.smartCurrentLimit(Constants.Swerve.angleContinuousCurrentLimit);
     mAngleConfig.secondaryCurrentLimit(Constants.Swerve.anglePeakCurrentLimit);
     mAngleConfig.inverted(Constants.Swerve.angleMotorInvert);
