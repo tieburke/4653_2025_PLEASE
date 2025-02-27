@@ -1,5 +1,7 @@
 package frc.robot;
 
+import java.util.function.BooleanSupplier;
+
 import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
@@ -19,6 +21,7 @@ import frc.robot.subsystems.*;
 import frc.robot.util.Limelight;
 import frc.robot.util.Limelight.CameraMode;
 import frc.robot.util.Limelight.LightMode;
+import frc.robot.commands.defaultcommands.DefaultElevator;
 import frc.robot.commands.defaultcommands.DefaultSwerve;
 
 /**
@@ -62,12 +65,14 @@ public class RobotContainer {
     private final JoystickButton flipAxes = new JoystickButton(driver, XboxController.Button.kA.value);
     private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
     private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kX.value);
+
+    /* Operator Buttons */
+    private final JoystickButton elevatorUpButton = new JoystickButton(operator, XboxController.Button.kA.value);
+    private final JoystickButton elevatorDownButton = new JoystickButton(operator, XboxController.Button.kB.value);
     
     /* Subsystems */
     private final Swerve swerve = new Swerve();
-    //private final Shooter shooter = new Shooter();
-    //private final Intake intake = new Intake();
-    //private final Climber climber = new Climber();
+    private final Elevator elevator = new Elevator();
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {        
@@ -96,7 +101,7 @@ public class RobotContainer {
         );
 
         // climber.setDefaultCommand(new DefaultClimber(climberUp, climberDown, strafeAlign, bothUp, climber));
-
+        elevator.setDefaultCommand(new DefaultElevator(elevatorUpButton, elevatorDownButton, elevator));
         
         // flipAxes.whileTrue(
         //     new DefaultSwerve(

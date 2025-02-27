@@ -148,7 +148,7 @@ public final class Constants {
         public static final int positionL3 = 1000;
         public static final int positionL4 = 1000;
 
-        public static final double manualSpeed = 0.2;
+        public static final double manualSpeed = 0.05;
     }
 
     public static final class AlgaeIntake{
