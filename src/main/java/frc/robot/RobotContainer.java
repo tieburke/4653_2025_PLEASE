@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.DeferredCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
@@ -21,8 +22,7 @@ import frc.robot.subsystems.*;
 import frc.robot.util.Limelight;
 import frc.robot.util.Limelight.CameraMode;
 import frc.robot.util.Limelight.LightMode;
-import frc.robot.commands.defaultcommands.DefaultElevator;
-import frc.robot.commands.defaultcommands.DefaultSwerve;
+import frc.robot.commands.defaultcommands.*;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -62,17 +62,25 @@ public class RobotContainer {
     private boolean isFieldOriented = false;
 
     /* Driver Buttons */
-    private final JoystickButton flipAxes = new JoystickButton(driver, XboxController.Button.kA.value);
+    //private final JoystickButton flipAxes = new JoystickButton(driver, XboxController.Button.kA.value);
     private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
     private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kX.value);
-
+    
     /* Operator Buttons */
     private final JoystickButton elevatorUpButton = new JoystickButton(operator, XboxController.Button.kA.value);
     private final JoystickButton elevatorDownButton = new JoystickButton(operator, XboxController.Button.kB.value);
-    
+    private final JoystickButton climberDownButton = new JoystickButton(operator, XboxController.Button.kX.value);
+    private final JoystickButton climberUpButton = new JoystickButton(operator, XboxController.Button.kY.value);
+    private final JoystickButton aIntakeUpButton = new JoystickButton(driver, XboxController.Button.kA.value);
+    private final JoystickButton aIntakeDownButton = new JoystickButton(driver, XboxController.Button.kB.value);
+    private final JoystickButton aIntakeInButton = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
+    private final JoystickButton aIntakeOutButton = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
+
     /* Subsystems */
     private final Swerve swerve = new Swerve();
     private final Elevator elevator = new Elevator();
+    private final Climber climber = new Climber();
+    private final AlgaeIntake aIntake = new AlgaeIntake();
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {        
@@ -100,8 +108,9 @@ public class RobotContainer {
                 )
         );
 
-        // climber.setDefaultCommand(new DefaultClimber(climberUp, climberDown, strafeAlign, bothUp, climber));
+        climber.setDefaultCommand(new DefaultClimber(climberUpButton, climberDownButton, climber));
         elevator.setDefaultCommand(new DefaultElevator(elevatorUpButton, elevatorDownButton, elevator));
+        aIntake.setDefaultCommand(new DefaultAlgaeIntake(aIntakeUpButton, aIntakeDownButton, aIntakeInButton, aIntakeOutButton, aIntake));
         
         // flipAxes.whileTrue(
         //     new DefaultSwerve(

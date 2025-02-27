@@ -201,6 +201,14 @@ public class Swerve extends SubsystemBase {
         return 0;
     }
 
+    public double[] getOpVoltages(){
+        double[] voltage =  new double[4];
+        for(int i = 0; i < 4; i++){
+            voltage[i] = mSwerveMods[i].getOpVoltage();
+        }
+        return voltage;
+    }
+
     @Override
     public void periodic(){
         swerveOdometry.update(getYaw(), getModulePositions());  

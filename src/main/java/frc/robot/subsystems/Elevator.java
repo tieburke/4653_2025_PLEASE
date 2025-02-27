@@ -46,11 +46,11 @@ public class Elevator extends SubsystemBase{
     }
 
     public void elevatorUpManual(){
-        winchMotor.set(Constants.Elevator.manualSpeed);
+        winchMotor.set(-Constants.Elevator.manualSpeed);
     }
 
     public void elevatorDownManual(){
-        winchMotor.set(-Constants.Elevator.manualSpeed);
+        winchMotor.set(Constants.Elevator.manualSpeed);
     }
 
     public void elevatorStop(){

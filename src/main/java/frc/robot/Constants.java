@@ -43,8 +43,8 @@ public final class Constants {
         public static final boolean canCoderInvert = chosenModule.canCoderInvert;
 
         /* Swerve Current Limiting */
-        public static final int angleContinuousCurrentLimit = 25;
-        public static final int anglePeakCurrentLimit = 40;
+        public static final int angleContinuousCurrentLimit = 80;
+        public static final int anglePeakCurrentLimit = 80;
         public static final double anglePeakCurrentDuration = 0.1;
         public static final boolean angleEnableCurrentLimit = true;
 
@@ -96,7 +96,7 @@ public final class Constants {
             public static final int driveMotorID = 1;
             public static final int angleMotorID = 2;
             public static final int canCoderID = 20;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(46.1);
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(52.4);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -106,7 +106,7 @@ public final class Constants {
             public static final int driveMotorID = 5;
             public static final int angleMotorID = 6;
             public static final int canCoderID = 21;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(15.33);
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(11.3);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -116,17 +116,17 @@ public final class Constants {
             public static final int driveMotorID = 3;
             public static final int angleMotorID = 4;
             public static final int canCoderID = 22;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(237.28);
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(238.62);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
 
         /* Back Right Module - Module 3 */
         public static final class Mod3 { //TODO: This must be tuned to specific robot
-            public static final int driveMotorID = 7;
-            public static final int angleMotorID = 8;
+            public static final int driveMotorID = 8;
+            public static final int angleMotorID = 7;
             public static final int canCoderID = 23;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(214.20);
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(208.4);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -139,7 +139,7 @@ public final class Constants {
         public static final int winchMotorPeakCurrentLimit = 40;
         public static final boolean winchMotorInvert = false;
 
-        public static final double winchMotorKP = 0.1;
+        public static final double winchMotorKP = 0.05;
         public static final double winchMotorKI = 0;
         public static final double winchMotorKD = 0;
         
@@ -148,7 +148,7 @@ public final class Constants {
         public static final int positionL3 = 1000;
         public static final int positionL4 = 1000;
 
-        public static final double manualSpeed = 0.05;
+        public static final double manualSpeed = 0.2;
     }
 
     public static final class AlgaeIntake{
@@ -156,10 +156,27 @@ public final class Constants {
         public static final int leftIntakeID = 10;
         public static final int rightIntakeID = 11;
         public static final int articulateIntakeID = 12;
+
+        public static final double articulateKP = 0.02;
+        public static final double articulateKI = 0.0;
+        public static final double articulateKD = 0.0;
+
+        public static final double horizontalPos = 0.0;
+        public static final double verticalPos = 0.0;
+
+        public static final double manualSpeed = 0.1;
     }
 
     public static final class Climber{
-        public static final int climberID = 13;
+        public static final int climberMotorID = 13;
+        
+        public static final double climberMotorKP = 0.1;
+        public static final double climberMotorKI = 0;
+        public static final double climberMotorKD = 0;
+        
+        public static final int positionClimb = 1000;
+
+        public static final double manualSpeed = 0.2;
     }
 
     public static final class AutoConstants { //TODO: The below constants are used in the example auto, and must be tuned to specific robot

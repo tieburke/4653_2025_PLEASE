@@ -144,8 +144,8 @@ public void configAngleMotor() {
     mAngleConfig = new SparkMaxConfig();
 
     //TODO: see if the secondary thing works
-    mAngleConfig.smartCurrentLimit(Constants.Swerve.angleContinuousCurrentLimit);
-    mAngleConfig.secondaryCurrentLimit(Constants.Swerve.anglePeakCurrentLimit);
+    // mAngleConfig.smartCurrentLimit(Constants.Swerve.angleContinuousCurrentLimit);
+    // mAngleConfig.secondaryCurrentLimit(Constants.Swerve.anglePeakCurrentLimit);
     mAngleConfig.inverted(Constants.Swerve.angleMotorInvert);
 
     mAngleConfig.encoder.positionConversionFactor((1/Constants.Swerve.chosenModule.angleGearRatio) // We do 1 over the gear ratio because 1 rotation of the motor is < 1 rotation of the module
@@ -162,8 +162,8 @@ public void configAngleMotor() {
 public void configDriveMotor(){       
     mDriveConfig = new SparkMaxConfig();
 
-    mDriveConfig.smartCurrentLimit(Constants.Swerve.driveContinuousCurrentLimit);
-    mDriveConfig.secondaryCurrentLimit(Constants.Swerve.drivePeakCurrentLimit);
+    // mDriveConfig.smartCurrentLimit(Constants.Swerve.driveContinuousCurrentLimit);
+    // mDriveConfig.secondaryCurrentLimit(Constants.Swerve.drivePeakCurrentLimit);
     mDriveConfig.inverted(Constants.Swerve.driveMotorInvert);
 
     mDriveConfig.encoder.positionConversionFactor((1/Constants.Swerve.chosenModule.driveGearRatio) // We do 1 over the gear ratio because 1 rotation of the motor is < 1 rotation of the module
@@ -206,11 +206,10 @@ public SwerveModulePosition getPosition(){
         Conversions.neoToMeters(mDriveEncoder.getPosition(), Constants.Swerve.wheelCircumference, Constants.Swerve.driveGearRatio, moduleNumber), 
         getAngle()
     );
-}
+} 
 
-@Override
-public void periodic(){
-    SmartDashboard.putNumber("Winch Encoder Value: ", );
-}
+    public double getOpVoltage(){
+        return mAngleMotor.getAppliedOutput();
+    }
 
 }
