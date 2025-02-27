@@ -151,30 +151,15 @@ public final class Constants {
         public static final double manualSpeed = 0.2;
     }
 
-    public static final class Intake{
+    public static final class AlgaeIntake{
         // IDs for the intake motors
-        public static final int leftIntakeID = 11;
-        public static final int rightIntakeID = 12;
-        public static final int articulateIntakeID = 13;
-
-        // Gear ratio for the articulator
-        public static final double articulateIntakeRatio = 4.0/1.0;
-
-        // Articulator PID:
-        public static final double articulatePP = 0.001;
-        public static final double articulatePI = 0.00;
-        public static final double articulatePD = 0.00;
-        public static final double articulatePF = 0.0;
-
-        public static final int intakeSlot = 0;
-
-        public static final double topIntakePosition = 0;
-        public static final double bottomIntakePosition = -.64;
+        public static final int leftIntakeID = 10;
+        public static final int rightIntakeID = 11;
+        public static final int articulateIntakeID = 12;
     }
 
     public static final class Climber{
-        public static final int leftWinchID = 9;
-        public static final int rightWinchID = 10;
+        public static final int climberID = 13;
     }
 
     public static final class AutoConstants { //TODO: The below constants are used in the example auto, and must be tuned to specific robot
