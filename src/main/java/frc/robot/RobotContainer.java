@@ -55,7 +55,8 @@ public class RobotContainer {
     //private final JoystickButton flipAxes = new JoystickButton(driver, XboxController.Button.kA.value);
     private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
     private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kX.value);
-    
+    private final JoystickButton limelightAlign = new JoystickButton(driver, XboxController.Button.kA.value);
+
     /* Operator Buttons */
     private final JoystickButton elevatorUpButton = new JoystickButton(operator, XboxController.Button.kA.value);
     private final JoystickButton elevatorDownButton = new JoystickButton(operator, XboxController.Button.kB.value);
@@ -98,6 +99,29 @@ public class RobotContainer {
                 () -> false
                 )
         );
+
+        if(limelightAlign.getAsBoolean()){
+            swerve.setDefaultCommand(
+                new DefaultSwerve(
+                    swerve, 
+                    () -> -limelight_aim_proportional(), 
+                    () -> -driver.getRawAxis(strafeAxis), 
+                    () -> -limelight_range_proportional(), 
+                    () -> false
+                )
+            );
+        }
+        else{
+            swerve.setDefaultCommand(    
+                new DefaultSwerve(
+                    swerve, 
+                    () -> -driver.getRawAxis(translationAxis), 
+                    () -> -driver.getRawAxis(strafeAxis), 
+                    () -> -driver.getRawAxis(rotationAxis), 
+                    () -> false
+                )
+            );
+        }
 
         climber.setDefaultCommand(new DefaultClimber(climberUpButton, climberDownButton, climber));
         elevator.setDefaultCommand(new DefaultElevator(elevatorUpButton, elevatorDownButton, elevator));
@@ -142,28 +166,46 @@ public class RobotContainer {
         isFieldOriented = !isFieldOriented;
     }
 
+    /* Limelight Stuff */
+
+    // simple proportional turning control with Limelight.
+    // "proportional control" is a control algorithm in which the output is proportional to the error.
+    // in this case, we are going to return an angular velocity that is proportional to the 
+    // "tx" value from the Limelight.
+    public static double limelight_aim_proportional(){    
+        // kP (constant of proportionality)
+        // this is a hand-tuned number that determines the aggressiveness of our proportional control loop
+        // if it is too high, the robot will oscillate.
+        // if it is too low, the robot will never reach its target
+        // if the robot never turns in the correct direction, kP should be inverted.
+        double kP = .035;
+    
+        // tx ranges from (-hfov/2) to (hfov/2) in degrees. If your target is on the rightmost edge of 
+        // your limelight 3 feed, tx should return roughly 31 degrees.
+        double targetingAngularVelocity = LimelightHelpers.getTX("limelight") * kP;
+    
+        // convert to radians per second for our drive method
+        targetingAngularVelocity *= Constants.Swerve.maxAngularVelocity;
+    
+        //invert since tx is positive when the target is to the right of the crosshair
+        targetingAngularVelocity *= -1.0;
+    
+        return targetingAngularVelocity;
+    }
+    
+    // simple proportional ranging control with Limelight's "ty" value
+    // this works best if your Limelight's mount height and target mount height are different.
+    // if your limelight and target are mounted at the same or similar heights, use "ta" (area) for target ranging rather than "ty"
+    public static double limelight_range_proportional(){    
+        double kP = .1;
+        double targetingForwardSpeed = LimelightHelpers.getTY("limelight") * kP;
+        targetingForwardSpeed *= Math.PI;
+        targetingForwardSpeed *= -1.0;
+        return targetingForwardSpeed;
+    }
+
     // FOV is 30
     // Max rotation we want is .5
-    public double getCameraRotation(){
-        var result = camera.getLatestResult();
-
-        if(!result.hasTargets()){
-            rotation = 0;
-          }
-          else{
-            PhotonTrackedTarget target = result.getBestTarget();
-            rotation = target.getYaw();
-          }
-
-          if(rotation != 0){
-            savedCameraX = rotation;
-          }
-        else if ((rotation != 0 && Math.abs(rotation) < 0.1)){
-            return 0;
-        }
-        return -(savedCameraX/60);
-          
-    }
 
     public void initializeAutoChooser() {
         //double initRoll = swerve.getRoll();
