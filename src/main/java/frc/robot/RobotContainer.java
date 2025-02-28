@@ -1,8 +1,5 @@
 package frc.robot;
 
-import org.photonvision.PhotonCamera;
-import org.photonvision.targeting.PhotonTrackedTarget;
-
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -42,7 +39,6 @@ public class RobotContainer {
 
     private double savedLimelightX;
 
-    private PhotonCamera camera = new PhotonCamera("camera1");
     private double rotation, savedCameraX;
 
 
