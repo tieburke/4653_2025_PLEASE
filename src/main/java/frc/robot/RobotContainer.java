@@ -37,13 +37,6 @@ public class RobotContainer {
     // private int leftTriggerAxis = XboxController.Axis.kLeftTrigger.value;
     // private int rightTriggerAxis = XboxController.Axis.kRightTrigger.value;
 
-    private double savedLimelightX;
-
-    private double rotation, savedCameraX;
-
-
-    
-
     /* Field Oriented Toggle */
     private boolean isFieldOriented = false;
 
@@ -86,15 +79,15 @@ public class RobotContainer {
             rotationAxis = 0;
         }    
 
-        swerve.setDefaultCommand(
-            new DefaultSwerve(
-                swerve, 
-                () -> -driver.getRawAxis(translationAxis), 
-                () -> -driver.getRawAxis(strafeAxis), 
-                () -> -driver.getRawAxis(rotationAxis), 
-                () -> false
-                )
-        );
+        // swerve.setDefaultCommand(
+        //     new DefaultSwerve(
+        //         swerve, 
+        //         () -> -driver.getRawAxis(translationAxis), 
+        //         () -> -driver.getRawAxis(strafeAxis), 
+        //         () -> -driver.getRawAxis(rotationAxis), 
+        //         () -> false
+        //         )
+        // );
 
         if(limelightAlign.getAsBoolean()){
             swerve.setDefaultCommand(
