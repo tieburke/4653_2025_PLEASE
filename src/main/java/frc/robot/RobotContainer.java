@@ -1,5 +1,7 @@
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Newton;
+
 import java.util.function.BooleanSupplier;
 
 import org.photonvision.PhotonCamera;
@@ -75,12 +77,16 @@ public class RobotContainer {
     private final JoystickButton aIntakeDownButton = new JoystickButton(driver, XboxController.Button.kB.value);
     private final JoystickButton aIntakeInButton = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
     private final JoystickButton aIntakeOutButton = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
+    private final JoystickButton rGL4Button = new JoystickButton(operator, XboxController.Button.kRightBumper.value);
+    private final JoystickButton rGLOtherButton = new JoystickButton(operator, XboxController.Button.kLeftBumper.value);
+    private final JoystickButton rGOpenButton = new JoystickButton(operator, XboxController.Button.kStart.value);
 
     /* Subsystems */
     private final Swerve swerve = new Swerve();
     private final Elevator elevator = new Elevator();
     private final Climber climber = new Climber();
     private final AlgaeIntake aIntake = new AlgaeIntake();
+    private final RainGutter rainGutter = new RainGutter();
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {        
@@ -111,7 +117,8 @@ public class RobotContainer {
         climber.setDefaultCommand(new DefaultClimber(climberUpButton, climberDownButton, climber));
         elevator.setDefaultCommand(new DefaultElevator(elevatorUpButton, elevatorDownButton, elevator));
         aIntake.setDefaultCommand(new DefaultAlgaeIntake(aIntakeUpButton, aIntakeDownButton, aIntakeInButton, aIntakeOutButton, aIntake));
-        
+        rainGutter.setDefaultCommand(new DefaultRainGutter(rGL4Button, rGLOtherButton, rGOpenButton, rainGutter));
+
         // flipAxes.whileTrue(
         //     new DefaultSwerve(
         //         swerve, 

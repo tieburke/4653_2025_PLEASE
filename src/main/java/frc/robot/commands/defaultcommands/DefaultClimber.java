@@ -3,7 +3,6 @@ package frc.robot.commands.defaultcommands;
 import java.util.function.BooleanSupplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants;
 import frc.robot.subsystems.Climber;
 
 public class DefaultClimber extends Command{

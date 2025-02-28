@@ -179,6 +179,11 @@ public final class Constants {
         public static final double manualSpeed = 0.2;
     }
 
+    public static final class RainGutter{
+        public static final int rotateServoID = 0;
+        public static final int releaseServoID = 1;
+    }
+
     public static final class AutoConstants { //TODO: The below constants are used in the example auto, and must be tuned to specific robot
         public static final double kMaxSpeedMetersPerSecond = 3;
         public static final double kMaxAccelerationMetersPerSecondSquared = 3;
