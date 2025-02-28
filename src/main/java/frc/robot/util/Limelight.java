@@ -1,130 +1,42 @@
 package frc.robot.util;
 
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
+import frc.robot.Constants;
 
-/**
- * Wrapper class for getting and setting Limelight NetworkTable values.
- * 
- * @author Dan Waxman
- */
 public class Limelight {
-	private static NetworkTableInstance table = null;
 
-	/**
-	 * Light modes for Limelight.
-	 * 
-	 * @author Dan Waxman
-	 */
-	public static enum LightMode {
-		eOn, eOff, eBlink
-	}
+    // simple proportional turning control with Limelight.
+    // "proportional control" is a control algorithm in which the output is proportional to the error.
+    // in this case, we are going to return an angular velocity that is proportional to the 
+    // "tx" value from the Limelight.
+    public static double limelight_aim_proportional(){    
+    // kP (constant of proportionality)
+    // this is a hand-tuned number that determines the aggressiveness of our proportional control loop
+    // if it is too high, the robot will oscillate.
+    // if it is too low, the robot will never reach its target
+    // if the robot never turns in the correct direction, kP should be inverted.
+    double kP = .035;
 
-	/**
-	 * Camera modes for Limelight.
-	 * 
-	 * @author Dan Waxman
-	 */
-	public static enum CameraMode {
-		eVision, eDriver
-	}
+    // tx ranges from (-hfov/2) to (hfov/2) in degrees. If your target is on the rightmost edge of 
+    // your limelight 3 feed, tx should return roughly 31 degrees.
+    double targetingAngularVelocity = LimelightHelpers.getTX("limelight") * kP;
 
-	/**
-	 * Gets whether a target is detected by the Limelight.
-	 * 
-	 * @return true if a target is detected, false otherwise.
-	 */
-	public static boolean isTarget() {
-		return getValue("tv").getDouble(0) == 1;
-	}
+    // convert to radians per second for our drive method
+    targetingAngularVelocity *= Constants.Swerve.maxAngularVelocity;
 
-	/**
-	 * Horizontal offset from crosshair to target (-27 degrees to 27 degrees).
-	 * 
-	 * @return tx as reported by the Limelight.
-	 */
-	public static double getTx() {
-		return getValue("tx").getDouble(0.00);
-	}
+    //invert since tx is positive when the target is to the right of the crosshair
+    targetingAngularVelocity *= -1.0;
 
-	/**
-	 * Vertical offset from crosshair to target (-20.5 degrees to 20.5 degrees).
-	 * 
-	 * @return ty as reported by the Limelight.
-	 */
-	public static double getTy() {
-		return getValue("ty").getDouble(0.00);
-	}
+    return targetingAngularVelocity;
+}
 
-	/**
-	 * Area that the detected target takes up in total camera FOV (0% to 100%).
-	 * 
-	 * @return Area of target.
-	 */
-	public static double getTa() {
-		return getValue("ta").getDouble(0.00);
-	}
-
-	/**
-	 * Gets target skew or rotation (-90 degrees to 0 degrees).
-	 * 
-	 * @return Target skew.
-	 */
-	public static double getTs() {
-		return getValue("ts").getDouble(0.00);
-	}
-
-	/**
-	 * Gets target latency (ms).
-	 * 
-	 * @return Target latency.
-	 */
-	public static double getTl() {
-		return getValue("tl").getDouble(0.00);
-	}
-
-	/**
-	 * Sets LED mode of Limelight.
-	 * 
-	 * @param mode
-	 *            Light mode for Limelight.
-	 */
-	public static void setLedMode(LightMode mode) {
-		getValue("ledMode").setNumber(mode.ordinal());
-	}
-
-	/**
-	 * Sets camera mode for Limelight.
-	 * 
-	 * @param mode
-	 *            Camera mode for Limelight.
-	 */
-	public static void setCameraMode(CameraMode mode) {
-		getValue("camMode").setNumber(mode.ordinal());
-	}
-
-	/**
-	 * Sets pipeline number (0-9 value).
-	 * 
-	 * @param number
-	 *            Pipeline number (0-9).
-	 */
-	public static void setPipeline(int number) {
-		getValue("pipeline").setNumber(number);
-	}
-
-	/**
-	 * Helper method to get an entry from the Limelight NetworkTable.
-	 * 
-	 * @param key
-	 *            Key for entry.
-	 * @return NetworkTableEntry of given entry.
-	 */
-	private static NetworkTableEntry getValue(String key) {
-		if (table == null) {
-			table = NetworkTableInstance.getDefault();
-		}
-
-		return table.getTable("limelight").getEntry(key);
-	}
+// simple proportional ranging control with Limelight's "ty" value
+// this works best if your Limelight's mount height and target mount height are different.
+// if your limelight and target are mounted at the same or similar heights, use "ta" (area) for target ranging rather than "ty"
+public static double limelight_range_proportional(){    
+    double kP = .1;
+    double targetingForwardSpeed = LimelightHelpers.getTY("limelight") * kP;
+    targetingForwardSpeed *= Math.PI;
+    targetingForwardSpeed *= -1.0;
+    return targetingForwardSpeed;
+    }
 }

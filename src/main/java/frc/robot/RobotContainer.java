@@ -1,29 +1,17 @@
 package frc.robot;
 
-import static edu.wpi.first.units.Units.Newton;
-
-import java.util.function.BooleanSupplier;
-
 import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.DeferredCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.subsystems.*;
-import frc.robot.util.Limelight;
-import frc.robot.util.Limelight.CameraMode;
-import frc.robot.util.Limelight.LightMode;
+import frc.robot.util.LimelightHelpers;
 import frc.robot.commands.defaultcommands.*;
 
 /**
@@ -41,7 +29,7 @@ public class RobotContainer {
     private SendableChooser<Command> chooser;
 
     /* Event Loop */
-    private final EventLoop eventLoop = new EventLoop();
+    // private final EventLoop eventLoop = new EventLoop();
 
     /* Drive Controls */
     private int translationAxis = XboxController.Axis.kLeftY.value;
@@ -49,8 +37,8 @@ public class RobotContainer {
     private int rotationAxis = XboxController.Axis.kRightX.value;
 
     /* Operator Controls */
-    private int leftTriggerAxis = XboxController.Axis.kLeftTrigger.value;
-    private int rightTriggerAxis = XboxController.Axis.kRightTrigger.value;
+    // private int leftTriggerAxis = XboxController.Axis.kLeftTrigger.value;
+    // private int rightTriggerAxis = XboxController.Axis.kRightTrigger.value;
 
     private double savedLimelightX;
 
@@ -90,9 +78,6 @@ public class RobotContainer {
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {        
-        Limelight.setPipeline(0);
-        Limelight.setLedMode(LightMode.eOff);
-        Limelight.setCameraMode(CameraMode.eVision);
         
         if(translationAxis < Math.abs(0.1)){
             translationAxis = 0;
@@ -133,8 +118,6 @@ public class RobotContainer {
         //Initalize Autonomous Chooser
         chooser = new SendableChooser<Command>();
 
-        SmartDashboard.putNumber("Limelight X", Limelight.getTx());
-
         // Configure the button bindings
         configureButtonBindings();
 
@@ -153,32 +136,6 @@ public class RobotContainer {
         /* Driver Buttons */
         zeroGyro.onTrue(new InstantCommand(() -> swerve.resetEverything()));
         robotCentric.toggleOnTrue(new InstantCommand(() -> toggleRobotCentric()));
-        //align.whileTrue(new LimelightAlign(swerve));
-        //align.whileTrue(new LimelightShooterAlign(shooter));
-        //flipAxes.whileTrue(new ParallelCommandGroup(new ShooterToPosition(shooter, Constants.Shooter.ampPosition), new AlignToAmp(swerve)));
-
-        // climberUp.onTrue(new ShooterDownLimited(shooter));
-        // climberDown.onTrue(new ParallelRaceGroup(new IntakeUpLimited(intake), new WaitCommand(2.5)));
-        // strafeAlign.onTrue(new ParallelRaceGroup(new FullTransport(intake, shooter), new WaitCommand(4)));
-        // bothUp.onTrue(new ShooterToPosition(shooter, Constants.Shooter.speakerPosition));
-
-        
-        // align.whileTrue(new LimelightShooterAlign(shooter));
-        // strafeAlign.whileTrue(new AlignToRing(swerve));
-        // alignToScore.whileTrue(new LimelightAlign(jaw, neck, swerve, PoleHeight.HIGH_POLE));
-
-        // shooterOn.whileTrue(new InstantCommand(() -> shooter.shooterOn()));
-        // shooterUp.whileTrue(new InstantCommand(() -> shooter.articulateUp()));
-        // shooterDown.whileTrue(new InstantCommand(() -> shooter.articulateDown()));
-        // shooterFeed.whileTrue(new InstantCommand(() -> shooter.feed()));
-        // shooterStop.whileTrue(new InstantCommand(() -> shooter.shooterOff()));
-
-        // intakeUp.whileTrue(new InstantCommand(() -> intake.intakeUp()));
-        // intakeDown.whileTrue(new InstantCommand(() -> intake.intakeDown()));
-        // intakeOn.whileTrue(new InstantCommand(() -> intake.intakeOn()));
-
-
-
     }
 
     public void toggleRobotCentric(){
@@ -208,38 +165,11 @@ public class RobotContainer {
           
     }
 
-    public double getLimelightRotation(){
-        // return Limelight.getTx()/-100; // -30 to 30 needs to become .6 to -.6
-
-        // if(Math.abs(Limelight.getTx()) >= 12){
-        //     return -Limelight.getTx()/75;
-        // }
-            
-
-        if(Limelight.getTx() != 0){
-            savedLimelightX = Limelight.getTx();
-        }
-        if(Math.abs(savedLimelightX) > .5){
-            return -(savedLimelightX/150 - 0.26*driver.getRawAxis(strafeAxis));
-        }
-        else if ((Limelight.getTx() != 0 && Math.abs(Limelight.getTx()) < 0.1)){
-            return 0;
-        }
-        return -(savedLimelightX/150 - 0.26*driver.getRawAxis(strafeAxis));
-    }
-
     public void initializeAutoChooser() {
-        double initRoll = swerve.getRoll();
+        //double initRoll = swerve.getRoll();
 
         chooser.setDefaultOption("Nothing", null);
         // chooser.addOption("Test Auto", new testAuto(swerve));
-        // chooser.addOption("Pathweaver Test", new pathweaverTest(swerve));
-        // chooser.addOption("Drive Out", new StupidDriveOut(swerve));
-        // chooser.addOption("Shoot Drive Out", new ShootDriveOut(swerve, shooter));
-        // chooser.addOption("Two Piece Auto", new TwoPieceAuto(swerve, intake, shooter));
-        // chooser.addOption(("Left Two Piece Auto"), new LeftTwoPieceAuto(swerve, intake, shooter));
-        // chooser.addOption("3 Piece Auto", new ThreePieceAuto(swerve, intake, shooter));
-
         SmartDashboard.putData(chooser);
     }
 
@@ -249,7 +179,6 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        // SmartDashboard.putNumber("PSI", new Compressor(PneumaticsModuleType.CTREPCM).getPressure())   
         return chooser.getSelected();
     }
 
