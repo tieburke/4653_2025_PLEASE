@@ -11,6 +11,8 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -19,30 +21,27 @@ public class Elevator extends SubsystemBase{
     
     private SparkMax winchMotor;
     private SparkMaxConfig mWinchConfig;
-    private SparkClosedLoopController winchController;
     private RelativeEncoder winchEncoder;
+
+    private DigitalInput limitSwitch;
 
     public Elevator(){
         winchMotor = new SparkMax(Constants.Elevator.winchMotorID, MotorType.kBrushless);
-        winchController = winchMotor.getClosedLoopController();
         winchEncoder = winchMotor.getEncoder();
+        limitSwitch = new DigitalInput(0);
+        configElevator();
     }
 
     public void configElevator(){
-        //TODO: see if secondary current thing works
         mWinchConfig = new SparkMaxConfig();
-        mWinchConfig.smartCurrentLimit(Constants.Elevator.winchMotorContinuousCurrentLimit);
-        mWinchConfig.secondaryCurrentLimit(Constants.Elevator.winchMotorPeakCurrentLimit);
-        mWinchConfig.inverted(Constants.Elevator.winchMotorInvert);
         mWinchConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
         .pid(Constants.Elevator.winchMotorKP, Constants.Elevator.winchMotorKI, Constants.Elevator.winchMotorKD);
-
         winchMotor.configure(mWinchConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        winchEncoder.setPosition(0);
     }
 
     public void setPosition(double position){
-        double targetPosition = position;
-        winchController.setReference(targetPosition, ControlType.kPosition, ClosedLoopSlot.kSlot1);
+        winchMotor.getClosedLoopController().setReference(position, ControlType.kPosition, ClosedLoopSlot.kSlot0);
     }
 
     public void elevatorUpManual(){
@@ -60,6 +59,7 @@ public class Elevator extends SubsystemBase{
     @Override
     public void periodic(){
         SmartDashboard.putNumber("Winch Encoder Value: ", winchEncoder.getPosition());
+        SmartDashboard.putBoolean("Limit Switch: ", limitSwitch.get());
     }
 
 }

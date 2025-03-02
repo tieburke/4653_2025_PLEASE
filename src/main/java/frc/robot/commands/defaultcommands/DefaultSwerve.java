@@ -31,20 +31,37 @@ public class DefaultSwerve extends Command {
     }
 
     @Override
+    public void initialize(){
+
+    }
+
+    @Override
     public void execute() {
-        //Test thing
-        SmartDashboard.putNumberArray("operating voltages", s_Swerve.getOpVoltages());
-        
         /* Get Values, Deadband*/
+        
+        //Linear version:
+        
         double translationVal = MathUtil.applyDeadband(translationSup.getAsDouble(), Constants.stickDeadband);
         double strafeVal = MathUtil.applyDeadband(strafeSup.getAsDouble(), Constants.stickDeadband);
         double rotationVal = limelight ? rotationSup.getAsDouble() : MathUtil.applyDeadband(rotationSup.getAsDouble(), Constants.stickDeadband);
+         
+        
+        //I squared the values to make driving speeds more gradual
+        // double translationVal = translationSup.getAsDouble();
+        // translationVal = (Math.abs(translationVal)/translationVal)*(Math.pow(translationVal, 2));
+        // translationVal = MathUtil.applyDeadband(translationVal, Constants.stickDeadband);
+        
+        // double strafeVal = strafeSup.getAsDouble();
+        // strafeVal = (Math.abs(strafeVal)/strafeVal)*(Math.pow(strafeVal, 2));
+        // strafeVal = MathUtil.applyDeadband(strafeVal, Constants.stickDeadband);
+        
+        //double rotationVal = MathUtil.applyDeadband(rotationSup.getAsDouble(), Constants.stickDeadband);
 
         /* Drive */
         s_Swerve.drive(
             new Translation2d(translationVal, strafeVal).times(Constants.Swerve.maxSpeed), 
             rotationVal * Constants.Swerve.maxAngularVelocity, 
-            !robotCentricSup.getAsBoolean(), 
+            robotCentricSup.getAsBoolean(), 
             true
         );
 

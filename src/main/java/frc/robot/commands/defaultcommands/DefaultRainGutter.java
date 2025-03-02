@@ -1,19 +1,20 @@
 package frc.robot.commands.defaultcommands;
 
 import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.RainGutter;
 
 public class DefaultRainGutter extends Command{
     private RainGutter rainGutter;
-    private BooleanSupplier L4, LOther, Open;
+    private DoubleSupplier L4, LOther;
 
-    public DefaultRainGutter(BooleanSupplier l4, BooleanSupplier lOther, BooleanSupplier open, RainGutter rainGutterThing){
+    public DefaultRainGutter(DoubleSupplier l4, DoubleSupplier lOther, RainGutter rainGutterThing){
   
         L4 = l4;
         LOther = lOther;
-        Open = open;
         rainGutter = rainGutterThing;
 
         addRequirements(rainGutter);
@@ -24,21 +25,17 @@ public class DefaultRainGutter extends Command{
 
     @Override
     public void execute(){
-        if(L4.getAsBoolean()){
+        if(L4.getAsDouble() > 0.2){
            rainGutter.setRotateL4();
+           rainGutter.open();
         }
-        else if(LOther.getAsBoolean()){
+        else if(LOther.getAsDouble() > 0.2){
            rainGutter.setRotateLOther();
+           rainGutter.open();
         }
         else{
            rainGutter.setRotateIntake();
-        }
-
-        if(Open.getAsBoolean()){
-            rainGutter.open();
-        }
-        else{
-            rainGutter.close();
+           rainGutter.close();
         }
     }
 

@@ -19,15 +19,14 @@ public class AlgaeIntake extends SubsystemBase{
     
     private SparkMax articulate, left, right;
     private SparkMaxConfig mArticulateConfig;
-    private SparkClosedLoopController articulateController;
     private RelativeEncoder articulateEncoder;
 
     public AlgaeIntake(){
         articulate = new SparkMax(Constants.AlgaeIntake.articulateIntakeID, MotorType.kBrushless);
         left = new SparkMax(Constants.AlgaeIntake.leftIntakeID, MotorType.kBrushless);
         right = new SparkMax(Constants.AlgaeIntake.rightIntakeID, MotorType.kBrushless);
-        articulateController = articulate.getClosedLoopController();
         articulateEncoder = articulate.getEncoder();
+        configAlgae();
     }
 
     public void configAlgae(){
@@ -36,11 +35,11 @@ public class AlgaeIntake extends SubsystemBase{
         .pid(Constants.AlgaeIntake.articulateKP, Constants.AlgaeIntake.articulateKI, Constants.AlgaeIntake.articulateKD);
 
         articulate.configure(mArticulateConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        articulateEncoder.setPosition(0);
     }
 
     public void setPosition(double position){
-        double targetPosition = position;
-        articulateController.setReference(targetPosition, ControlType.kPosition, ClosedLoopSlot.kSlot1);
+        articulate.getClosedLoopController().setReference(position, ControlType.kPosition, ClosedLoopSlot.kSlot0);
     }
 
     public void intakeUpManual(){
@@ -68,6 +67,10 @@ public class AlgaeIntake extends SubsystemBase{
     public void inOutStop(){
         left.set(0);
         right.set(0);
+    }
+
+    public void resetEncoder(){
+        articulateEncoder.setPosition(0);
     }
 
     @Override

@@ -1,5 +1,8 @@
 package frc.robot;
 
+import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -38,7 +41,7 @@ public class RobotContainer {
     // private int rightTriggerAxis = XboxController.Axis.kRightTrigger.value;
 
     /* Field Oriented Toggle */
-    private boolean isFieldOriented = false;
+    private boolean isFieldOriented = true;
 
     /* Driver Buttons */
     //private final JoystickButton flipAxes = new JoystickButton(driver, XboxController.Button.kA.value);
@@ -47,17 +50,19 @@ public class RobotContainer {
     private final JoystickButton limelightAlign = new JoystickButton(driver, XboxController.Button.kA.value);
 
     /* Operator Buttons */
-    private final JoystickButton elevatorUpButton = new JoystickButton(operator, XboxController.Button.kA.value);
-    private final JoystickButton elevatorDownButton = new JoystickButton(operator, XboxController.Button.kB.value);
-    private final JoystickButton climberDownButton = new JoystickButton(operator, XboxController.Button.kX.value);
-    private final JoystickButton climberUpButton = new JoystickButton(operator, XboxController.Button.kY.value);
-    private final JoystickButton aIntakeUpButton = new JoystickButton(driver, XboxController.Button.kA.value);
-    private final JoystickButton aIntakeDownButton = new JoystickButton(driver, XboxController.Button.kB.value);
-    private final JoystickButton aIntakeInButton = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
-    private final JoystickButton aIntakeOutButton = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
-    private final JoystickButton rGL4Button = new JoystickButton(operator, XboxController.Button.kRightBumper.value);
-    private final JoystickButton rGLOtherButton = new JoystickButton(operator, XboxController.Button.kLeftBumper.value);
-    private final JoystickButton rGOpenButton = new JoystickButton(operator, XboxController.Button.kStart.value);
+    private final JoystickButton elevl4Button = new JoystickButton(operator, XboxController.Button.kA.value);
+    private final JoystickButton elevdownButton = new JoystickButton(operator, XboxController.Button.kB.value);
+    private final JoystickButton elevL3Button = new JoystickButton(operator, XboxController.Button.kX.value);
+    private final JoystickButton elevl2Button = new JoystickButton(operator, XboxController.Button.kStart.value);
+    private final JoystickButton elevl1Button = new JoystickButton(operator, XboxController.Button.kBack.value);
+    private int elevUpDown = XboxController.Axis.kRightY.value;
+    private final JoystickButton climbButton = new JoystickButton(operator, XboxController.Button.kY.value);
+    private final JoystickButton aIntakeVert = new JoystickButton(operator, XboxController.Button.kLeftBumper.value);
+    private final JoystickButton aIntakeHor = new JoystickButton(operator, XboxController.Button.kRightBumper.value);
+    private int aIntakeUpDown = XboxController.Axis.kLeftX.value;
+    private int aIntakeInOut = XboxController.Axis.kLeftY.value;
+    private int rGL4 = XboxController.Axis.kRightTrigger.value;
+    private int rGLOther = XboxController.Axis.kLeftTrigger.value;
 
     /* Subsystems */
     private final Swerve swerve = new Swerve();
@@ -89,33 +94,33 @@ public class RobotContainer {
         //         )
         // );
 
-        if(limelightAlign.getAsBoolean()){
-            swerve.setDefaultCommand(
-                new DefaultSwerve(
-                    swerve, 
-                    () -> -limelight_aim_proportional(), 
-                    () -> -driver.getRawAxis(strafeAxis), 
-                    () -> -limelight_range_proportional(), 
-                    () -> false
-                )
-            );
-        }
-        else{
+        // if(limelightAlign.getAsBoolean()){
+        //     swerve.setDefaultCommand(
+        //         new DefaultSwerve(
+        //             swerve, 
+        //             () -> -limelight_aim_proportional(), 
+        //             () -> -driver.getRawAxis(strafeAxis), 
+        //             () -> -limelight_range_proportional(), 
+        //             () -> false
+        //         )
+        //     );
+        // }
+        // else{
             swerve.setDefaultCommand(    
                 new DefaultSwerve(
                     swerve, 
                     () -> -driver.getRawAxis(translationAxis), 
                     () -> -driver.getRawAxis(strafeAxis), 
                     () -> -driver.getRawAxis(rotationAxis), 
-                    () -> false
+                    () -> true
                 )
             );
-        }
+        // }
 
-        climber.setDefaultCommand(new DefaultClimber(climberUpButton, climberDownButton, climber));
-        elevator.setDefaultCommand(new DefaultElevator(elevatorUpButton, elevatorDownButton, elevator));
-        aIntake.setDefaultCommand(new DefaultAlgaeIntake(aIntakeUpButton, aIntakeDownButton, aIntakeInButton, aIntakeOutButton, aIntake));
-        rainGutter.setDefaultCommand(new DefaultRainGutter(rGL4Button, rGLOtherButton, rGOpenButton, rainGutter));
+        // climber.setDefaultCommand(new DefaultClimber(climberUpButton, climberDownButton, climber));
+        elevator.setDefaultCommand(new DefaultElevator(elevl4Button, elevL3Button, elevl2Button, elevl1Button, () -> operator.getRawAxis(elevUpDown), elevator));
+        aIntake.setDefaultCommand(new DefaultAlgaeIntake(aIntakeHor, aIntakeVert, () -> operator.getRawAxis(aIntakeInOut), () -> operator.getRawAxis(aIntakeUpDown), aIntake));
+        rainGutter.setDefaultCommand(new DefaultRainGutter(() -> operator.getRawAxis(rGL4), () -> operator.getRawAxis(rGLOther), rainGutter));
 
         // flipAxes.whileTrue(
         //     new DefaultSwerve(

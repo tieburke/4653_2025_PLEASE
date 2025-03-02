@@ -96,7 +96,7 @@ public final class Constants {
             public static final int driveMotorID = 1;
             public static final int angleMotorID = 2;
             public static final int canCoderID = 20;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(52.4);
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(49.3);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -106,7 +106,7 @@ public final class Constants {
             public static final int driveMotorID = 5;
             public static final int angleMotorID = 6;
             public static final int canCoderID = 21;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(11.3);
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(189.0);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -116,7 +116,7 @@ public final class Constants {
             public static final int driveMotorID = 3;
             public static final int angleMotorID = 4;
             public static final int canCoderID = 22;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(238.62);
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(240.7);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -126,7 +126,7 @@ public final class Constants {
             public static final int driveMotorID = 8;
             public static final int angleMotorID = 7;
             public static final int canCoderID = 23;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(208.4);
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(300.6);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -134,19 +134,16 @@ public final class Constants {
 
     public static final class Elevator{
         public static final int winchMotorID = 9;
-        //TODO: see if these limits make sense
-        public static final int winchMotorContinuousCurrentLimit = 25;
-        public static final int winchMotorPeakCurrentLimit = 40;
-        public static final boolean winchMotorInvert = false;
 
-        public static final double winchMotorKP = 0.05;
+        public static final double winchMotorKP = 0.03;
         public static final double winchMotorKI = 0;
         public static final double winchMotorKD = 0;
         
-        public static final int positionL1 = 1000;
-        public static final int positionL2 = 1000;
-        public static final int positionL3 = 1000;
-        public static final int positionL4 = 1000;
+        public static final double positionL0 = -2;
+        public static final double positionL1 = -50;
+        public static final double positionL2 = -50;
+        public static final double positionL3 = -50;
+        public static final double positionL4 = -400;
 
         public static final double manualSpeed = 0.2;
     }
@@ -157,12 +154,12 @@ public final class Constants {
         public static final int rightIntakeID = 11;
         public static final int articulateIntakeID = 12;
 
-        public static final double articulateKP = 0.02;
+        public static final double articulateKP = 0.03;
         public static final double articulateKI = 0.0;
         public static final double articulateKD = 0.0;
 
-        public static final double horizontalPos = 0.0;
-        public static final double verticalPos = 0.0;
+        public static final double horizontalPos = -2.8;
+        public static final double verticalPos = 0.2;
 
         public static final double manualSpeed = 0.1;
     }
@@ -176,7 +173,7 @@ public final class Constants {
         
         public static final int positionClimb = 1000;
 
-        public static final double manualSpeed = 0.2;
+        public static final double manualSpeed = 0.7;
     }
 
     public static final class RainGutter{

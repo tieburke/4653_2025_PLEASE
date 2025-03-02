@@ -32,7 +32,7 @@ private Rotation2d lastAngle = Rotation2d.fromDegrees(0);
 
 private SparkMax mAngleMotor;
 private SparkMax mDriveMotor;
-private CANcoder absoluteEncoder;
+//private CANcoder absoluteEncoder;
 
 private Canandmag canandmag;
 
@@ -54,16 +54,16 @@ public SwerveModule(int moduleNumber, SwerveModuleConstants moduleConstants){
 
     //Works for drivetrain using canandmag encoders for modules 0, 1, and 2
 
-    if(moduleNumber < 3) {
+    // if(moduleNumber < 3) {
          /* Canandmag */
         canandmag = new Canandmag(moduleConstants.cancoderID);
-    }
+    // }
     
-    else {
+    // else {
         /* Absolute Encoder */
-        absoluteEncoder = new CANcoder(moduleConstants.cancoderID);
-        configAngleEncoder();
-    }
+        // absoluteEncoder = new CANcoder(moduleConstants.cancoderID);
+        // configAngleEncoder();
+    // }
     
     /* Angle Motor */
     mAngleMotor = new SparkMax(moduleConstants.angleMotorID, MotorType.kBrushless);
@@ -113,24 +113,25 @@ private Rotation2d getAngle(){
 }
 
 public Rotation2d getAbsoluteAngle(){
-    if(moduleNumber < 3)
-    {
+    // if(moduleNumber < 3)
+    // {
         return Rotation2d.fromDegrees(canandmag.getAbsPosition()*360);
-    }
-    else
-    {
-        return Rotation2d.fromDegrees(absoluteEncoder.getAbsolutePosition().getValueAsDouble()*360);
-    }
+    // }
+    // else
+    // {
+        // return Rotation2d.fromDegrees(absoluteEncoder.getAbsolutePosition().getValueAsDouble()*360);
+    // }
 }
 
 public void resetToAbsolute(){
     mAngleEncoder.setPosition(getAbsoluteAngle().getDegrees() - angleOffset.getDegrees());
+    SmartDashboard.putNumber("Reset val mod: " + moduleNumber, getAbsoluteAngle().getDegrees() - angleOffset.getDegrees());
     // mAngleEncoder.setPosition(0);
 }
 
 private void configAngleEncoder(){
-    absoluteEncoder.getConfigurator().apply(new CANcoderConfiguration());
-    absoluteEncoder.getConfigurator().apply(Robot.ctreConfigs.swerveCanCoderConfig);
+    // absoluteEncoder.getConfigurator().apply(new CANcoderConfiguration());
+    // absoluteEncoder.getConfigurator().apply(Robot.ctreConfigs.swerveCanCoderConfig);
 }
 
 public void configAngleMotor() {
@@ -145,7 +146,7 @@ public void configAngleMotor() {
             * 360); // 1/360 rotations is 1 degree, 1 rotation is 360 degrees.
     resetToAbsolute();
 
-    mAngleConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)//TODO: Change this to absolute encoder
+    mAngleConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
     .pidf(Constants.Swerve.angleKP, Constants.Swerve.angleKI, 
     Constants.Swerve.angleKD, Constants.Swerve.angleKF);
 
@@ -178,15 +179,16 @@ public SwerveModuleState getState(){
 }
 
 public Rotation2d getCanCoder(){
-    if(moduleNumber < 3)
-    {
-         return Rotation2d.fromDegrees(canandmag.getAbsPosition()*360);
-    }
-    else{
-    return Rotation2d.fromDegrees(absoluteEncoder.getAbsolutePosition().getValueAsDouble()*360);
-    }
+    // if(moduleNumber < 3)
+    // {
+        SmartDashboard.putNumber(("canandmag_angle mod:" + moduleNumber), canandmag.getAbsPosition()*360);
+        return Rotation2d.fromDegrees(canandmag.getAbsPosition()*360);
+    // }
+    // else{
+        // SmartDashboard.putNumber("ctre_angle", absoluteEncoder.getAbsolutePosition().getValueAsDouble()*360);
+        // return Rotation2d.fromDegrees(absoluteEncoder.getAbsolutePosition().getValueAsDouble()*360);
+    // }
 }
-
 
 public SwerveModulePosition getPosition(){
     for(int i = 0; i < 4; i++){
@@ -201,8 +203,12 @@ public SwerveModulePosition getPosition(){
     );
 } 
 
-    public double getOpVoltage(){
-        return mAngleMotor.getAppliedOutput();
+    public void getItRight(double value){
+        mAngleMotor.getClosedLoopController().setReference(value, ControlType.kPosition);
+    }
+
+    public double getAngleOffset(){
+        return angleOffset.getDegrees();
     }
 
 }
