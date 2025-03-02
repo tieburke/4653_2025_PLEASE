@@ -53,9 +53,9 @@ public class DefaultElevator extends Command{
             elevator.elevatorDownManual();
         }
 
-        else if (!L4.getAsBoolean() && !L1.getAsBoolean() && !L2.getAsBoolean() && !L3.getAsBoolean() && !L4.getAsBoolean()){
-            elevator.setPosition(Constants.Elevator.positionL0);
-        }
+        //else if (!L4.getAsBoolean() && !L1.getAsBoolean() && !L2.getAsBoolean() && !L3.getAsBoolean() && !L4.getAsBoolean()){
+        //    elevator.setPosition(Constants.Elevator.positionL0);
+        //}
     }
 
     @Override

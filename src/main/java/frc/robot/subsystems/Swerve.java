@@ -41,7 +41,7 @@ public class Swerve extends SubsystemBase {
 
         swerveOdometry = new SwerveDriveOdometry(Constants.Swerve.swerveKinematics, getYaw(), getModulePositions());
 
-        getEmRight();
+        //getEmRight();
     }
 
     public void driveSlow(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop, double maxSpeed) {
@@ -204,14 +204,33 @@ public class Swerve extends SubsystemBase {
     }
 
     public void getEmRight(){
+        
+        SwerveModuleState[] swerveModuleStates =
+        Constants.Swerve.swerveKinematics.toSwerveModuleStates(new ChassisSpeeds(0, 0, 0));
+
+
         for(SwerveModule mod : mSwerveMods){
             mod.getItRight();
+            mod.setDesiredState(swerveModuleStates[mod.moduleNumber], true);
         }
+    }
+
+    public boolean checkRight(){
+        boolean right = true;
+        for(SwerveModule mod : mSwerveMods){
+            if((Math.abs(mod.getAbsoluteAngle().getDegrees()) > 5) && (Math.abs(mod.getAbsoluteAngle().getDegrees()) < 355)){
+                right = false;
+            }
+        }
+        return right;
     }
 
     @Override
     public void periodic(){
         swerveOdometry.update(getYaw(), getModulePositions()); 
+
+        SmartDashboard.putNumber("yaw: ", getYaw().getDegrees());
+        SmartDashboard.putNumber("rawYaw: ", gyro.getYaw());
 
         for(SwerveModule mod : mSwerveMods){
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Cancoder", mod.getCanCoder().getDegrees());            SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);    

@@ -133,11 +133,6 @@ public void resetToAbsolute(){
     // mAngleEncoder.setPosition(0);
 }
 
-private void configAngleEncoder(){
-    // absoluteEncoder.getConfigurator().apply(new CANcoderConfiguration());
-    // absoluteEncoder.getConfigurator().apply(Robot.ctreConfigs.swerveCanCoderConfig);
-}
-
 public void configAngleMotor() {
     mAngleConfig = new SparkMaxConfig();
 
@@ -208,7 +203,7 @@ public SwerveModulePosition getPosition(){
 } 
 
     public void getItRight(){
-        mAngleMotor.getClosedLoopController().setReference(-startingAngle, ControlType.kPosition);
+        mAngleMotor.getClosedLoopController().setReference(mAngleEncoder.getPosition() + startingAngle, ControlType.kPosition);
     }
 
     public double getAngleOffset(){
