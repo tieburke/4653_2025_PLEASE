@@ -51,10 +51,10 @@ public class RobotContainer {
 
     /* Operator Buttons */
     private final JoystickButton elevl4Button = new JoystickButton(operator, XboxController.Button.kA.value);
-    private final JoystickButton elevdownButton = new JoystickButton(operator, XboxController.Button.kB.value);
-    private final JoystickButton elevL3Button = new JoystickButton(operator, XboxController.Button.kX.value);
-    private final JoystickButton elevl2Button = new JoystickButton(operator, XboxController.Button.kStart.value);
-    private final JoystickButton elevl1Button = new JoystickButton(operator, XboxController.Button.kBack.value);
+    private final JoystickButton elevl3Button = new JoystickButton(operator,XboxController.Button.kB.value);
+    private final JoystickButton elevl2Button = new JoystickButton(operator, XboxController.Button.kX.value);
+    private final JoystickButton elevl1Button = new JoystickButton(operator, XboxController.Button.kStart.value);
+    private final JoystickButton resetAIntakeButton = new JoystickButton(operator, XboxController.Button.kBack.value);
     private int elevUpDown = XboxController.Axis.kRightY.value;
     private final JoystickButton climbButton = new JoystickButton(operator, XboxController.Button.kY.value);
     private final JoystickButton aIntakeVert = new JoystickButton(operator, XboxController.Button.kLeftBumper.value);
@@ -118,8 +118,8 @@ public class RobotContainer {
         // }
 
         // climber.setDefaultCommand(new DefaultClimber(climberUpButton, climberDownButton, climber));
-        elevator.setDefaultCommand(new DefaultElevator(elevl4Button, elevL3Button, elevl2Button, elevl1Button, () -> operator.getRawAxis(elevUpDown), elevator));
-        aIntake.setDefaultCommand(new DefaultAlgaeIntake(aIntakeHor, aIntakeVert, () -> operator.getRawAxis(aIntakeInOut), () -> operator.getRawAxis(aIntakeUpDown), aIntake));
+        elevator.setDefaultCommand(new DefaultElevator(elevl4Button, elevl3Button, elevl2Button, elevl1Button, () -> operator.getRawAxis(elevUpDown), elevator));
+        aIntake.setDefaultCommand(new DefaultAlgaeIntake(aIntakeHor, aIntakeVert, resetAIntakeButton, () -> operator.getRawAxis(aIntakeInOut), () -> operator.getRawAxis(aIntakeUpDown), aIntake));
         rainGutter.setDefaultCommand(new DefaultRainGutter(() -> operator.getRawAxis(rGL4), () -> operator.getRawAxis(rGLOther), rainGutter));
 
         // flipAxes.whileTrue(

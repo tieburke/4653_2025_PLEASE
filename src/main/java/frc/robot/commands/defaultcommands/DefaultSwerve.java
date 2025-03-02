@@ -38,12 +38,11 @@ public class DefaultSwerve extends Command {
     @Override
     public void execute() {
         /* Get Values, Deadband*/
-        
         //Linear version:
         
-        double translationVal = MathUtil.applyDeadband(translationSup.getAsDouble(), Constants.stickDeadband);
-        double strafeVal = MathUtil.applyDeadband(strafeSup.getAsDouble(), Constants.stickDeadband);
-        double rotationVal = limelight ? rotationSup.getAsDouble() : MathUtil.applyDeadband(rotationSup.getAsDouble(), Constants.stickDeadband);
+        // double translationVal = MathUtil.applyDeadband(translationSup.getAsDouble(), Constants.stickDeadband);
+        // double strafeVal = MathUtil.applyDeadband(strafeSup.getAsDouble(), Constants.stickDeadband);
+        // double rotationVal = limelight ? rotationSup.getAsDouble() : MathUtil.applyDeadband(rotationSup.getAsDouble(), Constants.stickDeadband);
          
         
         //I squared the values to make driving speeds more gradual
@@ -58,12 +57,12 @@ public class DefaultSwerve extends Command {
         //double rotationVal = MathUtil.applyDeadband(rotationSup.getAsDouble(), Constants.stickDeadband);
 
         /* Drive */
-        s_Swerve.drive(
-            new Translation2d(translationVal, strafeVal).times(Constants.Swerve.maxSpeed), 
-            rotationVal * Constants.Swerve.maxAngularVelocity, 
-            robotCentricSup.getAsBoolean(), 
-            true
-        );
+        // s_Swerve.drive(
+        //     new Translation2d(translationVal, strafeVal).times(Constants.Swerve.maxSpeed), 
+        //     rotationVal * Constants.Swerve.maxAngularVelocity, 
+        //     robotCentricSup.getAsBoolean(), 
+        //     true
+        // );
 
     }
     

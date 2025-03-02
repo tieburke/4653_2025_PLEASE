@@ -42,6 +42,8 @@ private RelativeEncoder mAngleEncoder;
 private SparkMaxConfig mAngleConfig;
 private SparkMaxConfig mDriveConfig;
 
+private double startingAngle;
+
 SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(Constants.Swerve.driveKS, Constants.Swerve.driveKV, Constants.Swerve.driveKA);
 
 /* Sim Caches (basically im lazy and don't want to use the rev physics sim) */
@@ -74,6 +76,8 @@ public SwerveModule(int moduleNumber, SwerveModuleConstants moduleConstants){
     mDriveMotor = new SparkMax(moduleConstants.driveMotorID, MotorType.kBrushless);
     mDriveEncoder = mDriveMotor.getEncoder();
     configDriveMotor();
+
+    startingAngle = getAbsoluteAngle().getDegrees();
 
     lastAngle = getState().angle;
 }
@@ -203,8 +207,8 @@ public SwerveModulePosition getPosition(){
     );
 } 
 
-    public void getItRight(double value){
-        mAngleMotor.getClosedLoopController().setReference(value, ControlType.kPosition);
+    public void getItRight(){
+        mAngleMotor.getClosedLoopController().setReference(-startingAngle, ControlType.kPosition);
     }
 
     public double getAngleOffset(){

@@ -12,12 +12,14 @@ import frc.robot.subsystems.AlgaeIntake;
 
 public class DefaultAlgaeIntake extends Command{
     private AlgaeIntake aIntake;
-    private BooleanSupplier horizontal, vertical; 
+    private BooleanSupplier horizontal, vertical, resetEncoder;
     private DoubleSupplier manualUpDown, aInOut;
+    private boolean position = false;
 
-    public DefaultAlgaeIntake(BooleanSupplier horizontalPos, BooleanSupplier verticalPos, DoubleSupplier aINOUT, DoubleSupplier manualDrive, AlgaeIntake algaeIntake){
+    public DefaultAlgaeIntake(BooleanSupplier horizontalPos, BooleanSupplier verticalPos, BooleanSupplier reset, DoubleSupplier aINOUT, DoubleSupplier manualDrive, AlgaeIntake algaeIntake){
         horizontal = horizontalPos;
         vertical = verticalPos;
+        resetEncoder = reset;
         manualUpDown = manualDrive;
         aInOut = aINOUT;
         aIntake = algaeIntake;
@@ -34,21 +36,29 @@ public class DefaultAlgaeIntake extends Command{
     public void execute(){
         if(horizontal.getAsBoolean()){
             aIntake.setPosition(Constants.AlgaeIntake.horizontalPos);
+            position = true;
         }
 
         if(vertical.getAsBoolean()){
             aIntake.setPosition(Constants.AlgaeIntake.verticalPos);
+            position = true;
+        }
+
+        if(resetEncoder.getAsBoolean()){
+            aIntake.resetEncoder();
         }
 
         if(manualUpDown.getAsDouble() > 0.1){
-            aIntake.intakeUpManual();;
+            aIntake.intakeUpManual();
+            position = false;
         }
 
         else if(manualUpDown.getAsDouble() < -0.1){
             aIntake.intakeDownManual();
+            position = false;
         }
 
-        else if ((!horizontal.getAsBoolean()) && (!vertical.getAsBoolean())){
+        else if ((!horizontal.getAsBoolean()) && (!vertical.getAsBoolean()) && (!position)){
             aIntake.intakeStop();
         }
 
