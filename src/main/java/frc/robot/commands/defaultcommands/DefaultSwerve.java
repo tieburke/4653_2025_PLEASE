@@ -38,7 +38,6 @@ public class DefaultSwerve extends Command {
     public void initialize(){
         resetAlready = false;
         s_Swerve.getEmRight();
-        new WaitCommand(1);
     }
 
     @Override
@@ -73,7 +72,6 @@ public class DefaultSwerve extends Command {
             true
         );
         }
-
     }
     
 }

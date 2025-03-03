@@ -203,7 +203,7 @@ public SwerveModulePosition getPosition(){
 } 
 
     public void getItRight(){
-        mAngleMotor.getClosedLoopController().setReference(mAngleEncoder.getPosition() + startingAngle, ControlType.kPosition);
+        mAngleMotor.getClosedLoopController().setReference((mAngleEncoder.getPosition() % 360) + startingAngle, ControlType.kPosition);
     }
 
     public double getAngleOffset(){

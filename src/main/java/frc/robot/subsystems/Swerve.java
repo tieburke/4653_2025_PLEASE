@@ -204,15 +204,10 @@ public class Swerve extends SubsystemBase {
     }
 
     public void getEmRight(){
-        
-        SwerveModuleState[] swerveModuleStates =
-        Constants.Swerve.swerveKinematics.toSwerveModuleStates(new ChassisSpeeds(0, 0, 0));
-
-
         for(SwerveModule mod : mSwerveMods){
             mod.getItRight();
-            mod.setDesiredState(swerveModuleStates[mod.moduleNumber], true);
         }
+        setCurrent();
     }
 
     public boolean checkRight(){
@@ -223,6 +218,12 @@ public class Swerve extends SubsystemBase {
             }
         }
         return right;
+    }
+
+    public void setCurrent(){
+        for(SwerveModule mod: mSwerveMods){
+            mod.setDesiredState(mod.getState(), true);
+        }
     }
 
     @Override
