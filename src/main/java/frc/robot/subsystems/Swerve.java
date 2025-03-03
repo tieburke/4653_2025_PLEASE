@@ -207,7 +207,6 @@ public class Swerve extends SubsystemBase {
         for(SwerveModule mod : mSwerveMods){
             mod.getItRight();
         }
-        setCurrent();
     }
 
     public boolean checkRight(){
@@ -218,12 +217,6 @@ public class Swerve extends SubsystemBase {
             }
         }
         return right;
-    }
-
-    public void setCurrent(){
-        for(SwerveModule mod: mSwerveMods){
-            mod.setDesiredState(mod.getState(), true);
-        }
     }
 
     @Override
