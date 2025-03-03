@@ -207,6 +207,10 @@ public class Swerve extends SubsystemBase {
         for(SwerveModule mod : mSwerveMods){
             mod.getItRight();
         }
+<<<<<<< HEAD
+=======
+        drive(new Translation2d(0, 0), 0, true, true);
+>>>>>>> 823132cfb4f5cc13d0b1ce4f0453e30d6cd4a72d
     }
 
     public boolean checkRight(){
