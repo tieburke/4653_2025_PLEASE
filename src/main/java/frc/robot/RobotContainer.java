@@ -48,6 +48,8 @@ public class RobotContainer {
     private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
     private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kX.value);
     private final JoystickButton limelightAlign = new JoystickButton(driver, XboxController.Button.kA.value);
+    private final JoystickButton setToZero1 = new JoystickButton(driver, XboxController.Button.kStart.value);
+    private final JoystickButton setToZero2 = new JoystickButton(driver, XboxController.Button.kBack.value);
 
     /* Operator Buttons */
     private final JoystickButton elevl4Button = new JoystickButton(operator, XboxController.Button.kA.value);
@@ -71,6 +73,8 @@ public class RobotContainer {
     private final AlgaeIntake aIntake = new AlgaeIntake();
     private final RainGutter rainGutter = new RainGutter();
 
+    public static boolean elevUp = false;
+
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {        
         
@@ -83,40 +87,22 @@ public class RobotContainer {
         if(rotationAxis < Math.abs(0.1)){
             rotationAxis = 0;
         }    
-
-        // swerve.setDefaultCommand(
-        //     new DefaultSwerve(
-        //         swerve, 
-        //         () -> -driver.getRawAxis(translationAxis), 
-        //         () -> -driver.getRawAxis(strafeAxis), 
-        //         () -> -driver.getRawAxis(rotationAxis), 
-        //         () -> false
-        //         )
-        // );
-
-        // if(limelightAlign.getAsBoolean()){
-        //     swerve.setDefaultCommand(
-        //         new DefaultSwerve(
-        //             swerve, 
-        //             () -> -limelight_aim_proportional(), 
-        //             () -> -driver.getRawAxis(strafeAxis), 
-        //             () -> -limelight_range_proportional(), 
-        //             () -> false
-        //         )
-        //     );
-        // }
-        // else{
-            swerve.setDefaultCommand(    
+        
+        swerve.setDefaultCommand(    
                 new DefaultSwerve(
                     swerve, 
                     () -> -driver.getRawAxis(translationAxis), 
                     () -> -driver.getRawAxis(strafeAxis), 
                     () -> -driver.getRawAxis(rotationAxis), 
-                    () -> true
-                )
+                    () -> true,
+                    setToZero1,
+                    setToZero2,
+                    limelightAlign,
+                    elevUp
+               )
             );
-        // }
 
+        
         // climber.setDefaultCommand(new DefaultClimber(climberUpButton, climberDownButton, climber));
         elevator.setDefaultCommand(new DefaultElevator(elevl4Button, elevl3Button, elevl2Button, elevl1Button, () -> operator.getRawAxis(elevUpDown), elevator));
         aIntake.setDefaultCommand(new DefaultAlgaeIntake(aIntakeHor, aIntakeVert, resetAIntakeButton, () -> operator.getRawAxis(aIntakeInOut), () -> operator.getRawAxis(aIntakeUpDown), aIntake));
@@ -172,7 +158,7 @@ public class RobotContainer {
         // if it is too high, the robot will oscillate.
         // if it is too low, the robot will never reach its target
         // if the robot never turns in the correct direction, kP should be inverted.
-        double kP = .035;
+        double kP = -.01;
     
         // tx ranges from (-hfov/2) to (hfov/2) in degrees. If your target is on the rightmost edge of 
         // your limelight 3 feed, tx should return roughly 31 degrees.
@@ -182,7 +168,7 @@ public class RobotContainer {
         targetingAngularVelocity *= Constants.Swerve.maxAngularVelocity;
     
         //invert since tx is positive when the target is to the right of the crosshair
-        targetingAngularVelocity *= -1.0;
+        targetingAngularVelocity *= -0.05;
     
         return targetingAngularVelocity;
     }
@@ -191,10 +177,10 @@ public class RobotContainer {
     // this works best if your Limelight's mount height and target mount height are different.
     // if your limelight and target are mounted at the same or similar heights, use "ta" (area) for target ranging rather than "ty"
     public static double limelight_range_proportional(){    
-        double kP = .1;
+        double kP = .01;
         double targetingForwardSpeed = LimelightHelpers.getTY("limelight") * kP;
         targetingForwardSpeed *= Math.PI;
-        targetingForwardSpeed *= -1.0;
+        targetingForwardSpeed *= -0.05;
         return targetingForwardSpeed;
     }
 

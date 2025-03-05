@@ -56,6 +56,10 @@ public class Elevator extends SubsystemBase{
         winchMotor.set(0);
     }
 
+    public double getPosition(){
+        return winchEncoder.getPosition();
+    }
+
     @Override
     public void periodic(){
         SmartDashboard.putNumber("Winch Encoder Value: ", winchEncoder.getPosition());

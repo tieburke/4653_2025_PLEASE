@@ -81,7 +81,7 @@ public final class Constants {
         public static final double maxSpeed = 4.5; //TODO: This must be tuned to specific robot
         public static final double slowSpeed = .3;
         /** Radians per Second */
-        public static final double maxAngularVelocity = 10.0; //TODO: This must be tuned to specific robot
+        public static final double maxAngularVelocity = 5; //10 //TODO: This must be tuned to specific robot
 
         /* Neutral Modes */
         public static final IdleMode angleNeutralMode = IdleMode.kCoast;
@@ -139,11 +139,11 @@ public final class Constants {
         public static final double winchMotorKI = 0;
         public static final double winchMotorKD = 0;
         
-        public static final double positionL0 = -2;
+        public static final double positionL0 = 0;
         public static final double positionL1 = -50;
         public static final double positionL2 = -50;
         public static final double positionL3 = -50;
-        public static final double positionL4 = -400;
+        public static final double positionL4 = -420;
 
         public static final double manualSpeed = 0.2;
     }
@@ -154,20 +154,21 @@ public final class Constants {
         public static final int rightIntakeID = 11;
         public static final int articulateIntakeID = 12;
 
-        public static final double articulateKP = 0.15;
+        public static final double articulateKP = 0.05
+        ;
         public static final double articulateKI = 0.0;
         public static final double articulateKD = 0.0;
 
-        public static final double horizontalPos = -2.8;
-        public static final double verticalPos = 0.05;
+        public static final double horizontalPos = 2.8;
+        public static final double verticalPos = -0.05;
 
-        public static final double manualSpeed = 0.1;
+        public static final double manualSpeed = 0.2;
     }
 
     public static final class Climber{
         public static final int climberMotorID = 13;
         
-        public static final double climberMotorKP = 0.1;
+        public static final double climberMotorKP = 0.3;
         public static final double climberMotorKI = 0;
         public static final double climberMotorKD = 0;
         
@@ -182,8 +183,8 @@ public final class Constants {
     }
 
     public static final class AutoConstants { //TODO: The below constants are used in the example auto, and must be tuned to specific robot
-        public static final double kMaxSpeedMetersPerSecond = 3;
-        public static final double kMaxAccelerationMetersPerSecondSquared = 3;
+        public static final double kMaxSpeedMetersPerSecond = 1; //3
+        public static final double kMaxAccelerationMetersPerSecondSquared = 1; //3
         public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;
         public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
     
