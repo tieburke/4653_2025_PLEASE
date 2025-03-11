@@ -11,11 +11,11 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
-public class LimelightAlignAuto extends Command {    
+public class StupidDriveForwardAuto extends Command {    
     private Swerve s_Swerve;  
     private Timer timer; 
 
-    public LimelightAlignAuto(Swerve s_Swerve){
+    public StupidDriveForwardAuto(Swerve s_Swerve){
         this.s_Swerve = s_Swerve; 
         this.timer = new Timer();
         addRequirements(s_Swerve);
@@ -31,18 +31,16 @@ public class LimelightAlignAuto extends Command {
     @Override
     public void execute() {
             s_Swerve.drive(
-                new Translation2d(0.2, RobotContainer.limelight_aim_proportional()).times(Constants.Swerve.maxSpeed), 
+                new Translation2d(0.8, 0), 
                 0, 
                 false, 
                 true
             );
-            LimelightHelpers.setPipelineIndex("limelight", 0);  
     }
 
       // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
-        SmartDashboard.putBoolean("FINISHED", isFinished());
         timer.stop();
         timer.reset();
         s_Swerve.drive(
@@ -54,14 +52,9 @@ public class LimelightAlignAuto extends Command {
 
     @Override
     public boolean isFinished(){
-        if(LimelightHelpers.getTA("limelight") > 22){
+        if(timer.get() > 1){
             return true;
         }
-        else if(timer.get() > 4){
-            return true;
-        }
-        else{
-            return false;
-        }
+        return false;
     }
 }

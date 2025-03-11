@@ -2,6 +2,7 @@ package frc.robot.commands.defaultcommands;
 
 import frc.robot.Constants;
 import frc.robot.subsystems.Swerve;
+import frc.robot.util.LimelightHelpers;
 import frc.robot.RobotContainer;
 
 import java.util.function.BooleanSupplier;
@@ -19,11 +20,11 @@ public class DefaultSwerve extends Command {
     private DoubleSupplier translationSup;
     private DoubleSupplier strafeSup;
     private DoubleSupplier rotationSup;
-    private BooleanSupplier robotCentricSup, setToZero1, setToZero2, limelightAlign;
+    private BooleanSupplier robotCentricSup, setToZero1, setToZero2, limelightAlignL, limelightAlignR;
     private boolean limelight, elevUp;
     private boolean resetAlready;
 
-    public DefaultSwerve(Swerve s_Swerve, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier rotationSup, BooleanSupplier robotCentricSup, BooleanSupplier setToZeroOne, BooleanSupplier setToZeroTwo, BooleanSupplier limlight, boolean lSomething) {
+    public DefaultSwerve(Swerve s_Swerve, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier rotationSup, BooleanSupplier robotCentricSup, BooleanSupplier setToZeroOne, BooleanSupplier setToZeroTwo, BooleanSupplier limlightL, BooleanSupplier limlightR, boolean lSomething) {
         this.s_Swerve = s_Swerve;
         addRequirements(s_Swerve);
 
@@ -34,7 +35,8 @@ public class DefaultSwerve extends Command {
 
         setToZero1 = setToZeroOne;
         setToZero2 = setToZeroTwo;
-        limelightAlign = limlight;
+        limelightAlignL = limlightL;
+        limelightAlignR = limlightR;
 
         elevUp = lSomething;
     }
@@ -75,7 +77,7 @@ public class DefaultSwerve extends Command {
         //double rotationVal = MathUtil.applyDeadband(rotationSup.getAsDouble(), Constants.stickDeadband);
         
             /* Drive */
-        if(!resetAlready && !limelightAlign.getAsBoolean()){
+        if(!resetAlready && !limelightAlignL.getAsBoolean() && !limelightAlignR.getAsBoolean()){
         s_Swerve.drive(
             new Translation2d(translationVal, strafeVal).times(Constants.Swerve.maxSpeed), 
             rotationVal * Constants.Swerve.maxAngularVelocity, 
@@ -84,11 +86,17 @@ public class DefaultSwerve extends Command {
         );
         } 
 
-        else if(limelightAlign.getAsBoolean() && !resetAlready){
+        else if((limelightAlignL.getAsBoolean() || limelightAlignR.getAsBoolean()) && !resetAlready){
+            // s_Swerve.drive(
+            //     new Translation2d(RobotContainer.limelight_aim_proportional(), strafeVal).times(Constants.Swerve.maxSpeed), 
+            //     RobotContainer.limelight_range_proportional() * Constants.Swerve.maxAngularVelocity, 
+            //     false , 
+            //     true
+            // );
             s_Swerve.drive(
-                new Translation2d(RobotContainer.limelight_aim_proportional(), strafeVal).times(Constants.Swerve.maxSpeed), 
-                RobotContainer.limelight_range_proportional() * Constants.Swerve.maxAngularVelocity, 
-                false , 
+                new Translation2d(translationVal, RobotContainer.limelight_aim_proportional()).times(Constants.Swerve.maxSpeed), 
+                rotationVal * Constants.Swerve.maxAngularVelocity, 
+                false, 
                 true
             );
         }
@@ -96,6 +104,17 @@ public class DefaultSwerve extends Command {
         if(setToZero1.getAsBoolean() && setToZero2.getAsBoolean()){
             s_Swerve.getEmRight();
             resetAlready = true; 
+        }
+        
+        
+        if(limelightAlignR.getAsBoolean()){
+            LimelightHelpers.setPipelineIndex("limelight", 1);
+            SmartDashboard.putNumber("pipelineIndex", LimelightHelpers.getCurrentPipelineIndex("limelight"));
+        }
+        
+        if(limelightAlignL.getAsBoolean()){
+            LimelightHelpers.setPipelineIndex("limelight", 0);
+            SmartDashboard.putNumber("pipelineIndex", LimelightHelpers.getCurrentPipelineIndex("limelight"));
         }
     
     }

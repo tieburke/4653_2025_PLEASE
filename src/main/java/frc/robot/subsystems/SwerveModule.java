@@ -125,7 +125,6 @@ public Rotation2d getAbsoluteAngle(){
 
 public void resetToAbsolute(){
     mAngleEncoder.setPosition(getAbsoluteAngle().getDegrees() - angleOffset.getDegrees());
-    SmartDashboard.putNumber("Reset val mod: " + moduleNumber, getAbsoluteAngle().getDegrees() - angleOffset.getDegrees());
     // mAngleEncoder.setPosition(0);
 }
 
@@ -133,8 +132,8 @@ public void configAngleMotor() {
     mAngleConfig = new SparkMaxConfig();
 
     //TODO: see if the secondary thing works
-    // mAngleConfig.smartCurrentLimit(Constants.Swerve.angleContinuousCurrentLimit);
-    // mAngleConfig.secondaryCurrentLimit(Constants.Swerve.anglePeakCurrentLimit);
+    //mAngleConfig.smartCurrentLimit(Constants.Swerve.angleContinuousCurrentLimit);
+    mAngleConfig.secondaryCurrentLimit(Constants.Swerve.anglePeakCurrentLimit);
     mAngleConfig.inverted(Constants.Swerve.angleMotorInvert);
 
     mAngleConfig.encoder.positionConversionFactor((1/Constants.Swerve.chosenModule.angleGearRatio) // We do 1 over the gear ratio because 1 rotation of the motor is < 1 rotation of the module
@@ -206,5 +205,9 @@ public SwerveModulePosition getPosition(){
     public double getAngleOffset(){
         return angleOffset.getDegrees();
     }
+
+    // public void updateAngleOffset(){
+    //     angleOffset = Rotation2d.fromDegrees(360 - getAbsoluteAngle().getDegrees());
+    // }
 
 }

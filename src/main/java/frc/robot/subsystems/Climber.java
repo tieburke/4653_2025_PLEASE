@@ -19,13 +19,12 @@ public class Climber extends SubsystemBase{
     
     private SparkMax climberMotor;
     private SparkMaxConfig mClimberConfig;
-    private SparkClosedLoopController climberController;
     private RelativeEncoder climberEncoder;
 
     public Climber(){
         climberMotor = new SparkMax(Constants.Climber.climberMotorID, MotorType.kBrushless);
-        climberController = climberMotor.getClosedLoopController();
         climberEncoder = climberMotor.getEncoder();
+        configClimber();
     }
 
     public void configClimber(){
@@ -34,11 +33,11 @@ public class Climber extends SubsystemBase{
         .pid(Constants.Climber.climberMotorKP, Constants.Climber.climberMotorKI, Constants.Climber.climberMotorKD);
 
         climberMotor.configure(mClimberConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        climberEncoder.setPosition(0);
     }
 
     public void setPosition(double position){
-        double targetPosition = position;
-        climberController.setReference(targetPosition, ControlType.kPosition, ClosedLoopSlot.kSlot1);
+        climberMotor.getClosedLoopController().setReference(position, ControlType.kPosition, ClosedLoopSlot.kSlot0);
     }
 
     public void climberUpManual(){
@@ -51,6 +50,10 @@ public class Climber extends SubsystemBase{
 
     public void climberStop(){
         climberMotor.set(0);
+    }
+
+    public void resetEncoder(){
+        climberEncoder.setPosition(0);
     }
 
     @Override

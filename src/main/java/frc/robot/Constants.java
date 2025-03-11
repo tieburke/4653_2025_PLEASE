@@ -96,7 +96,7 @@ public final class Constants {
             public static final int driveMotorID = 1;
             public static final int angleMotorID = 2;
             public static final int canCoderID = 20;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(0);
+            public static Rotation2d angleOffset = Rotation2d.fromDegrees(0);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -106,7 +106,7 @@ public final class Constants {
             public static final int driveMotorID = 5;
             public static final int angleMotorID = 6;
             public static final int canCoderID = 21;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(0);
+            public static Rotation2d angleOffset = Rotation2d.fromDegrees(0);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -116,7 +116,7 @@ public final class Constants {
             public static final int driveMotorID = 3;
             public static final int angleMotorID = 4;
             public static final int canCoderID = 22;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(0);
+            public static Rotation2d angleOffset = Rotation2d.fromDegrees(0);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -126,7 +126,7 @@ public final class Constants {
             public static final int driveMotorID = 8;
             public static final int angleMotorID = 7;
             public static final int canCoderID = 23;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(0);
+            public static Rotation2d angleOffset = Rotation2d.fromDegrees(0);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -135,17 +135,17 @@ public final class Constants {
     public static final class Elevator{
         public static final int winchMotorID = 9;
 
-        public static final double winchMotorKP = 0.03;
+        public static final double winchMotorKP = 0.15;
         public static final double winchMotorKI = 0;
         public static final double winchMotorKD = 0;
         
         public static final double positionL0 = 0;
         public static final double positionL1 = -50;
-        public static final double positionL2 = -50;
-        public static final double positionL3 = -50;
-        public static final double positionL4 = -420;
+        public static final double positionL2 = -42;
+        public static final double positionL3 = -186.5;
+        public static final double positionL4 = -435;
 
-        public static final double manualSpeed = 0.2;
+        public static final double manualSpeed = 0.4;
     }
 
     public static final class AlgaeIntake{
@@ -154,25 +154,24 @@ public final class Constants {
         public static final int rightIntakeID = 11;
         public static final int articulateIntakeID = 12;
 
-        public static final double articulateKP = 0.05
-        ;
+        public static final double articulateKP = 0.03;
         public static final double articulateKI = 0.0;
         public static final double articulateKD = 0.0;
 
-        public static final double horizontalPos = 2.8;
-        public static final double verticalPos = -0.05;
+        public static final double horizontalPos = -2.8;
+        public static final double verticalPos = 0.2;
 
-        public static final double manualSpeed = 0.2;
+        public static final double manualSpeed = 0.15;
     }
 
     public static final class Climber{
         public static final int climberMotorID = 13;
         
-        public static final double climberMotorKP = 0.3;
+        public static final double climberMotorKP = 0.05;
         public static final double climberMotorKI = 0;
         public static final double climberMotorKD = 0;
         
-        public static final int positionClimb = 1000;
+        public static final int positionClimb = 330;
 
         public static final double manualSpeed = 0.7;
     }

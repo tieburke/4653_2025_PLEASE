@@ -36,6 +36,7 @@ public class Elevator extends SubsystemBase{
         mWinchConfig = new SparkMaxConfig();
         mWinchConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
         .pid(Constants.Elevator.winchMotorKP, Constants.Elevator.winchMotorKI, Constants.Elevator.winchMotorKD);
+        
         winchMotor.configure(mWinchConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         winchEncoder.setPosition(0);
     }
@@ -60,10 +61,14 @@ public class Elevator extends SubsystemBase{
         return winchEncoder.getPosition();
     }
 
+    public double getOutput(){
+        return winchMotor.get();
+    }
+
     @Override
     public void periodic(){
         SmartDashboard.putNumber("Winch Encoder Value: ", winchEncoder.getPosition());
-        SmartDashboard.putBoolean("Limit Switch: ", limitSwitch.get());
+        SmartDashboard.putNumber("Winch speed: ", getOutput());
     }
 
 }

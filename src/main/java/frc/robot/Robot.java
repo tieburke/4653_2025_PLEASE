@@ -6,8 +6,14 @@ package frc.robot;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
+import edu.wpi.first.cscore.VideoSink;
+import frc.robot.commands.defaultcommands.DefaultClimber;
+import frc.robot.subsystems.Swerve;
 import edu.wpi.first.net.PortForwarder;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -19,6 +25,9 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  */
 public class Robot extends TimedRobot {
   private UsbCamera camera;
+  private UsbCamera camera2;
+  VideoSink server;
+  private boolean toggle = false;
 
   private Command m_autonomousCommand;
 
@@ -54,7 +63,10 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
 
-    CameraServer.startAutomaticCapture();
+    camera = CameraServer.startAutomaticCapture(0);
+    camera2 = CameraServer.startAutomaticCapture(1);
+    server = CameraServer.getServer();
+
     // try {
     //   Path trajectoryPath1 = Filesystem.getDeployDirectory().toPath().resolve(trajectory1JSON);
     //   trajectory1 = TrajectoryUtil.fromPathweaverJson(trajectoryPath1);
@@ -124,7 +136,18 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+      if(!DefaultClimber.cameraSwitch){
+        server.setSource(camera);
+        toggle = true;
+      }
+      else{
+        System.out.println("Setting camera");
+        server.setSource(camera2);
+        toggle = false;
+      }
+      SmartDashboard.putBoolean("cameraToggle: ", DefaultClimber.cameraSwitch);
+  }
 
   @Override
   public void testInit() {

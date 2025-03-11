@@ -14,7 +14,6 @@ public class DefaultAlgaeIntake extends Command{
     private AlgaeIntake aIntake;
     private BooleanSupplier horizontal, vertical, resetEncoder;
     private DoubleSupplier manualUpDown, aInOut;
-    private boolean position = false;
 
     public DefaultAlgaeIntake(BooleanSupplier horizontalPos, BooleanSupplier verticalPos, BooleanSupplier reset, DoubleSupplier aINOUT, DoubleSupplier manualDrive, AlgaeIntake algaeIntake){
         horizontal = horizontalPos;
@@ -35,13 +34,15 @@ public class DefaultAlgaeIntake extends Command{
     @Override
     public void execute(){
         if(horizontal.getAsBoolean()){
+            // Constants.AlgaeIntake.articulateKP = 0.04;
+            // aIntake.configAlgae();
             aIntake.setPosition(Constants.AlgaeIntake.horizontalPos);
-            position = true;
         }
 
         if(vertical.getAsBoolean()){
+            // Constants.AlgaeIntake.articulateKP = 0.08;
+            // aIntake.configAlgae();
             aIntake.setPosition(Constants.AlgaeIntake.verticalPos);
-            position = true;
         }
 
         if(resetEncoder.getAsBoolean()){
@@ -50,17 +51,12 @@ public class DefaultAlgaeIntake extends Command{
 
         if(manualUpDown.getAsDouble() > 0.1){
             aIntake.intakeUpManual();
-            position = false;
         }
 
         else if(manualUpDown.getAsDouble() < -0.1){
             aIntake.intakeDownManual();
-            position = false;
         }
 
-        else if ((!horizontal.getAsBoolean()) && (!vertical.getAsBoolean()) && (!position)){
-            aIntake.intakeStop();
-        }
 
         if(aInOut.getAsDouble() > 0.1){
             aIntake.algaeOut();

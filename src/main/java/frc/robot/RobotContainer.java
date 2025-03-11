@@ -3,16 +3,23 @@ package frc.robot;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.subsystems.*;
 import frc.robot.util.LimelightHelpers;
 import frc.robot.commands.defaultcommands.*;
+import frc.robot.commands.autocommands.*;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -21,6 +28,7 @@ import frc.robot.commands.defaultcommands.*;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
+
     /* Controllers */
     private final XboxController driver = new XboxController(0);
     private final XboxController operator = new XboxController(1);
@@ -44,27 +52,30 @@ public class RobotContainer {
     private boolean isFieldOriented = true;
 
     /* Driver Buttons */
-    //private final JoystickButton flipAxes = new JoystickButton(driver, XboxController.Button.kA.value);
+    private final JoystickButton flipAxes = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
     private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
     private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kX.value);
-    private final JoystickButton limelightAlign = new JoystickButton(driver, XboxController.Button.kA.value);
+    private final JoystickButton limelightAlignLeft = new JoystickButton(driver, XboxController.Button.kA.value);
+    private final JoystickButton limelightAlignRight = new JoystickButton(driver, XboxController.Button.kB.value);
     private final JoystickButton setToZero1 = new JoystickButton(driver, XboxController.Button.kStart.value);
     private final JoystickButton setToZero2 = new JoystickButton(driver, XboxController.Button.kBack.value);
 
     /* Operator Buttons */
-    private final JoystickButton elevl4Button = new JoystickButton(operator, XboxController.Button.kA.value);
-    private final JoystickButton elevl3Button = new JoystickButton(operator,XboxController.Button.kB.value);
+    private final JoystickButton elevl4Button = new JoystickButton(operator, XboxController.Button.kB.value);
+    private final JoystickButton elevl3Button = new JoystickButton(operator, XboxController.Button.kY.value);
     private final JoystickButton elevl2Button = new JoystickButton(operator, XboxController.Button.kX.value);
-    private final JoystickButton elevl1Button = new JoystickButton(operator, XboxController.Button.kStart.value);
+    private final JoystickButton elevl1Button = new JoystickButton(operator, XboxController.Button.kLeftStick.value);
     private final JoystickButton resetAIntakeButton = new JoystickButton(operator, XboxController.Button.kBack.value);
     private int elevUpDown = XboxController.Axis.kRightY.value;
-    private final JoystickButton climbButton = new JoystickButton(operator, XboxController.Button.kY.value);
+    private final JoystickButton climbButtonUp = new JoystickButton(operator, XboxController.Button.kA.value);
+    private final JoystickButton climbButtonDown = new JoystickButton(operator, XboxController.Button.kRightStick.value);
     private final JoystickButton aIntakeVert = new JoystickButton(operator, XboxController.Button.kLeftBumper.value);
     private final JoystickButton aIntakeHor = new JoystickButton(operator, XboxController.Button.kRightBumper.value);
     private int aIntakeUpDown = XboxController.Axis.kLeftX.value;
     private int aIntakeInOut = XboxController.Axis.kLeftY.value;
     private int rGL4 = XboxController.Axis.kRightTrigger.value;
     private int rGLOther = XboxController.Axis.kLeftTrigger.value;
+    private final JoystickButton cameraToggle = new JoystickButton(operator, XboxController.Button.kStart.value);
 
     /* Subsystems */
     private final Swerve swerve = new Swerve();
@@ -77,7 +88,12 @@ public class RobotContainer {
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {        
-        
+
+        // swerve.updateOffset();
+
+        NamedCommands.registerCommand("L4Auto", new L4Auto(elevator));
+        NamedCommands.registerCommand("RGL4Auto", new RGL4Auto(rainGutter));
+
         if(translationAxis < Math.abs(0.1)){
             translationAxis = 0;
         }
@@ -97,13 +113,14 @@ public class RobotContainer {
                     () -> true,
                     setToZero1,
                     setToZero2,
-                    limelightAlign,
+                    limelightAlignLeft,
+                    limelightAlignRight,
                     elevUp
                )
             );
 
         
-        // climber.setDefaultCommand(new DefaultClimber(climberUpButton, climberDownButton, climber));
+        climber.setDefaultCommand(new DefaultClimber(climbButtonUp, climbButtonDown, cameraToggle, climber));
         elevator.setDefaultCommand(new DefaultElevator(elevl4Button, elevl3Button, elevl2Button, elevl1Button, () -> operator.getRawAxis(elevUpDown), elevator));
         aIntake.setDefaultCommand(new DefaultAlgaeIntake(aIntakeHor, aIntakeVert, resetAIntakeButton, () -> operator.getRawAxis(aIntakeInOut), () -> operator.getRawAxis(aIntakeUpDown), aIntake));
         rainGutter.setDefaultCommand(new DefaultRainGutter(() -> operator.getRawAxis(rGL4), () -> operator.getRawAxis(rGLOther), rainGutter));
@@ -113,7 +130,8 @@ public class RobotContainer {
         //         swerve, 
         //         () -> -driver.getRawAxis(translationAxis), 
         //         () -> 0.0,//-driver.getRawAxis(strafeAxis), 
-        //         () -> getCameraRotation(), 
+        //         () -> getCameraRotation(),
+
         //         () -> true
         //         )
         // );
@@ -158,7 +176,7 @@ public class RobotContainer {
         // if it is too high, the robot will oscillate.
         // if it is too low, the robot will never reach its target
         // if the robot never turns in the correct direction, kP should be inverted.
-        double kP = -.01;
+        double kP = -.1;
     
         // tx ranges from (-hfov/2) to (hfov/2) in degrees. If your target is on the rightmost edge of 
         // your limelight 3 feed, tx should return roughly 31 degrees.
@@ -168,7 +186,7 @@ public class RobotContainer {
         targetingAngularVelocity *= Constants.Swerve.maxAngularVelocity;
     
         //invert since tx is positive when the target is to the right of the crosshair
-        targetingAngularVelocity *= -0.05;
+        targetingAngularVelocity *= 0.05;
     
         return targetingAngularVelocity;
     }
@@ -176,11 +194,11 @@ public class RobotContainer {
     // simple proportional ranging control with Limelight's "ty" value
     // this works best if your Limelight's mount height and target mount height are different.
     // if your limelight and target are mounted at the same or similar heights, use "ta" (area) for target ranging rather than "ty"
-    public static double limelight_range_proportional(){    
-        double kP = .01;
+    public static double limelight_range_proportional(){   
+        double kP = .05;
         double targetingForwardSpeed = LimelightHelpers.getTY("limelight") * kP;
         targetingForwardSpeed *= Math.PI;
-        targetingForwardSpeed *= -0.05;
+        targetingForwardSpeed *= 0.05;
         return targetingForwardSpeed;
     }
 
@@ -191,6 +209,28 @@ public class RobotContainer {
         //double initRoll = swerve.getRoll();
 
         chooser.setDefaultOption("Nothing", null);
+
+        chooser.addOption(
+            "Limelight1Piece",
+            new SequentialCommandGroup(
+                new ParallelCommandGroup(
+                new LPartiallyUp(elevator),
+                new AIntakeUpAuto(aIntake)
+                ),
+                //new StupidDriveForwardAuto(swerve),
+                new LimelightAlignAuto(swerve),
+                new L4Auto(elevator),
+                new RGL4Auto(rainGutter),
+                new L0Auto(elevator)
+            )
+        );
+
+        chooser.addOption("StupidDriveOut", 
+        new SequentialCommandGroup(
+            new StupidDriveForwardAuto(swerve)
+        ));
+
+        //chooser.addOption("onePiece", getPathPlannerAuto());
         // chooser.addOption("Test Auto", new testAuto(swerve));
         SmartDashboard.putData(chooser);
     }
@@ -202,6 +242,10 @@ public class RobotContainer {
      */
     public Command getAutonomousCommand() {
         return chooser.getSelected();
+    }
+
+    public Command getPathPlannerAuto(){
+        return new PathPlannerAuto("OnePiece");
     }
 
 }
