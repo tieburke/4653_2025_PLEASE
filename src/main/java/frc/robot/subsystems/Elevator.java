@@ -41,6 +41,16 @@ public class Elevator extends SubsystemBase{
         winchEncoder.setPosition(0);
     }
 
+    public void configElevatorUp(){
+        // winchEncoder.
+    }
+
+    public void configElevatorDown(){
+        mWinchConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+        .pid(Constants.Elevator.winchMotorKP, Constants.Elevator.winchMotorKI, Constants.Elevator.winchMotorKD); 
+        winchMotor.configure(mWinchConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    }
+
     public void setPosition(double position){
         winchMotor.getClosedLoopController().setReference(position, ControlType.kPosition, ClosedLoopSlot.kSlot0);
     }

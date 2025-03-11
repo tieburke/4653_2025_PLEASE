@@ -39,6 +39,7 @@ public class DefaultElevator extends Command{
         }
 
         if(L1.getAsBoolean()){
+            elevator.configElevatorUp();
             elevator.setPosition(Constants.Elevator.positionL1);
             manualControl = false;
         }
@@ -54,6 +55,7 @@ public class DefaultElevator extends Command{
         }
 
         if(L4.getAsBoolean()){
+            elevator.configElevatorUp();
             elevator.setPosition(Constants.Elevator.positionL4);
             manualControl = false;
         }
@@ -73,6 +75,7 @@ public class DefaultElevator extends Command{
         }
 
         if (!RobotContainer.elevUp && !manualControl){
+            elevator.configElevatorDown();
             elevator.setPosition(Constants.Elevator.positionL0);
         }
     }

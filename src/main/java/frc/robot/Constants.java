@@ -135,17 +135,17 @@ public final class Constants {
     public static final class Elevator{
         public static final int winchMotorID = 9;
 
-        public static final double winchMotorKP = 0.15;
+        public static final double winchMotorKP = 0.05;
         public static final double winchMotorKI = 0;
         public static final double winchMotorKD = 0;
         
         public static final double positionL0 = 0;
-        public static final double positionL1 = -50;
-        public static final double positionL2 = -42;
-        public static final double positionL3 = -186.5;
-        public static final double positionL4 = -435;
+        public static final double positionL1 = -50*(9.0/64);
+        public static final double positionL2 = -42*(9.0/64);
+        public static final double positionL3 = -186.5*(9.0/64);
+        public static final double positionL4 = -435*(9.0/64);
 
-        public static final double manualSpeed = 0.4;
+        public static final double manualSpeed = 0.1;
     }
 
     public static final class AlgaeIntake{
