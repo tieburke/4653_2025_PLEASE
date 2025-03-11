@@ -176,7 +176,7 @@ public class RobotContainer {
         // if it is too high, the robot will oscillate.
         // if it is too low, the robot will never reach its target
         // if the robot never turns in the correct direction, kP should be inverted.
-        double kP = -.1;
+        double kP = -.01;
     
         // tx ranges from (-hfov/2) to (hfov/2) in degrees. If your target is on the rightmost edge of 
         // your limelight 3 feed, tx should return roughly 31 degrees.
@@ -186,7 +186,7 @@ public class RobotContainer {
         targetingAngularVelocity *= Constants.Swerve.maxAngularVelocity;
     
         //invert since tx is positive when the target is to the right of the crosshair
-        targetingAngularVelocity *= 0.05;
+        targetingAngularVelocity *= -0.05;
     
         return targetingAngularVelocity;
     }
@@ -194,8 +194,8 @@ public class RobotContainer {
     // simple proportional ranging control with Limelight's "ty" value
     // this works best if your Limelight's mount height and target mount height are different.
     // if your limelight and target are mounted at the same or similar heights, use "ta" (area) for target ranging rather than "ty"
-    public static double limelight_range_proportional(){   
-        double kP = .05;
+    public static double limelight_range_proportional(){    
+        double kP = .01;
         double targetingForwardSpeed = LimelightHelpers.getTY("limelight") * kP;
         targetingForwardSpeed *= Math.PI;
         targetingForwardSpeed *= 0.05;
