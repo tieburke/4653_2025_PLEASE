@@ -35,20 +35,10 @@ public class Elevator extends SubsystemBase{
     public void configElevator(){
         mWinchConfig = new SparkMaxConfig();
         mWinchConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-        .pid(Constants.Elevator.winchMotorKP, Constants.Elevator.winchMotorKI, Constants.Elevator.winchMotorKD);
+        .pidf(Constants.Elevator.winchMotorKP, Constants.Elevator.winchMotorKI, Constants.Elevator.winchMotorKD, Constants.Elevator.winchMotorKFF);
         
         winchMotor.configure(mWinchConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         winchEncoder.setPosition(0);
-    }
-
-    public void configElevatorUp(){
-        // winchEncoder.
-    }
-
-    public void configElevatorDown(){
-        mWinchConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-        .pid(Constants.Elevator.winchMotorKP, Constants.Elevator.winchMotorKI, Constants.Elevator.winchMotorKD); 
-        winchMotor.configure(mWinchConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
     public void setPosition(double position){
