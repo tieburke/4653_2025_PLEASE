@@ -137,7 +137,8 @@ public final class Constants {
 
         public static final double winchMotorKP = 0.05;
         public static final double winchMotorKI = 0;
-        public static final double winchMotorKD = 0;
+        public static final double winchMotorKD = 0.01;
+        public static final double winchMotorKFF = -0.01;
         
         public static final double positionL0 = 0;
         public static final double positionL1 = -50*(9.0/64);
