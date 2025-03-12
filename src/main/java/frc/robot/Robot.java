@@ -44,6 +44,34 @@ public class Robot extends TimedRobot {
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
    */
+
+// PWM port 2
+// Must be a PWM header, not MXP or DIO
+AddressableLED m_led = new AddressableLED(2);
+AddressableLEd m_led1 = new AddressableLED(3);
+
+// Reuse buffer
+// Default to a length of 60, start empty output
+// Length is expensive to set, so only set it once, then just update data
+AddressableLEDBuffer m_ledBuffer = new AddressableLEDBuffer(60);
+AddressableLEDBuffer m_ledBuffer1 = new AddressableLEDBuffer(60);
+
+m_led.setLength(m_ledBuffer.getLength());
+m_led1.setLength(m_ledBuffer1.getLength());
+
+LEDPattern base = LEDPattern.discontinuousGradient(Color.kRed, Color.kBlue);
+LEDPattern pattern = base.scrollAtRelativeSpeed(Percent.per(Second).of(25));
+
+// Apply the LED pattern to the data buffer
+pattern.applyTo(m_ledBuffer);
+pattern.applyTo(m_ledBuffer1);
+
+// Set the data
+m_led.setData(m_ledBuffer);
+m_led1.setData(m_ledBuffer1);
+m_led.start();
+m_led1.start();
+	
   @Override
   public void robotInit() {
     //Initialize USB camera
