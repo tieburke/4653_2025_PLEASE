@@ -56,6 +56,9 @@ AddressableLEd m_led1 = new AddressableLED(3);
 AddressableLEDBuffer m_ledBuffer = new AddressableLEDBuffer(60);
 AddressableLEDBuffer m_ledBuffer1 = new AddressableLEDBuffer(60);
 
+  @Override
+  public void robotInit() {
+
 m_led.setLength(m_ledBuffer.getLength());
 m_led1.setLength(m_ledBuffer1.getLength());
 
@@ -71,11 +74,8 @@ m_led.setData(m_ledBuffer);
 m_led1.setData(m_ledBuffer1);
 m_led.start();
 m_led1.start();
-	
-  @Override
-  public void robotInit() {
+	  
     //Initialize USB camera
-    
     for(int port = 5800; port <= 5805; port++){
       PortForwarder.add(port, "limelight.local", port);
     }
