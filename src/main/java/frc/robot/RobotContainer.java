@@ -251,6 +251,10 @@ public class RobotContainer {
     }
 
     public Command getPathPlannerAuto(){
+        return AutoBuilder.buildAuto("Test");
+    }
+
+    public Command getPathPlannerPath(){
         try{
         // Load the path you want to follow using its name in the GUI
         PathPlannerPath path = PathPlannerPath.fromPathFile("Example Path");

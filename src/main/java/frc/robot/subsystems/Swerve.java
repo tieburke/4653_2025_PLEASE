@@ -74,8 +74,8 @@ public class Swerve extends SubsystemBase {
                 this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
                 (speeds, feedforwards) -> driveRobotRelativePP(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
                 new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
-                        new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
-                        new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
+                        new PIDConstants(.1, 0.0, 0.0), // Translation PID constants
+                        new PIDConstants(.1, 0.0, 0.0) // Rotation PID constants
                 ),
                 config, // The robot configuration
                 () -> {
@@ -98,18 +98,31 @@ public class Swerve extends SubsystemBase {
       }
   
       // Set up custom logging to add the current path to a field 2d widget
-      PathPlannerLogging.setLogActivePathCallback((poses) -> field.getObject("path").setPoses(poses));
+    //   PathPlannerLogging.setLogActivePathCallback((poses) -> field.getObject("path").setPoses(poses));
   
-      SmartDashboard.putData("Field", field);
+    //   SmartDashboard.putData("Field", field);
     }
 
     /*PathPlanner Commands*/
-    public void driveRobotRelativePP(ChassisSpeeds robotRelativeSpeeds) {
-        ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, 0.02);
-    
-        SwerveModuleState[] targetStates = kinematics.toSwerveModuleStates(targetSpeeds);
-        setStatesPP(targetStates);
+    public void driveRobotRelativePP(ChassisSpeeds rRSpeeds){
+        
+        // SwerveModuleState[] swerveModuleStates = Constants.Swerve.swerveKinematics.toSwerveModuleStates(new ChassisSpeeds(rRSpeeds.vxMetersPerSecond, -rRSpeeds.vyMetersPerSecond, rRSpeeds.omegaRadiansPerSecond));
+
+        // for(SwerveModule mod : mSwerveMods){
+        //     mod.setDesiredState(swerveModuleStates[mod.moduleNumber], true);
+        // }
+
+        drive(new Translation2d(-rRSpeeds.vxMetersPerSecond, -rRSpeeds.vyMetersPerSecond), rRSpeeds.omegaRadiansPerSecond, false, true);
+        // SmartDashboard.putNumber("targetX", rRSpeeds.vxMetersPerSecond);
+        // SmartDashboard.putNumber("targetY", rRSpeeds.vyMetersPerSecond);
+        // SmartDashboard.putNumber("targetR", rRSpeeds.omegaRadiansPerSecond);
     }
+    // public void driveRobotRelativePP(ChassisSpeeds robotRelativeSpeeds) {*(360.0/(2*Math.PI))
+    //     ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, 0.02);
+    
+    //     SwerveModuleState[] targetStates = kinematics.toSwerveModuleStates(targetSpeeds);
+    //     setStatesPP(targetStates);
+    // }
 
     public void setStatesPP(SwerveModuleState[] targetStates) {
         SwerveDriveKinematics.desaturateWheelSpeeds(targetStates, Constants.Swerve.maxSpeed);
@@ -290,11 +303,15 @@ public class Swerve extends SubsystemBase {
     @Override
     public void periodic(){
         swerveOdometry.update(getYaw(), getModulePositions()); 
-
+        
+        SmartDashboard.putNumber("XPose", swerveOdometry.getPoseMeters().getX());
+        SmartDashboard.putNumber("Ypose", swerveOdometry.getPoseMeters().getY());
+        
         SmartDashboard.putNumber("yaw: ", getYaw().getDegrees());
 
         for(SwerveModule mod : mSwerveMods){
-            SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Cancoder", mod.getCanCoder().getDegrees());            SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);    
+            SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Cancoder", mod.getCanCoder().getDegrees());            
+            SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);    
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Angle", mod.getState().angle.getDegrees());       
 
         }
