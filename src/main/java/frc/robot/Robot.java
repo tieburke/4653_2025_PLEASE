@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.InchesPerSecond;
+import static edu.wpi.first.units.Units.Meters;
+
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.cscore.VideoSink;
@@ -12,8 +15,13 @@ import frc.robot.subsystems.Swerve;
 import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.AddressableLED;
+import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.LEDPattern.GradientType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -47,33 +55,33 @@ public class Robot extends TimedRobot {
 
 // PWM port 2
 // Must be a PWM header, not MXP or DIO
-AddressableLED m_led = new AddressableLED(2);
-AddressableLEd m_led1 = new AddressableLED(3);
+AddressableLED m_led = new AddressableLED(9);
+//AddressableLED m_led1 = new AddressableLED(3);
 
 // Reuse buffer
 // Default to a length of 60, start empty output
 // Length is expensive to set, so only set it once, then just update data
-AddressableLEDBuffer m_ledBuffer = new AddressableLEDBuffer(60);
-AddressableLEDBuffer m_ledBuffer1 = new AddressableLEDBuffer(60);
+AddressableLEDBuffer m_ledBuffer = new AddressableLEDBuffer(310-199);
+// AddressableLEDBuffer m_ledBuffer1 = new AddressableLEDBuffer(60);
 
   @Override
   public void robotInit() {
 
 m_led.setLength(m_ledBuffer.getLength());
-m_led1.setLength(m_ledBuffer1.getLength());
+// m_led1.setLength(m_ledBuffer1.getLength());
 
-LEDPattern base = LEDPattern.discontinuousGradient(Color.kRed, Color.kBlue);
-LEDPattern pattern = base.scrollAtRelativeSpeed(Percent.per(Second).of(25));
-
+//LEDPattern base = LEDPattern.gradient(GradientType.kDiscontinuous, Color.kDarkGreen, Color.kWhite);
+//LEDPattern pattern = base.scrollAtAbsoluteSpeed(InchesPerSecond.of(10), Meters.of(1.0/60));
+LEDPattern pattern = LEDPattern.solid(Color.kDarkGreen);
 // Apply the LED pattern to the data buffer
 pattern.applyTo(m_ledBuffer);
-pattern.applyTo(m_ledBuffer1);
+// pattern.applyTo(m_ledBuffer1);
 
 // Set the data
 m_led.setData(m_ledBuffer);
-m_led1.setData(m_ledBuffer1);
+// m_led1.setData(m_ledBuffer1);
 m_led.start();
-m_led1.start();
+// m_led1.start();
 	  
     //Initialize USB camera
     for(int port = 5800; port <= 5805; port++){

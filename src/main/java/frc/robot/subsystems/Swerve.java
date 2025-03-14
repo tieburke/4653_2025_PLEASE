@@ -8,10 +8,11 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.commands.FollowPathCommand;
-import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.util.PathPlannerLogging;
+import com.pathplanner.lib.commands.FollowPathCommand;
+import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.studica.frc.AHRS;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -20,6 +21,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -27,8 +29,10 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Swerve extends SubsystemBase {
     public SwerveDriveOdometry swerveOdometry;
+    private final SwerveDriveKinematics kinematics;
     public SwerveModule[] mSwerveMods;
     public AHRS gyro;
+    private Field2d field = new Field2d();
 
     public Swerve() {
         gyro = new AHRS(AHRS.NavXComType.kMXP_SPI, AHRS.NavXUpdateRate.k200Hz); //TODO: check if im allowed to do this
@@ -42,6 +46,13 @@ public class Swerve extends SubsystemBase {
             new SwerveModule(3, Constants.Swerve.Mod3.constants)
         };
 
+        kinematics = new SwerveDriveKinematics(
+            Constants.Swerve.flModuleOffset, 
+            Constants.Swerve.frModuleOffset, 
+            Constants.Swerve.blModuleOffset, 
+            Constants.Swerve.brModuleOffset
+          );
+
         /* By pausing init for a second before setting module offsets, we avoid a bug with inverting motors.
          * See https://github.com/Team364/BaseFalconSwerve/issues/8 for more info.
          */
@@ -50,14 +61,70 @@ public class Swerve extends SubsystemBase {
 
         swerveOdometry = new SwerveDriveOdometry(Constants.Swerve.swerveKinematics, getYaw(), getModulePositions());
 
-        RobotConfig config;
+        /*PathPlanner stuff*/
+
         try{
-        config = RobotConfig.fromGUISettings();
-        } catch (Exception e) {
-        // Handle exception as needed
-        e.printStackTrace();
+            RobotConfig config = RobotConfig.fromGUISettings();
+      
+    
+        // Configure AutoBuilder last
+        AutoBuilder.configure(
+                this::getPose, // Robot pose supplier
+                this::resetOdometryPP, // Method to reset odometry (will be called if your auto has a starting pose)
+                this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+                (speeds, feedforwards) -> driveRobotRelativePP(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
+                new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
+                        new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
+                        new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
+                ),
+                config, // The robot configuration
+                () -> {
+                // Boolean supplier that controls when the path will be mirrored for the red alliance
+                // This will flip the path being followed to the red side of the field.
+                // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+    
+                var alliance = DriverStation.getAlliance();
+                if (alliance.isPresent()) {
+                    return alliance.get() == DriverStation.Alliance.Red;
+                }
+                return false;
+                },
+                this // Reference to this subsystem to set requirements
+        );
+    }
+    
+        catch(Exception e){
+        DriverStation.reportError("Failed to load PathPlanner config and configure AutoBuilder", e.getStackTrace());
+      }
+  
+      // Set up custom logging to add the current path to a field 2d widget
+      PathPlannerLogging.setLogActivePathCallback((poses) -> field.getObject("path").setPoses(poses));
+  
+      SmartDashboard.putData("Field", field);
+    }
+
+    /*PathPlanner Commands*/
+    public void driveRobotRelativePP(ChassisSpeeds robotRelativeSpeeds) {
+        ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, 0.02);
+    
+        SwerveModuleState[] targetStates = kinematics.toSwerveModuleStates(targetSpeeds);
+        setStatesPP(targetStates);
+    }
+
+    public void setStatesPP(SwerveModuleState[] targetStates) {
+        SwerveDriveKinematics.desaturateWheelSpeeds(targetStates, Constants.Swerve.maxSpeed);
+
+        for (int i = 0; i < mSwerveMods.length; i++) {
+          mSwerveMods[i].setTargetStatePP(targetStates[i]);
         }
     }
+
+    public void resetOdometryPP(Pose2d pose) {
+        System.out.println(pose);
+        swerveOdometry.resetPosition(getYaw(), getModulePositions(), new Pose2d());
+    }
+
+    /*Other methods*/
 
     public void driveSlow(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop, double maxSpeed) {
         SwerveModuleState[] swerveModuleStates =
@@ -138,40 +205,18 @@ public class Swerve extends SubsystemBase {
         return swerveOdometry.getPoseMeters();
     }
 
-    public void resetOdometry() {
+    public void resetOdometry(){
         swerveOdometry.resetPosition(getYaw(), getModulePositions(), new Pose2d());
     }
-
 
     public void setOdometry(Pose2d pose) {
         swerveOdometry.resetPosition(getYaw(), getModulePositions(), pose);
     }
 
+    public ChassisSpeeds getRobotRelativeSpeeds(){
+        return kinematics.toChassisSpeeds(getModuleStates());
+    }
   
-    // Assuming this method is part of a drivetrain subsystem that provides the necessary methods
-    // THIS IS IMPORTANT FOR AUTOS:
-    // public Command followPathCommand(PathPlannerPath path) {
-    //     var thetaController =
-    //         new ProfiledPIDController(
-    //             8, 0, 0, Constants.AutoConstants.kThetaControllerConstraints);
-    //     thetaController.enableContinuousInput(-Math.PI, Math.PI);
-
-    //     PIDController pid = new PIDController(thetaController.getP(), 0, 0, thetaController.getPeriod());
-        
-    //     return AutoBuilder.followPath(path);
-    //     // return new PPSwerveControllerCommand(
-    //     //     traj, 
-    //     //     this::getPose, // Pose supplier
-    //     //     Constants.Swerve.swerveKinematics, // SwerveDriveKinematics
-    //     //     new PIDController(20, 0, 0), // X controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
-    //     //     new PIDController(20, 0, 0), // Y controller (usually the same values as X controller)
-    //     //     pid, // Rotation controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
-    //     //     this::setModuleStates, // Module states consumer
-    //     //     true, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
-    //     //     this // Requires this drive subsystem
-    //     // );
-    // }
-
     public SwerveModuleState[] getModuleStates(){
         SwerveModuleState[] states = new SwerveModuleState[4];
         for(SwerveModule mod : mSwerveMods){
@@ -239,39 +284,6 @@ public class Swerve extends SubsystemBase {
     //     for(SwerveModule mod: mSwerveMods){
     //         mod.updateAngleOffset();
     //         SmartDashboard.putNumber("angle offset mod" + mod.moduleNumber, mod.getAngleOffset());
-    //     }
-    // }
-
-    //     public Command followPathCommand(String pathName) {
-    //     try{
-    //         PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
-
-    //         return new FollowPathCommand(
-    //                 path,
-    //                 this::getPose, // Robot pose supplier
-    //                 this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-    //                 this::drive, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds, AND feedforwards
-    //                 new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
-    //                         new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
-    //                         new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
-    //                 ),
-    //                 Constants.robotConfig, // The robot configuration
-    //                 () -> {
-    //                 // Boolean supplier that controls when the path will be mirrored for the red alliance
-    //                 // This will flip the path being followed to the red side of the field.
-    //                 // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
-
-    //                 var alliance = DriverStation.getAlliance();
-    //                 if (alliance.isPresent()) {
-    //                     return alliance.get() == DriverStation.Alliance.Red;
-    //                 }
-    //                 return false;
-    //                 },
-    //                 this // Reference to this subsystem to set requirements
-    //         );
-    //     } catch (Exception e) {
-    //         DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
-    //         return Commands.none();
     //     }
     // }
 

@@ -10,9 +10,17 @@ import frc.lib.util.COTSNeoSwerveConstants;
 import frc.lib.util.SwerveModuleConstants;
 
 public final class Constants {
+
     public static final double stickDeadband = 0.1;
 
     public static final class Swerve {
+
+        public static final Translation2d flModuleOffset = new Translation2d(0.279, 0.279);
+        public static final Translation2d frModuleOffset = new Translation2d(0.279, -0.279);
+        public static final Translation2d blModuleOffset = new Translation2d(-0.279, 0.279);
+        public static final Translation2d brModuleOffset = new Translation2d(-0.279, -0.279);
+
+
         public static final boolean invertGyro = true; // Always ensure Gyro is CCW+ CW-
 
         public static final COTSNeoSwerveConstants chosenModule =  //TODO: This must be tuned to specific robot
@@ -135,16 +143,22 @@ public final class Constants {
     public static final class Elevator{
         public static final int winchMotorID = 9;
 
-        public static final double winchMotorKP = 0.05;
+        public static final double winchMotorKP = 0.01;
         public static final double winchMotorKI = 0;
-        public static final double winchMotorKD = 0.01;
-        public static final double winchMotorKFF = -0.01;
-        
+        public static final double winchMotorKD = 0.3;
+        public static final double winchMotorFF = 0.002;
+
+        // public static final double winchMotorVKP = 0.05;
+        // public static final double winchMotorVKI = 0;
+        // public static final double winchMotorVKD = 0.1;
+
+        public static final double L0Velo = 0.1;
+
         public static final double positionL0 = 0;
-        public static final double positionL1 = -50*(9.0/64);
-        public static final double positionL2 = -42*(9.0/64);
-        public static final double positionL3 = -186.5*(9.0/64);
-        public static final double positionL4 = -435*(9.0/64);
+        public static final double positionL1 = 50*(9.0/64);
+        public static final double positionL2 = 42*(9.0/64);
+        public static final double positionL3 = 186.5*(9.0/64);
+        public static final double positionL4 = 435*(9.0/64);
 
         public static final double manualSpeed = 0.1;
     }
@@ -159,8 +173,8 @@ public final class Constants {
         public static final double articulateKI = 0.0;
         public static final double articulateKD = 0.0;
 
-        public static final double horizontalPos = -2.8;
-        public static final double verticalPos = 0.2;
+        public static final double horizontalPos = -21.8;
+        public static final double verticalPos = 0;
 
         public static final double manualSpeed = 0.15;
     }

@@ -150,7 +150,7 @@ public void configAngleMotor() {
 public void configDriveMotor(){       
     mDriveConfig = new SparkMaxConfig();
 
-    // mDriveConfig.smartCurrentLimit(Constants.Swerve.driveContinuousCurrentLimit);
+    mDriveConfig.smartCurrentLimit(Constants.Swerve.driveContinuousCurrentLimit);
     // mDriveConfig.secondaryCurrentLimit(Constants.Swerve.drivePeakCurrentLimit);
     mDriveConfig.inverted(Constants.Swerve.driveMotorInvert);
 
@@ -209,5 +209,9 @@ public SwerveModulePosition getPosition(){
     // public void updateAngleOffset(){
     //     angleOffset = Rotation2d.fromDegrees(360 - getAbsoluteAngle().getDegrees());
     // }
+
+    public void setTargetStatePP(SwerveModuleState targetState){
+        setDesiredState(targetState, true);
+    }
 
 }
