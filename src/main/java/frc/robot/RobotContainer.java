@@ -3,6 +3,8 @@ package frc.robot;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
+import javax.sql.rowset.JoinRowSet;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
@@ -56,6 +58,7 @@ public class RobotContainer {
     private boolean isFieldOriented = true;
 
     /* Driver Buttons */
+    private final JoystickButton resetPose = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
     private final JoystickButton flipAxes = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
     private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
     private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kX.value);
@@ -119,7 +122,8 @@ public class RobotContainer {
                     setToZero2,
                     limelightAlignLeft,
                     limelightAlignRight,
-                    elevUp
+                    elevUp,
+                    resetPose
                )
             );
 

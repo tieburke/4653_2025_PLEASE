@@ -26,6 +26,7 @@ import com.reduxrobotics.sensors.canandmag.Canandmag;
 
 
 public class SwerveModule {
+
 public int moduleNumber;
 private Rotation2d angleOffset;
 private Rotation2d lastAngle = Rotation2d.fromDegrees(0);
@@ -52,19 +53,8 @@ public SwerveModule(int moduleNumber, SwerveModuleConstants moduleConstants){
     this.moduleNumber = moduleNumber;
     this.angleOffset = moduleConstants.angleOffset;
 
-    //Works for drivetrain using canandmag encoders for modules 0, 1, and 2
-
-    // if(moduleNumber < 3) {
-         /* Canandmag */
-        canandmag = new Canandmag(moduleConstants.cancoderID);
-    // }
-    
-    // else {
-        /* Absolute Encoder */
-        // absoluteEncoder = new CANcoder(moduleConstants.cancoderID);
-        // configAngleEncoder();
-    // }
-    
+    canandmag = new Canandmag(moduleConstants.cancoderID);
+        
     /* Angle Motor */
     mAngleMotor = new SparkMax(moduleConstants.angleMotorID, MotorType.kBrushless);
     mAngleEncoder = mAngleMotor.getEncoder();
@@ -85,6 +75,12 @@ public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop){
     setSpeed(desiredState, isOpenLoop);
     simSpeedCache = desiredState.speedMetersPerSecond;
     simAngleCache = desiredState.angle;
+
+    System.out.println("setDesiredState: " + desiredState.speedMetersPerSecond);
+//     System.out.println("setDesiredState: " + 
+//     "vX: " + kinematics.toChassisSpeeds(desiredState).vxMetersPerSecond + 
+//     "vY: " + kinematics.toChassisSpeeds(desiredState).vyMetersPerSecond + 
+//     "Rad/s: " + kinematics.toChassisSpeeds(desiredState).omegaRadiansPerSecond);
 }
 
 private void setSpeed(SwerveModuleState desiredState, boolean isOpenLoop){
@@ -154,8 +150,7 @@ public void configDriveMotor(){
     // mDriveConfig.secondaryCurrentLimit(Constants.Swerve.drivePeakCurrentLimit);
     mDriveConfig.inverted(Constants.Swerve.driveMotorInvert);
 
-    mDriveConfig.encoder.positionConversionFactor((1/Constants.Swerve.chosenModule.driveGearRatio) // We do 1 over the gear ratio because 1 rotation of the motor is < 1 rotation of the module
-            * 360); // 1/360 rotations is 1 degree, 1 rotation is 360 degrees.
+    mDriveConfig.encoder.velocityConversionFactor(((Constants.Swerve.driveGearRatio * Constants.Swerve.wheelCircumference * (0.03720518452))/60.0));
     resetToAbsolute();
 
     mDriveConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
@@ -212,6 +207,7 @@ public SwerveModulePosition getPosition(){
 
     public void setTargetStatePP(SwerveModuleState targetState){
         setDesiredState(targetState, true);
+        System.out.println("setTargetStatePP: " + targetState.speedMetersPerSecond);
     }
 
 }

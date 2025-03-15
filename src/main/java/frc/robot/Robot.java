@@ -53,16 +53,16 @@ public class Robot extends TimedRobot {
    * initialization code.
    */
 
-// PWM port 2
+// PWM port 
 // Must be a PWM header, not MXP or DIO
 AddressableLED m_led = new AddressableLED(9);
-//AddressableLED m_led1 = new AddressableLED(3);
+// AddressableLED m_led1 = new AddressableLED(8);
 
 // Reuse buffer
 // Default to a length of 60, start empty output
 // Length is expensive to set, so only set it once, then just update data
 AddressableLEDBuffer m_ledBuffer = new AddressableLEDBuffer(310-199);
-// AddressableLEDBuffer m_ledBuffer1 = new AddressableLEDBuffer(60);
+// AddressableLEDBuffer m_ledBuffer1 = new AddressableLEDBuffer(150);
 
   @Override
   public void robotInit() {
@@ -178,7 +178,6 @@ m_led.start();
         toggle = true;
       }
       else{
-        System.out.println("Setting camera");
         server.setSource(camera2);
         toggle = false;
       }

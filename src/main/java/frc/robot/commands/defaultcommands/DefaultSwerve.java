@@ -20,11 +20,15 @@ public class DefaultSwerve extends Command {
     private DoubleSupplier translationSup;
     private DoubleSupplier strafeSup;
     private DoubleSupplier rotationSup;
-    private BooleanSupplier robotCentricSup, setToZero1, setToZero2, limelightAlignL, limelightAlignR;
+    private BooleanSupplier resetOdometry, robotCentricSup, setToZero1, setToZero2, limelightAlignL, limelightAlignR;
     private boolean limelight, elevUp;
     private boolean resetAlready;
 
-    public DefaultSwerve(Swerve s_Swerve, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier rotationSup, BooleanSupplier robotCentricSup, BooleanSupplier setToZeroOne, BooleanSupplier setToZeroTwo, BooleanSupplier limlightL, BooleanSupplier limlightR, boolean lSomething) {
+    public DefaultSwerve(Swerve s_Swerve, DoubleSupplier translationSup, DoubleSupplier strafeSup, 
+    DoubleSupplier rotationSup, BooleanSupplier robotCentricSup, BooleanSupplier setToZeroOne, 
+    BooleanSupplier setToZeroTwo, BooleanSupplier limlightL, BooleanSupplier limlightR, 
+    boolean lSomething, BooleanSupplier resetOdo) {
+
         this.s_Swerve = s_Swerve;
         addRequirements(s_Swerve);
 
@@ -38,6 +42,8 @@ public class DefaultSwerve extends Command {
         limelightAlignL = limlightL;
         limelightAlignR = limlightR;
 
+        resetOdometry = resetOdo;
+
         elevUp = lSomething;
     }
 
@@ -50,6 +56,11 @@ public class DefaultSwerve extends Command {
     @Override
     public void execute() {
 
+        
+        if(resetOdometry.getAsBoolean()){
+            s_Swerve.resetOdometryPP(s_Swerve.getPose());
+        }
+
         SmartDashboard.putBoolean("l checker", elevUp);
 
         /* Get Values, Deadband*/
@@ -58,7 +69,7 @@ public class DefaultSwerve extends Command {
         double translationVal = MathUtil.applyDeadband(translationSup.getAsDouble(), Constants.stickDeadband);
         double strafeVal = MathUtil.applyDeadband(strafeSup.getAsDouble(), Constants.stickDeadband);
         double rotationVal = limelight ? rotationSup.getAsDouble() : MathUtil.applyDeadband(rotationSup.getAsDouble(), Constants.stickDeadband);
-         
+
         if(elevUp){
             translationVal *= 0.1;
             strafeVal *= 0.1;
@@ -103,7 +114,7 @@ public class DefaultSwerve extends Command {
 
         if(setToZero1.getAsBoolean() && setToZero2.getAsBoolean()){
             s_Swerve.getEmRight();
-            resetAlready = true; 
+            resetAlready = true;
         }
         
         
@@ -117,6 +128,8 @@ public class DefaultSwerve extends Command {
             SmartDashboard.putNumber("pipelineIndex", LimelightHelpers.getCurrentPipelineIndex("limelight"));
         }
     
+        s_Swerve.getRobotRelativeSpeeds();
+
     }
     
 }
