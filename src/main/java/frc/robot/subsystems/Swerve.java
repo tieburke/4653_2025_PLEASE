@@ -74,8 +74,8 @@ public class Swerve extends SubsystemBase {
                 this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
                 (speeds, feedforwards) -> driveRobotRelativePP(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
                 new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
-                        new PIDConstants(2.0, 0.0, 0.0), // Translation PID constants
-                        new PIDConstants(2.0, 0.0, 0.0) // Rotation PID constants
+                        new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
+                        new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
                 ),
                 config, // The robot configuration
                 () -> {
@@ -98,22 +98,17 @@ public class Swerve extends SubsystemBase {
       }
   
       // Set up custom logging to add the current path to a field 2d widget
-      PathPlannerLogging.setLogActivePathCallback((poses) -> field.getObject("path").setPoses(poses));
+    //   PathPlannerLogging.setLogActivePathCallback((poses) -> field.getObject("path").setPoses(poses));
   
       SmartDashboard.putData("Field", field);
-      resetOdometry();
     }
 
     /*PathPlanner Commands*/
     public void driveRobotRelativePP(ChassisSpeeds robotRelativeSpeeds) {
         ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, 0.02);
-        
+    
         SwerveModuleState[] targetStates = kinematics.toSwerveModuleStates(targetSpeeds);
         setStatesPP(targetStates);
-        // System.out.println("driveRobotRelativePP: " + 
-        // "vX: " + kinematics.toChassisSpeeds(targetStates).vxMetersPerSecond + 
-        // "vY: " + kinematics.toChassisSpeeds(targetStates).vyMetersPerSecond + 
-        // "Rad/s: " + kinematics.toChassisSpeeds(targetStates).omegaRadiansPerSecond);
     }
 
     public void setStatesPP(SwerveModuleState[] targetStates) {
@@ -303,11 +298,15 @@ public class Swerve extends SubsystemBase {
     public void periodic(){
 
         swerveOdometry.update(getYaw(), getModulePositions()); 
-
+        
+        SmartDashboard.putNumber("XPose", swerveOdometry.getPoseMeters().getX());
+        SmartDashboard.putNumber("Ypose", swerveOdometry.getPoseMeters().getY());
+        
         SmartDashboard.putNumber("yaw: ", getYaw().getDegrees());
 
         for(SwerveModule mod : mSwerveMods){
-            SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Cancoder", mod.getCanCoder().getDegrees());            SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);    
+            SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Cancoder", mod.getCanCoder().getDegrees());            
+            SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);    
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Angle", mod.getState().angle.getDegrees());       
 
         }
