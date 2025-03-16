@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
 public class Swerve extends SubsystemBase {
     public SwerveDriveOdometry swerveOdometry;
@@ -31,6 +32,7 @@ public class Swerve extends SubsystemBase {
     private Field2d field = new Field2d();
 
     public Swerve() {
+        
         gyro = new AHRS(AHRS.NavXComType.kMXP_SPI, AHRS.NavXUpdateRate.k200Hz); //TODO: check if im allowed to do this
         gyro.reset();
         zeroGyro();
@@ -91,6 +93,14 @@ public class Swerve extends SubsystemBase {
         catch(Exception e){
         DriverStation.reportError("Failed to load PathPlanner config and configure AutoBuilder", e.getStackTrace());
     }
+    }
+
+    public void sysIdQuasistatic(SysIdRoutine.Direction direction){
+        mSwerveMods[0].sysIdQuasistatic(direction);
+    }
+
+    public void sysIdDynamic(SysIdRoutine.Direction direction){
+        mSwerveMods[0].sysIdDynamic(direction);
     }
 
     /*PathPlanner Commands*/

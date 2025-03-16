@@ -13,6 +13,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
 
 public class DefaultSwerve extends Command {    
@@ -20,14 +21,16 @@ public class DefaultSwerve extends Command {
     private DoubleSupplier translationSup;
     private DoubleSupplier strafeSup;
     private DoubleSupplier rotationSup;
-    private BooleanSupplier resetOdometry, robotCentricSup, setToZero1, setToZero2, limelightAlignL, limelightAlignR;
+    private BooleanSupplier robotCentricSup, setToZero1, setToZero2, limelightAlignL, limelightAlignR,
+    sysIdQF, sysIdQR, sysIdDF, sysIdDR;
     private boolean limelight, elevUp;
     private boolean resetAlready;
 
     public DefaultSwerve(Swerve s_Swerve, DoubleSupplier translationSup, DoubleSupplier strafeSup, 
     DoubleSupplier rotationSup, BooleanSupplier robotCentricSup, BooleanSupplier setToZeroOne, 
     BooleanSupplier setToZeroTwo, BooleanSupplier limlightL, BooleanSupplier limlightR, 
-    boolean lSomething, BooleanSupplier resetOdo) {
+    boolean lSomething, BooleanSupplier sysQF, BooleanSupplier sysQR, BooleanSupplier sysDF,
+    BooleanSupplier sysDR) {
 
         this.s_Swerve = s_Swerve;
         addRequirements(s_Swerve);
@@ -42,7 +45,10 @@ public class DefaultSwerve extends Command {
         limelightAlignL = limlightL;
         limelightAlignR = limlightR;
 
-        resetOdometry = resetOdo;
+        sysIdQF = sysQF;
+        sysIdQR = sysQR;
+        sysIdDF = sysDF;
+        sysIdDR = sysDR;
 
         elevUp = lSomething;
     }
@@ -56,9 +62,17 @@ public class DefaultSwerve extends Command {
     @Override
     public void execute() {
 
-        
-        if(resetOdometry.getAsBoolean()){
-            s_Swerve.resetOdometryPP(s_Swerve.getPose());
+        if(sysIdQF.getAsBoolean()){
+            s_Swerve.sysIdQuasistatic(SysIdRoutine.Direction.kForward);
+        }
+        if(sysIdQR.getAsBoolean()){
+            s_Swerve.sysIdQuasistatic(SysIdRoutine.Direction.kReverse);
+        }
+        if(sysIdDF.getAsBoolean()){
+            s_Swerve.sysIdDynamic(SysIdRoutine.Direction.kForward);
+        }
+        if(sysIdDR.getAsBoolean()){
+            s_Swerve.sysIdDynamic(SysIdRoutine.Direction.kReverse);
         }
 
         SmartDashboard.putBoolean("l checker", elevUp);

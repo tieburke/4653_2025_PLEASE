@@ -58,14 +58,16 @@ public class RobotContainer {
     private boolean isFieldOriented = true;
 
     /* Driver Buttons */
-    private final JoystickButton resetPose = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
-    private final JoystickButton flipAxes = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
+    //private final JoystickButton flipAxes = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
     private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
     private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kX.value);
     private final JoystickButton limelightAlignLeft = new JoystickButton(driver, XboxController.Button.kA.value);
     private final JoystickButton limelightAlignRight = new JoystickButton(driver, XboxController.Button.kB.value);
     private final JoystickButton setToZero1 = new JoystickButton(driver, XboxController.Button.kStart.value);
     private final JoystickButton setToZero2 = new JoystickButton(driver, XboxController.Button.kBack.value);
+
+    private final JoystickButton QF = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
+    private final JoystickButton QR = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
 
     /* Operator Buttons */
     private final JoystickButton elevl4Button = new JoystickButton(operator, XboxController.Button.kB.value);
@@ -123,7 +125,10 @@ public class RobotContainer {
                     limelightAlignLeft,
                     limelightAlignRight,
                     elevUp,
-                    resetPose
+                    QF,
+                    QR,
+                    setToZero1,
+                    setToZero2
                )
             );
 
