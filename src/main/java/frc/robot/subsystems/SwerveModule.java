@@ -68,6 +68,21 @@ public SwerveModule(int moduleNumber, SwerveModuleConstants moduleConstants){
     lastAngle = getState().angle;
 }
 
+public void setDesiredStatePP(SwerveModuleState desiredState, boolean isOpenLoop){
+    desiredState = CTREModuleState.optimize(desiredState, getState().angle); //Custom optimize command, since default WPILib optimize assumes continuous controller which CTRE is not
+
+    setAngle(desiredState);
+    setSpeedPP(desiredState, isOpenLoop);
+    simSpeedCache = desiredState.speedMetersPerSecond;
+    simAngleCache = desiredState.angle;
+
+    // System.out.println("setDesiredState: " + desiredState.speedMetersPerSecond);
+//     System.out.println("setDesiredState: " + 
+//     "vX: " + kinematics.toChassisSpeeds(desiredState).vxMetersPerSecond + 
+//     "vY: " + kinematics.toChassisSpeeds(desiredState).vyMetersPerSecond + 
+//     "Rad/s: " + kinematics.toChassisSpeeds(desiredState).omegaRadiansPerSecond);
+}
+
 public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop){
     desiredState = CTREModuleState.optimize(desiredState, getState().angle); //Custom optimize command, since default WPILib optimize assumes continuous controller which CTRE is not
 
@@ -76,11 +91,22 @@ public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop){
     simSpeedCache = desiredState.speedMetersPerSecond;
     simAngleCache = desiredState.angle;
 
-    System.out.println("setDesiredState: " + desiredState.speedMetersPerSecond);
+    // System.out.println("setDesiredState: " + desiredState.speedMetersPerSecond);
 //     System.out.println("setDesiredState: " + 
 //     "vX: " + kinematics.toChassisSpeeds(desiredState).vxMetersPerSecond + 
 //     "vY: " + kinematics.toChassisSpeeds(desiredState).vyMetersPerSecond + 
 //     "Rad/s: " + kinematics.toChassisSpeeds(desiredState).omegaRadiansPerSecond);
+}
+
+private void setSpeedPP(SwerveModuleState desiredState, boolean isOpenLoop){
+    if(isOpenLoop){
+        double percentOutput = desiredState.speedMetersPerSecond / Constants.Swerve.maxSpeed;
+        mDriveMotor.set(percentOutput);
+    }
+    else {
+        mDriveMotor.getClosedLoopController().setReference(desiredState.speedMetersPerSecond, ControlType.kVelocity, ClosedLoopSlot.kSlot0, feedforward.calculate(desiredState.speedMetersPerSecond));
+        // mDriveMotor.set(ControlMode.Velocity, desiredState.speedMetersPerSecond, DemandType.ArbitraryFeedForward, feedforward.calculate(desiredState.speedMetersPerSecond));
+    }
 }
 
 private void setSpeed(SwerveModuleState desiredState, boolean isOpenLoop){
@@ -90,7 +116,6 @@ private void setSpeed(SwerveModuleState desiredState, boolean isOpenLoop){
         mDriveMotor.set(percentOutput);
     }
     else {
-        //TODO: get rid of this comment if the "kslot0" thing works
         mDriveMotor.getClosedLoopController().setReference(desiredState.speedMetersPerSecond, ControlType.kVelocity, ClosedLoopSlot.kSlot0, feedforward.calculate(desiredState.speedMetersPerSecond));
         // mDriveMotor.set(ControlMode.Velocity, desiredState.speedMetersPerSecond, DemandType.ArbitraryFeedForward, feedforward.calculate(desiredState.speedMetersPerSecond));
     }
@@ -150,7 +175,7 @@ public void configDriveMotor(){
     // mDriveConfig.secondaryCurrentLimit(Constants.Swerve.drivePeakCurrentLimit);
     mDriveConfig.inverted(Constants.Swerve.driveMotorInvert);
 
-    mDriveConfig.encoder.velocityConversionFactor(((Constants.Swerve.driveGearRatio * Constants.Swerve.wheelCircumference * (0.03720518452))/60.0));
+    mDriveConfig.encoder.velocityConversionFactor(Constants.Swerve.velocityConversionFactor);
     resetToAbsolute();
 
     mDriveConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
@@ -206,8 +231,8 @@ public SwerveModulePosition getPosition(){
     // }
 
     public void setTargetStatePP(SwerveModuleState targetState){
-        setDesiredState(targetState, true);
-        System.out.println("setTargetStatePP: " + targetState.speedMetersPerSecond);
+        setDesiredStatePP(targetState, true);
+        // System.out.println("setTargetStatePP: " + targetState.speedMetersPerSecond);
     }
 
 }

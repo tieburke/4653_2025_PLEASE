@@ -20,6 +20,9 @@ public final class Constants {
         public static final Translation2d blModuleOffset = new Translation2d(-0.279, 0.279);
         public static final Translation2d brModuleOffset = new Translation2d(-0.279, -0.279);
 
+        //RPM -> M/S
+        //(motor rotations / minute)*(1 minute / 60 seconds)*(1 wheel rotations / 8.14 motor rotations)*(0.6383 meters / wheel rotation)
+        public static final double velocityConversionFactor = 0.00130706714;
 
         public static final boolean invertGyro = true; // Always ensure Gyro is CCW+ CW-
 
@@ -27,8 +30,8 @@ public final class Constants {
             COTSNeoSwerveConstants.SDSMK4(COTSNeoSwerveConstants.driveGearRatios.SDSMK4_L1);
 
         /* Drivetrain Constants */
-        public static final double trackWidth = 0.5715; //TODO: This must be tuned to specific robot
-        public static final double wheelBase = 0.5715; //TODO: This must be tuned to specific robot
+        public static final double trackWidth = 0.279*2; //TODO: This must be tuned to specific robot
+        public static final double wheelBase = 0.279*2; //TODO: This must be tuned to specific robot
         public static final double wheelCircumference = chosenModule.wheelCircumference;
 
         /* Swerve Kinematics 
