@@ -31,13 +31,6 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.reduxrobotics.sensors.canandmag.Canandmag;
 
-
-
-
-import static edu.wpi.first.units.Units.Meters;
-import static edu.wpi.first.units.Units.MetersPerSecond;
-import static edu.wpi.first.units.Units.Volts;
-
 public class SwerveModule extends SubsystemBase{
 
 public int moduleNumber;
@@ -61,47 +54,6 @@ SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(Constants.Swerve
 /* Sim Caches (basically im lazy and don't want to use the rev physics sim) */
 private double simSpeedCache;
 private Rotation2d simAngleCache = Rotation2d.fromDegrees(0);
-
-
-
-  // Mutable holder for unit-safe voltage values, persisted to avoid reallocation.
-  private final MutVoltage m_appliedVoltage = Volts.mutable(0);
-  // Mutable holder for unit-safe linear distance values, persisted to avoid reallocation.
-  private final MutDistance m_distance = Meters.mutable(0);
-  // Mutable holder for unit-safe linear velocity values, persisted to avoid reallocation.
-  private final MutLinearVelocity m_velocity = MetersPerSecond.mutable(0);
-
-
-        // Create a new SysId routine for characterizing the drive.
-        private final SysIdRoutine m_sysIdRoutine =
-        new SysIdRoutine(
-            // Empty config defaults to 1 volt/second ramp rate and 7 volt step voltage.
-            new SysIdRoutine.Config(),
-            new SysIdRoutine.Mechanism(
-                // Tell SysId how to plumb the driving voltage to the motors.
-                voltage -> {
-                    mDriveMotor.setVoltage(voltage);
-                },
-                // Tell SysId how to record a frame of data for each motor on the mechanism being
-                // characterized.
-                log -> {
-                    // Record a frame for the left motors.  Since these share an encoder, we consider
-                    // the entire group to be one motor.
-                    log.motor("drive")
-                        .voltage(
-                            m_appliedVoltage.mut_replace(
-                                mDriveMotor.get() * RobotController.getBatteryVoltage(), Volts))
-                        .linearPosition(m_distance.mut_replace(mDriveEncoder.getPosition(), Meters))
-                        .linearVelocity(
-                            m_velocity.mut_replace(mDriveEncoder.getVelocity(), MetersPerSecond));
-                },
-                // Tell SysId to make generated commands require this subsystem, suffix test state in
-                // WPILog with this subsystem's name ("drive")
-                this));
-            
-
-
-
 
 public SwerveModule(int moduleNumber, SwerveModuleConstants moduleConstants){
     this.moduleNumber = moduleNumber;
@@ -289,26 +241,11 @@ public SwerveModulePosition getPosition(){
         // System.out.println("setTargetStatePP: " + targetState.speedMetersPerSecond);
     }
 
+    public SparkMax getDriveMotor(){
+        return mDriveMotor;
+    }
 
-
-
-
-      /**
-   * Returns a command that will execute a quasistatic test in the given direction.
-   *
-   * @param direction The direction (forward or reverse) to run the test in
-   */
-  public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
-    return m_sysIdRoutine.quasistatic(direction);
-  }
-
-  /**
-   * Returns a command that will execute a dynamic test in the given direction.
-   *
-   * @param direction The direction (forward or reverse) to run the test in
-   */
-  public Command sysIdDynamic(SysIdRoutine.Direction direction) {
-    return m_sysIdRoutine.dynamic(direction);
-  }
-
+    public RelativeEncoder getDriveEncoder(){
+        return mDriveEncoder;
+    }
 }

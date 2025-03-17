@@ -21,16 +21,14 @@ public class DefaultSwerve extends Command {
     private DoubleSupplier translationSup;
     private DoubleSupplier strafeSup;
     private DoubleSupplier rotationSup;
-    private BooleanSupplier robotCentricSup, setToZero1, setToZero2, limelightAlignL, limelightAlignR,
-    sysIdQF, sysIdQR, sysIdDF, sysIdDR;
+    private BooleanSupplier robotCentricSup, setToZero1, setToZero2, limelightAlignL, limelightAlignR;
     private boolean limelight, elevUp;
     private boolean resetAlready;
 
     public DefaultSwerve(Swerve s_Swerve, DoubleSupplier translationSup, DoubleSupplier strafeSup, 
     DoubleSupplier rotationSup, BooleanSupplier robotCentricSup, BooleanSupplier setToZeroOne, 
     BooleanSupplier setToZeroTwo, BooleanSupplier limlightL, BooleanSupplier limlightR, 
-    boolean lSomething, BooleanSupplier sysQF, BooleanSupplier sysQR, BooleanSupplier sysDF,
-    BooleanSupplier sysDR) {
+    boolean lSomething) {
 
         this.s_Swerve = s_Swerve;
         addRequirements(s_Swerve);
@@ -45,11 +43,6 @@ public class DefaultSwerve extends Command {
         limelightAlignL = limlightL;
         limelightAlignR = limlightR;
 
-        sysIdQF = sysQF;
-        sysIdQR = sysQR;
-        sysIdDF = sysDF;
-        sysIdDR = sysDR;
-
         elevUp = lSomething;
     }
 
@@ -61,19 +54,6 @@ public class DefaultSwerve extends Command {
 
     @Override
     public void execute() {
-
-        if(sysIdQF.getAsBoolean()){
-            s_Swerve.sysIdQuasistatic(SysIdRoutine.Direction.kForward);
-        }
-        if(sysIdQR.getAsBoolean()){
-            s_Swerve.sysIdQuasistatic(SysIdRoutine.Direction.kReverse);
-        }
-        if(sysIdDF.getAsBoolean()){
-            s_Swerve.sysIdDynamic(SysIdRoutine.Direction.kForward);
-        }
-        if(sysIdDR.getAsBoolean()){
-            s_Swerve.sysIdDynamic(SysIdRoutine.Direction.kReverse);
-        }
 
         SmartDashboard.putBoolean("l checker", elevUp);
 

@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.subsystems.*;
 import frc.robot.util.LimelightHelpers;
 import frc.robot.commands.defaultcommands.*;
@@ -124,19 +125,15 @@ public class RobotContainer {
                     setToZero2,
                     limelightAlignLeft,
                     limelightAlignRight,
-                    elevUp,
-                    QF,
-                    QR,
-                    setToZero1,
-                    setToZero2
+                    elevUp
                )
             );
 
         
-        climber.setDefaultCommand(new DefaultClimber(climbButtonUp, climbButtonDown, cameraToggle, climber));
-        elevator.setDefaultCommand(new DefaultElevator(elevl4Button, elevl3Button, elevl2Button, elevl1Button, () -> operator.getRawAxis(elevUpDown), elevator));
-        aIntake.setDefaultCommand(new DefaultAlgaeIntake(aIntakeHor, aIntakeVert, resetAIntakeButton, () -> operator.getRawAxis(aIntakeInOut), () -> operator.getRawAxis(aIntakeUpDown), aIntake));
-        rainGutter.setDefaultCommand(new DefaultRainGutter(() -> operator.getRawAxis(rGL4), () -> operator.getRawAxis(rGLOther), rainGutter));
+        // climber.setDefaultCommand(new DefaultClimber(climbButtonUp, climbButtonDown, cameraToggle, climber));
+        // elevator.setDefaultCommand(new DefaultElevator(elevl4Button, elevl3Button, elevl2Button, elevl1Button, () -> operator.getRawAxis(elevUpDown), elevator));
+        // aIntake.setDefaultCommand(new DefaultAlgaeIntake(aIntakeHor, aIntakeVert, resetAIntakeButton, () -> operator.getRawAxis(aIntakeInOut), () -> operator.getRawAxis(aIntakeUpDown), aIntake));
+        // rainGutter.setDefaultCommand(new DefaultRainGutter(() -> operator.getRawAxis(rGL4), () -> operator.getRawAxis(rGLOther), rainGutter));
 
         // flipAxes.whileTrue(
         //     new DefaultSwerve(
@@ -171,6 +168,15 @@ public class RobotContainer {
         /* Driver Buttons */
         zeroGyro.onTrue(new InstantCommand(() -> swerve.resetEverything()));
         robotCentric.toggleOnTrue(new InstantCommand(() -> toggleRobotCentric()));
+        // QF.whileTrue(swerve.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+        // QR.whileTrue(swerve.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+        // setToZero1.whileTrue(swerve.sysIdDynamic(SysIdRoutine.Direction.kForward));
+        // setToZero2.whileTrue(swerve.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+        
+        // QF.whileTrue(new InstantCommand(() -> swerve.getEmRight()));
+        // QR.whileTrue(new InstantCommand(() -> swerve.getEmRight()));
+        // setToZero1.whileTrue(new InstantCommand(() -> swerve.getEmRight()));
+        // setToZero2.whileTrue(new InstantCommand(() -> swerve.getEmRight()));
     }
 
     public void toggleRobotCentric(){
