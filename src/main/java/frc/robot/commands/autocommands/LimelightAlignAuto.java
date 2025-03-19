@@ -30,9 +30,10 @@ public class LimelightAlignAuto extends Command {
 
     @Override
     public void execute() {
+            //if(LimelightHelpers.getFiducialID("limelight") != -1){
             s_Swerve.drive(
                 new Translation2d(0.2, RobotContainer.limelight_aim_proportional()).times(Constants.Swerve.maxSpeed), 
-                0, 
+                0,//RobotContainer.limelight_range_proportional()*1.25, 
                 false, 
                 true
             );
@@ -54,7 +55,7 @@ public class LimelightAlignAuto extends Command {
 
     @Override
     public boolean isFinished(){
-        if(LimelightHelpers.getTA("limelight") > 22){
+        if(LimelightHelpers.getTA("limelight") > 17){
             return true;
         }
         else if(timer.get() > 4){

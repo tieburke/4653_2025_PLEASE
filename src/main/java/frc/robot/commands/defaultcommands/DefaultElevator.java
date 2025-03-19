@@ -52,7 +52,18 @@ public class DefaultElevator extends Command{
             elevator.setPosition(Constants.Elevator.positionL4);
             manualControl = false;
         }
-
+        if(L3.getAsBoolean()){
+            elevator.setPosition(Constants.Elevator.positionL3);
+            manualControl = false;
+        }
+        if(L2.getAsBoolean()){
+            elevator.setPosition(Constants.Elevator.positionL2);
+            manualControl = false;
+        }
+        if(L1.getAsBoolean()){
+            elevator.setPosition(Constants.Elevator.positionL1);
+            manualControl = false;
+        }
         // if(L1.getAsBoolean() && !kickedAlready){
         //     elevator.initialKick(Constants.Elevator.positionL1);
         // }

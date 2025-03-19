@@ -163,7 +163,7 @@ public final class Constants {
         public static final double positionL3 = 186.5*(9.0/64);
         public static final double positionL4 = 435*(9.0/64);
 
-        public static final double manualSpeed = 0.1;
+        public static final double manualSpeed = 0.3;
     }
 
     public static final class AlgaeIntake{

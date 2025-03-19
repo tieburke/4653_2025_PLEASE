@@ -91,15 +91,25 @@ public class DefaultSwerve extends Command {
         );
         } 
 
-        else if((limelightAlignL.getAsBoolean() || limelightAlignR.getAsBoolean()) && !resetAlready){
+        else if((limelightAlignL.getAsBoolean()) && !resetAlready){
             // s_Swerve.drive(
             //     new Translation2d(RobotContainer.limelight_aim_proportional(), strafeVal).times(Constants.Swerve.maxSpeed), 
             //     RobotContainer.limelight_range_proportional() * Constants.Swerve.maxAngularVelocity, 
             //     false , 
             //     true
             // );
+            LimelightHelpers.setPipelineIndex("limelight", 0);
             s_Swerve.drive(
                 new Translation2d(translationVal, RobotContainer.limelight_aim_proportional()).times(Constants.Swerve.maxSpeed), 
+                rotationVal * Constants.Swerve.maxAngularVelocity, 
+                false, 
+                true
+            );
+        }
+        else if(limelightAlignR.getAsBoolean() && !resetAlready){
+            LimelightHelpers.setPipelineIndex("limelight", 1);
+            s_Swerve.drive(
+                new Translation2d(0.2, RobotContainer.limelight_aim_proportional()).times(Constants.Swerve.maxSpeed), 
                 rotationVal * Constants.Swerve.maxAngularVelocity, 
                 false, 
                 true
@@ -111,17 +121,6 @@ public class DefaultSwerve extends Command {
             resetAlready = true;
         }
         
-        
-        if(limelightAlignR.getAsBoolean()){
-            LimelightHelpers.setPipelineIndex("limelight", 1);
-            SmartDashboard.putNumber("pipelineIndex", LimelightHelpers.getCurrentPipelineIndex("limelight"));
-        }
-        
-        if(limelightAlignL.getAsBoolean()){
-            LimelightHelpers.setPipelineIndex("limelight", 0);
-            SmartDashboard.putNumber("pipelineIndex", LimelightHelpers.getCurrentPipelineIndex("limelight"));
-        }
-    
         s_Swerve.getRobotRelativeSpeeds();
 
     }
