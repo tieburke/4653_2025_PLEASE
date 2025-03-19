@@ -81,12 +81,6 @@ public void setDesiredStatePP(SwerveModuleState desiredState, boolean isOpenLoop
     setSpeedPP(desiredState, isOpenLoop);
     simSpeedCache = desiredState.speedMetersPerSecond;
     simAngleCache = desiredState.angle;
-
-    // System.out.println("setDesiredState: " + desiredState.speedMetersPerSecond);
-//     System.out.println("setDesiredState: " + 
-//     "vX: " + kinematics.toChassisSpeeds(desiredState).vxMetersPerSecond + 
-//     "vY: " + kinematics.toChassisSpeeds(desiredState).vyMetersPerSecond + 
-//     "Rad/s: " + kinematics.toChassisSpeeds(desiredState).omegaRadiansPerSecond);
 }
 
 public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop){
@@ -96,34 +90,19 @@ public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop){
     setSpeed(desiredState, isOpenLoop);
     simSpeedCache = desiredState.speedMetersPerSecond;
     simAngleCache = desiredState.angle;
-
-    // System.out.println("setDesiredState: " + desiredState.speedMetersPerSecond);
-//     System.out.println("setDesiredState: " + 
-//     "vX: " + kinematics.toChassisSpeeds(desiredState).vxMetersPerSecond + 
-//     "vY: " + kinematics.toChassisSpeeds(desiredState).vyMetersPerSecond + 
-//     "Rad/s: " + kinematics.toChassisSpeeds(desiredState).omegaRadiansPerSecond);
 }
 
 private void setSpeedPP(SwerveModuleState desiredState, boolean isOpenLoop){
-    if(isOpenLoop){
-        double percentOutput = desiredState.speedMetersPerSecond / Constants.Swerve.maxSpeed;
-        mDriveMotor.set(percentOutput);
-    }
-    else {
-        mDriveMotor.getClosedLoopController().setReference(desiredState.speedMetersPerSecond, ControlType.kVelocity, ClosedLoopSlot.kSlot0, feedforward.calculate(desiredState.speedMetersPerSecond));
-        // mDriveMotor.set(ControlMode.Velocity, desiredState.speedMetersPerSecond, DemandType.ArbitraryFeedForward, feedforward.calculate(desiredState.speedMetersPerSecond));
-    }
+    mDriveMotor.getClosedLoopController().setReference(desiredState.speedMetersPerSecond, ControlType.kVelocity, ClosedLoopSlot.kSlot1, feedforward.calculate(desiredState.speedMetersPerSecond));
 }
 
 private void setSpeed(SwerveModuleState desiredState, boolean isOpenLoop){
     if(isOpenLoop){
         double percentOutput = desiredState.speedMetersPerSecond / Constants.Swerve.maxSpeed;
-        // mDriveMotor_ctre.set(ControlMode.PercentOutput, percentOutput);
         mDriveMotor.set(percentOutput);
     }
     else {
         mDriveMotor.getClosedLoopController().setReference(desiredState.speedMetersPerSecond, ControlType.kVelocity, ClosedLoopSlot.kSlot0, feedforward.calculate(desiredState.speedMetersPerSecond));
-        // mDriveMotor.set(ControlMode.Velocity, desiredState.speedMetersPerSecond, DemandType.ArbitraryFeedForward, feedforward.calculate(desiredState.speedMetersPerSecond));
     }
 }
 
@@ -177,7 +156,7 @@ public void configAngleMotor() {
 public void configDriveMotor(){       
     mDriveConfig = new SparkMaxConfig();
 
-    mDriveConfig.smartCurrentLimit(Constants.Swerve.driveContinuousCurrentLimit);
+    //mDriveConfig.smartCurrentLimit(Constants.Swerve.drivePeakCurrentLimit);
     // mDriveConfig.secondaryCurrentLimit(Constants.Swerve.drivePeakCurrentLimit);
     mDriveConfig.inverted(Constants.Swerve.driveMotorInvert);
 
@@ -185,8 +164,8 @@ public void configDriveMotor(){
     resetToAbsolute();
 
     mDriveConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-    .pidf(Constants.Swerve.driveKP, Constants.Swerve.driveKI, 
-    Constants.Swerve.driveKD, Constants.Swerve.driveKF);
+    .pid(Constants.Swerve.driveKP, Constants.Swerve.driveKI, 
+    Constants.Swerve.driveKD, ClosedLoopSlot.kSlot1).iZone(Constants.Swerve.driveIZone, ClosedLoopSlot.kSlot1);
 
     mDriveMotor.configure(mDriveConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 }

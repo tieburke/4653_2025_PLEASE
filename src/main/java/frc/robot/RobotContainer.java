@@ -130,10 +130,10 @@ public class RobotContainer {
             );
 
         
-        // climber.setDefaultCommand(new DefaultClimber(climbButtonUp, climbButtonDown, cameraToggle, climber));
-        // elevator.setDefaultCommand(new DefaultElevator(elevl4Button, elevl3Button, elevl2Button, elevl1Button, () -> operator.getRawAxis(elevUpDown), elevator));
-        // aIntake.setDefaultCommand(new DefaultAlgaeIntake(aIntakeHor, aIntakeVert, resetAIntakeButton, () -> operator.getRawAxis(aIntakeInOut), () -> operator.getRawAxis(aIntakeUpDown), aIntake));
-        // rainGutter.setDefaultCommand(new DefaultRainGutter(() -> operator.getRawAxis(rGL4), () -> operator.getRawAxis(rGLOther), rainGutter));
+        climber.setDefaultCommand(new DefaultClimber(climbButtonUp, climbButtonDown, cameraToggle, climber));
+        elevator.setDefaultCommand(new DefaultElevator(elevl4Button, elevl3Button, elevl2Button, elevl1Button, () -> operator.getRawAxis(elevUpDown), elevator));
+        aIntake.setDefaultCommand(new DefaultAlgaeIntake(aIntakeHor, aIntakeVert, resetAIntakeButton, () -> operator.getRawAxis(aIntakeInOut), () -> operator.getRawAxis(aIntakeUpDown), aIntake));
+        rainGutter.setDefaultCommand(new DefaultRainGutter(() -> operator.getRawAxis(rGL4), () -> operator.getRawAxis(rGLOther), rainGutter));
 
         // flipAxes.whileTrue(
         //     new DefaultSwerve(
@@ -168,6 +168,7 @@ public class RobotContainer {
         /* Driver Buttons */
         zeroGyro.onTrue(new InstantCommand(() -> swerve.resetEverything()));
         robotCentric.toggleOnTrue(new InstantCommand(() -> toggleRobotCentric()));
+        setToZero1.and(setToZero2).onTrue(new InstantCommand(() -> swerve.getEmRight()));
         // QF.whileTrue(swerve.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
         // QR.whileTrue(swerve.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
         // setToZero1.whileTrue(swerve.sysIdDynamic(SysIdRoutine.Direction.kForward));

@@ -107,9 +107,14 @@ public class DefaultSwerve extends Command {
         }
 
         if(setToZero1.getAsBoolean() && setToZero2.getAsBoolean()){
-            s_Swerve.getEmRight();
+            //s_Swerve.getEmRight();
             resetAlready = true;
         }
+
+        // if(resetAlready && s_Swerve.checkRight()){
+        //     s_Swerve.resetOdometry();
+        //     resetAlready = false;
+        // }
         
         
         if(limelightAlignR.getAsBoolean()){
