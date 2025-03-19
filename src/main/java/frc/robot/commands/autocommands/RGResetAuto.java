@@ -6,19 +6,18 @@ package frc.robot.commands.autocommands;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants;
-import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.RainGutter;
 
-public class LPartiallyUp extends Command {
+public class RGResetAuto extends Command {
   /** Creates a new TimedDriveOut. */
-  private Elevator elevator;
+  private RainGutter rainGutter;
   private Timer timer;
   
-  public LPartiallyUp(Elevator elevator) {
-    this.elevator = elevator;
+  public RGResetAuto(RainGutter rainGutter) {
+    this.rainGutter = rainGutter;
     this.timer = new Timer();
 
-    addRequirements(elevator);
+    addRequirements(rainGutter);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -33,7 +32,8 @@ public class LPartiallyUp extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-        elevator.setPosition(Constants.Elevator.positionL3);
+        rainGutter.setRotateIntake();
+        rainGutter.close();
   }
   
   // Called once the command ends or is interrupted.
@@ -46,6 +46,6 @@ public class LPartiallyUp extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return ((Constants.Elevator.positionL3 < elevator.getPosition() + 0.5) || timer.get() > 5);
+    return (timer.get() > .25);
   }
 }

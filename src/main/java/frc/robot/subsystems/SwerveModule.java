@@ -74,11 +74,11 @@ public SwerveModule(int moduleNumber, SwerveModuleConstants moduleConstants){
     lastAngle = getState().angle;
 }
 
-public void setDesiredStatePP(SwerveModuleState desiredState, boolean isOpenLoop){
+public void setDesiredStatePP(SwerveModuleState desiredState){
     desiredState = CTREModuleState.optimize(desiredState, getState().angle); //Custom optimize command, since default WPILib optimize assumes continuous controller which CTRE is not
 
     setAngle(desiredState);
-    setSpeedPP(desiredState, isOpenLoop);
+    setSpeedPP(desiredState, false);
     simSpeedCache = desiredState.speedMetersPerSecond;
     simAngleCache = desiredState.angle;
 }
@@ -93,7 +93,14 @@ public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop){
 }
 
 private void setSpeedPP(SwerveModuleState desiredState, boolean isOpenLoop){
-    mDriveMotor.getClosedLoopController().setReference(desiredState.speedMetersPerSecond, ControlType.kVelocity, ClosedLoopSlot.kSlot1, feedforward.calculate(desiredState.speedMetersPerSecond));
+    if(isOpenLoop){
+        double percentOutput = desiredState.speedMetersPerSecond / Constants.Swerve.maxSpeed;
+        mDriveMotor.set(percentOutput);
+    }
+    else {
+        mDriveMotor.getClosedLoopController().setReference(desiredState.speedMetersPerSecond, ControlType.kVelocity, ClosedLoopSlot.kSlot0);//, feedforward.calculate(desiredState.speedMetersPerSecond));
+        // mDriveMotor.set(ControlMode.Velocity, desiredState.speedMetersPerSecond, DemandType.ArbitraryFeedForward, feedforward.calculate(desiredState.speedMetersPerSecond));
+    }
 }
 
 private void setSpeed(SwerveModuleState desiredState, boolean isOpenLoop){
@@ -164,8 +171,8 @@ public void configDriveMotor(){
     resetToAbsolute();
 
     mDriveConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-    .pid(Constants.Swerve.driveKP, Constants.Swerve.driveKI, 
-    Constants.Swerve.driveKD, ClosedLoopSlot.kSlot1).iZone(Constants.Swerve.driveIZone, ClosedLoopSlot.kSlot1);
+    .pidf(Constants.Swerve.driveKP, Constants.Swerve.driveKI, 
+    Constants.Swerve.driveKD, Constants.Swerve.driveKF, ClosedLoopSlot.kSlot0);
 
     mDriveMotor.configure(mDriveConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 }
@@ -216,7 +223,7 @@ public SwerveModulePosition getPosition(){
     // }
 
     public void setTargetStatePP(SwerveModuleState targetState){
-        setDesiredStatePP(targetState, true);
+        setDesiredStatePP(targetState);
         // System.out.println("setTargetStatePP: " + targetState.speedMetersPerSecond);
     }
 

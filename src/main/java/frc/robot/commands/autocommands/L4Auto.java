@@ -46,6 +46,6 @@ public class L4Auto extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return ((Constants.Elevator.positionL4 > elevator.getPosition()-2) || timer.get() > 5);
+    return ((Constants.Elevator.positionL4 < elevator.getPosition() + 0.5) || timer.get() > 5);
   }
 }

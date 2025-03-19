@@ -168,16 +168,10 @@ public class RobotContainer {
         /* Driver Buttons */
         zeroGyro.onTrue(new InstantCommand(() -> swerve.resetEverything()));
         robotCentric.toggleOnTrue(new InstantCommand(() -> toggleRobotCentric()));
-        setToZero1.and(setToZero2).onTrue(new InstantCommand(() -> swerve.getEmRight()));
-        // QF.whileTrue(swerve.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-        // QR.whileTrue(swerve.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-        // setToZero1.whileTrue(swerve.sysIdDynamic(SysIdRoutine.Direction.kForward));
-        // setToZero2.whileTrue(swerve.sysIdDynamic(SysIdRoutine.Direction.kReverse));
-        
-        // QF.whileTrue(new InstantCommand(() -> swerve.getEmRight()));
-        // QR.whileTrue(new InstantCommand(() -> swerve.getEmRight()));
-        // setToZero1.whileTrue(new InstantCommand(() -> swerve.getEmRight()));
-        // setToZero2.whileTrue(new InstantCommand(() -> swerve.getEmRight()));
+        // QF.whileTrue(elevator.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+        // QR.whileTrue(elevator.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+        // setToZero1.whileTrue(elevator.sysIdDynamic(SysIdRoutine.Direction.kForward));
+        // setToZero2.whileTrue(elevator.sysIdDynamic(SysIdRoutine.Direction.kReverse));
     }
 
     public void toggleRobotCentric(){
@@ -196,7 +190,7 @@ public class RobotContainer {
         // if it is too high, the robot will oscillate.
         // if it is too low, the robot will never reach its target
         // if the robot never turns in the correct direction, kP should be inverted.
-        double kP = -.01;
+        double kP = .05;
     
         // tx ranges from (-hfov/2) to (hfov/2) in degrees. If your target is on the rightmost edge of 
         // your limelight 3 feed, tx should return roughly 31 degrees.
@@ -215,7 +209,7 @@ public class RobotContainer {
     // this works best if your Limelight's mount height and target mount height are different.
     // if your limelight and target are mounted at the same or similar heights, use "ta" (area) for target ranging rather than "ty"
     public static double limelight_range_proportional(){    
-        double kP = .01;
+        double kP = -.05;
         double targetingForwardSpeed = LimelightHelpers.getTY("limelight") * kP;
         targetingForwardSpeed *= Math.PI;
         targetingForwardSpeed *= 0.05;
@@ -234,14 +228,18 @@ public class RobotContainer {
             "Limelight1Piece",
             new SequentialCommandGroup(
                 new ParallelCommandGroup(
-                new LPartiallyUp(elevator),
-                new AIntakeUpAuto(aIntake)
+                    new LPartiallyUp(elevator),
+                    new AIntakeUpAuto(aIntake)
                 ),
-                //new StupidDriveForwardAuto(swerve),
                 new LimelightAlignAuto(swerve),
-                new L4Auto(elevator),
-                new RGL4Auto(rainGutter),
-                new L0Auto(elevator)
+                new ParallelCommandGroup(
+                    new L4Auto(elevator),
+                    new RGL4Auto(rainGutter)
+                ),
+                new ParallelCommandGroup(
+                    new L0Auto(elevator),
+                    new RGResetAuto(rainGutter)
+                )
             )
         );
 

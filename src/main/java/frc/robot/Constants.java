@@ -79,8 +79,7 @@ public final class Constants {
         public static final double driveKP = 0.1; //TODO: This must be tuned to specific robot
         public static final double driveKI = 0.0;
         public static final double driveKD = 0.0;
-        public static final double driveIZone = 0.0;
-        public static final double driveKF = 0.0;
+        public static final double driveKF = 0.326;
 
         /* Drive Motor Characterization Values 
          * Divide SYSID values by 12 to convert from volts to percent output for CTRE */
@@ -164,7 +163,7 @@ public final class Constants {
         public static final double positionL3 = 186.5*(9.0/64);
         public static final double positionL4 = 435*(9.0/64);
 
-        public static final double manualSpeed = 0.1;
+        public static final double manualSpeed = 0.3;
     }
 
     public static final class AlgaeIntake{

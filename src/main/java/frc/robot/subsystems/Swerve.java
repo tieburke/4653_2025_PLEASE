@@ -29,82 +29,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
-import static edu.wpi.first.units.Units.Meters;
-import static edu.wpi.first.units.Units.MetersPerSecond;
-import static edu.wpi.first.units.Units.Volts;
-
 public class Swerve extends SubsystemBase {
     public SwerveDriveOdometry swerveOdometry;
     private final SwerveDriveKinematics kinematics;
     public SwerveModule[] mSwerveMods;
     public AHRS gyro;
     private Field2d field = new Field2d();
-
-
-
-// Mutable holder for unit-safe voltage values, persisted to avoid reallocation.
-  private final MutVoltage m_appliedVoltage = Volts.mutable(0);
-  // Mutable holder for unit-safe linear distance values, persisted to avoid reallocation.
-  private final MutDistance m_distance = Meters.mutable(0);
-  // Mutable holder for unit-safe linear velocity values, persisted to avoid reallocation.
-  private final MutLinearVelocity m_velocity = MetersPerSecond.mutable(0);
-
-
-        // Create a new SysId routine for characterizing the drive.
-        private final SysIdRoutine m_sysIdRoutine =
-        new SysIdRoutine(
-            // Empty config defaults to 1 volt/second ramp rate and 7 volt step voltage.
-            new SysIdRoutine.Config(),
-            new SysIdRoutine.Mechanism(
-                // Tell SysId how to plumb the driving voltage to the motors.
-                voltage -> {
-                    mSwerveMods[0].getDriveMotor().setVoltage(voltage);
-                    mSwerveMods[1].getDriveMotor().setVoltage(voltage);
-                    mSwerveMods[2].getDriveMotor().setVoltage(voltage);
-                    mSwerveMods[3].getDriveMotor().setVoltage(voltage);
-                },
-                // Tell SysId how to record a frame of data for each motor on the mechanism being
-                // characterized.
-                log -> {
-                    log.motor("drive0")
-                        .voltage(
-                            m_appliedVoltage.mut_replace(
-                                mSwerveMods[0].getDriveMotor().getAppliedOutput()*mSwerveMods[0].getDriveMotor().getBusVoltage() * RobotController.getBatteryVoltage(), Volts))
-                        .linearPosition(m_distance.mut_replace(mSwerveMods[0].getDriveEncoder().getPosition(), Meters))
-                        .linearVelocity(
-                            m_velocity.mut_replace(mSwerveMods[0].getDriveEncoder().getVelocity(), MetersPerSecond));
-                
-                    log.motor("drive1")
-                        .voltage(
-                            m_appliedVoltage.mut_replace(
-                                mSwerveMods[1].getDriveMotor().getAppliedOutput()*mSwerveMods[1].getDriveMotor().getBusVoltage() * RobotController.getBatteryVoltage(), Volts))
-                        .linearPosition(m_distance.mut_replace(mSwerveMods[1].getDriveEncoder().getPosition(), Meters))
-                        .linearVelocity(
-                            m_velocity.mut_replace(mSwerveMods[1].getDriveEncoder().getVelocity(), MetersPerSecond));
-                    
-                    log.motor("drive2")
-                        .voltage(
-                            m_appliedVoltage.mut_replace(
-                                mSwerveMods[2].getDriveMotor().getAppliedOutput()*mSwerveMods[2].getDriveMotor().getBusVoltage() * RobotController.getBatteryVoltage(), Volts))
-                        .linearPosition(m_distance.mut_replace(mSwerveMods[2].getDriveEncoder().getPosition(), Meters))
-                        .linearVelocity(
-                            m_velocity.mut_replace(mSwerveMods[2].getDriveEncoder().getVelocity(), MetersPerSecond));
-                    
-                    log.motor("drive3")
-                        .voltage(
-                            m_appliedVoltage.mut_replace(
-                                mSwerveMods[3].getDriveMotor().getAppliedOutput()*mSwerveMods[3].getDriveMotor().getBusVoltage() * RobotController.getBatteryVoltage(), Volts))
-                        .linearPosition(m_distance.mut_replace(mSwerveMods[3].getDriveEncoder().getPosition(), Meters))
-                        .linearVelocity(
-                            m_velocity.mut_replace(mSwerveMods[3].getDriveEncoder().getVelocity(), MetersPerSecond));
-                    
-                },
-                // Tell SysId to make generated commands require this subsystem, suffix test state in
-                // WPILog with this subsystem's name ("drive")
-                this));
-
-
-
 
     public Swerve() {
         
@@ -146,7 +76,7 @@ public class Swerve extends SubsystemBase {
                     this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
                     (speeds, feedforwards) -> driveRobotRelativePP(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
                     new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
-                            new PIDConstants(7.0, 0.0, 0.0), // Translation PID constants
+                            new PIDConstants(0.001, 0.0, 0.0), // Translation PID constants
                             new PIDConstants(0.08, 0.0, 0.0) // Rotation PID constants
                     ),
                     config, // The robot configuration
@@ -341,7 +271,9 @@ public class Swerve extends SubsystemBase {
 
     public void getEmRight(){
         for(SwerveModule mod : mSwerveMods){
-            mod.getItRight();
+            if((Math.abs(mod.getAbsoluteAngle().getDegrees()) > 1) && (Math.abs(mod.getAbsoluteAngle().getDegrees()) < 359)){
+                mod.getItRight();
+            }
         }
         //drive(new Translation2d(0, 0), 0, true, true);
     }
@@ -362,26 +294,6 @@ public class Swerve extends SubsystemBase {
     //         SmartDashboard.putNumber("angle offset mod" + mod.moduleNumber, mod.getAngleOffset());
     //     }
     // }
-
-
-    
-      /**
-   * Returns a command that will execute a quasistatic test in the given direction.
-   *
-   * @param direction The direction (forward or reverse) to run the test in
-   */
-  public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
-    return m_sysIdRoutine.quasistatic(direction);
-  }
-
-  /**
-   * Returns a command that will execute a dynamic test in the given direction.
-   *
-   * @param direction The direction (forward or reverse) to run the test in
-   */
-  public Command sysIdDynamic(SysIdRoutine.Direction direction) {
-    return m_sysIdRoutine.dynamic(direction);
-  }
 
     @Override
     public void periodic(){
