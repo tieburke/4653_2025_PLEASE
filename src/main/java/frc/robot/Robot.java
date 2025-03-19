@@ -62,7 +62,7 @@ AddressableLED m_led = new AddressableLED(9);
 // Default to a length of 60, start empty output
 // Length is expensive to set, so only set it once, then just update data
 AddressableLEDBuffer m_ledBuffer = new AddressableLEDBuffer(310-199);
-// AddressableLEDBuffer m_ledBuffer1 = new AddressableLEDBuffer(150);
+// AddressableLEDBuffer m_ledBuffer1 = new AddressableLEDBuffer(100);
 
   @Override
   public void robotInit() {
