@@ -76,7 +76,7 @@ public class Swerve extends SubsystemBase {
                     this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
                     (speeds, feedforwards) -> driveRobotRelativePP(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
                     new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
-                            new PIDConstants(0.05, 0.0, 0.0), // Translation PID constants
+                            new PIDConstants(0.03, 0.0, 0.0), // Translation PID constants
                             new PIDConstants(0.08, 0.0, 0.0) // Rotation PID constants
                     ),
                     config, // The robot configuration
@@ -271,7 +271,9 @@ public class Swerve extends SubsystemBase {
 
     public void getEmRight(){
         for(SwerveModule mod : mSwerveMods){
-            mod.getItRight();
+            if((Math.abs(mod.getAbsoluteAngle().getDegrees()) > 1) && (Math.abs(mod.getAbsoluteAngle().getDegrees()) < 359)){
+                mod.getItRight();
+            }
         }
         //drive(new Translation2d(0, 0), 0, true, true);
     }
