@@ -270,7 +270,7 @@ public class RobotContainer {
     }
 
     public Command getPathPlannerAutoTwelvePiece(){
-        return AutoBuilder.buildAuto("twelvePieceAuto")
+        return AutoBuilder.buildAuto("twelvePieceAuto");
     }
 
     public Command getPathPlannerPath(){
