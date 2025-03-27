@@ -15,8 +15,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
-public class AlgaeIntake extends SubsystemBase{
-    
+public class AlgaeIntake extends SubsystemBase {
+
     private SparkMax articulate, left, right;
     private SparkMaxConfig mArticulateConfig;
     private RelativeEncoder articulateEncoder;
@@ -24,7 +24,7 @@ public class AlgaeIntake extends SubsystemBase{
     private double lastPosition;
     private double manualChange;
 
-    public AlgaeIntake(){
+    public AlgaeIntake() {
         articulate = new SparkMax(Constants.AlgaeIntake.articulateIntakeID, MotorType.kBrushless);
         left = new SparkMax(Constants.AlgaeIntake.leftIntakeID, MotorType.kBrushless);
         right = new SparkMax(Constants.AlgaeIntake.rightIntakeID, MotorType.kBrushless);
@@ -32,62 +32,63 @@ public class AlgaeIntake extends SubsystemBase{
         configAlgae();
     }
 
-    public void configAlgae(){
+    public void configAlgae() {
         mArticulateConfig = new SparkMaxConfig();
         mArticulateConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-        .pid(Constants.AlgaeIntake.articulateKP, Constants.AlgaeIntake.articulateKI, Constants.AlgaeIntake.articulateKD);
+                .pid(Constants.AlgaeIntake.articulateKP, Constants.AlgaeIntake.articulateKI,
+                        Constants.AlgaeIntake.articulateKD);
 
         articulate.configure(mArticulateConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        //articulateEncoder.setPosition(0);
+        // articulateEncoder.setPosition(0);
     }
 
-    public void setPosition(double position){
+    public void setPosition(double position) {
         articulate.getClosedLoopController().setReference(position, ControlType.kPosition, ClosedLoopSlot.kSlot0);
         lastPosition = position;
     }
 
-    public void intakeUpManual(){
-        if(lastPosition < -0.2){
-        setPosition(lastPosition + 0.5);
+    public void intakeUpManual() {
+        if (lastPosition < -0.2) {
+            setPosition(lastPosition + 0.5);
         }
     }
 
-    public void intakeDownManual(){
-        if(lastPosition > -22){
-        setPosition(lastPosition - 0.5);
+    public void intakeDownManual() {
+        if (lastPosition > -22) {
+            setPosition(lastPosition - 0.5);
         }
     }
 
-    public void algaeIn(){
+    public void algaeIn() {
         left.set(0.2);
         right.set(0.2);
     }
 
-    public void algaeOut(){
+    public void algaeOut() {
         left.set(-0.2);
         right.set(-0.2);
     }
 
-    public void intakeStop(){
+    public void intakeStop() {
         articulate.set(0);
     }
 
-    public void inOutStop(){
+    public void inOutStop() {
         left.set(0);
         right.set(0);
     }
 
-    public void resetEncoder(){
+    public void resetEncoder() {
         articulateEncoder.setPosition(0);
         setPosition(-0.2);
     }
 
-    public double getPosition(){
+    public double getPosition() {
         return articulateEncoder.getPosition();
     }
 
     @Override
-    public void periodic(){
+    public void periodic() {
         SmartDashboard.putNumber("articulate Encoder Value: ", articulateEncoder.getPosition());
     }
 
