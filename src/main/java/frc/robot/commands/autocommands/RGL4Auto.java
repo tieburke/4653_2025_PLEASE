@@ -32,10 +32,8 @@ public class RGL4Auto extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-      if(timer.get() > .1){
         rainGutter.setRotateL4();
         rainGutter.open();
-      }
   }
   
   // Called once the command ends or is interrupted.
@@ -48,6 +46,6 @@ public class RGL4Auto extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return (timer.get() > .25);
+    return (timer.get() > 1);
   }
 }

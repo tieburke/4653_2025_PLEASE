@@ -11,7 +11,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Middle to Reef"
+                  "pathName": "idk why i made this"
                 }
               },
               {
@@ -23,13 +23,26 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 3.0
+                  "waitTime": 1.0
                 }
               },
               {
                 "type": "named",
                 "data": {
                   "name": "RGL4Auto"
+                }
+              },
+              {
+                "type": "parallel",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": null
+                      }
+                    }
+                  ]
                 }
               }
             ]

@@ -204,7 +204,7 @@ public SwerveModulePosition getPosition(){
 
     return new SwerveModulePosition(
         // Originally was mDriveEncoder.getPosition()*360
-        (1.0/0.0109)*(Conversions.neoToMeters(mDriveEncoder.getPosition(), Constants.Swerve.wheelCircumference, Constants.Swerve.driveGearRatio, moduleNumber)), 
+        (Conversions.neoToMeters(mDriveEncoder.getPosition()*4096, Constants.Swerve.wheelCircumference, Constants.Swerve.driveGearRatio, moduleNumber)), 
         getAngle()
     );
 } 

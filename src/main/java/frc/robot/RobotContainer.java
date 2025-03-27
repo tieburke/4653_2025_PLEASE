@@ -103,6 +103,8 @@ public class RobotContainer {
 
         NamedCommands.registerCommand("L4Auto", new L4Auto(elevator));
         NamedCommands.registerCommand("RGL4Auto", new RGL4Auto(rainGutter));
+        NamedCommands.registerCommand("RGResetAuto", new RGResetAuto(rainGutter));
+        NamedCommands.registerCommand("L0Auto", new L0Auto(elevator));
 
         if(translationAxis < Math.abs(0.1)){
             translationAxis = 0;
@@ -232,10 +234,8 @@ public class RobotContainer {
                     new AIntakeUpAuto(aIntake)
                 ),
                 new LimelightAlignAuto(swerve),
-                new ParallelCommandGroup(
-                    new L4Auto(elevator),
-                    new RGL4Auto(rainGutter)
-                ),
+                new L4Auto(elevator),
+                new RGL4Auto(rainGutter),
                 new ParallelCommandGroup(
                     new L0Auto(elevator),
                     new RGResetAuto(rainGutter)
@@ -248,7 +248,8 @@ public class RobotContainer {
             new StupidDriveForwardAuto(swerve)
         ));
 
-        chooser.addOption("PPTest", getPathPlannerAuto());
+        chooser.addOption("PPTest", getPathPlannerAutoTest());
+        chooser.addOption("twelvePiece", getPathPlannerAutoTwelvePiece());
 
         //chooser.addOption("onePiece", getPathPlannerAuto());
         // chooser.addOption("Test Auto", new testAuto(swerve));
@@ -264,8 +265,12 @@ public class RobotContainer {
         return chooser.getSelected();
     }
 
-    public Command getPathPlannerAuto(){
+    public Command getPathPlannerAutoTest(){
         return AutoBuilder.buildAuto("Test");
+    }
+
+    public Command getPathPlannerAutoTwelvePiece(){
+        return AutoBuilder.buildAuto("twelvePieceAuto")
     }
 
     public Command getPathPlannerPath(){

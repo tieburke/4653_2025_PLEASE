@@ -117,7 +117,7 @@ public class DefaultSwerve extends Command {
         }
 
         if(setToZero1.getAsBoolean() && setToZero2.getAsBoolean()){
-            //s_Swerve.getEmRight();
+            s_Swerve.getEmRight();
             resetAlready = true;
         }
 

@@ -7,13 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Example Path"
+            "pathName": "middleToReef"
           }
         },
         {
-          "type": "wait",
+          "type": "path",
           "data": {
-            "waitTime": 1.0
+            "pathName": "reefToSource"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "sourceToSecondReef"
           }
         }
       ]
