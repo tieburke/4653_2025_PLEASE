@@ -12,7 +12,7 @@ public class RGResetAuto extends Command {
   /** Creates a new TimedDriveOut. */
   private RainGutter rainGutter;
   private Timer timer;
-  
+
   public RGResetAuto(RainGutter rainGutter) {
     this.rainGutter = rainGutter;
     this.timer = new Timer();
@@ -28,19 +28,18 @@ public class RGResetAuto extends Command {
     timer.start();
   }
 
-
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-        rainGutter.setRotateIntake();
-        rainGutter.close();
+    rainGutter.setRotateIntake();
+    rainGutter.close();
   }
-  
+
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-      timer.stop();
-      timer.reset();
+    timer.stop();
+    timer.reset();
   }
 
   // Returns true when the command should end.

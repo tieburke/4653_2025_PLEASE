@@ -12,7 +12,7 @@ public class RGL4Auto extends Command {
   /** Creates a new TimedDriveOut. */
   private RainGutter rainGutter;
   private Timer timer;
-  
+
   public RGL4Auto(RainGutter rainGutter) {
     this.rainGutter = rainGutter;
     this.timer = new Timer();
@@ -28,26 +28,23 @@ public class RGL4Auto extends Command {
     timer.start();
   }
 
-
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-      if(timer.get() > .1){
-        rainGutter.setRotateL4();
-        rainGutter.open();
-      }
+    rainGutter.setRotateL4();
+    rainGutter.open();
   }
-  
+
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-      timer.stop();
-      timer.reset();
+    timer.stop();
+    timer.reset();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return (timer.get() > .25);
+    return (timer.get() > 1);
   }
 }

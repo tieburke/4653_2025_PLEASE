@@ -14,8 +14,8 @@ public class AIntakeUpAuto extends Command {
   /** Creates a new TimedDriveOut. */
   private AlgaeIntake algaeIntake;
   private Timer timer;
-  
-  public AIntakeUpAuto(AlgaeIntake aIntake){
+
+  public AIntakeUpAuto(AlgaeIntake aIntake) {
     algaeIntake = aIntake;
     this.timer = new Timer();
 
@@ -30,18 +30,17 @@ public class AIntakeUpAuto extends Command {
     timer.start();
   }
 
-
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-        algaeIntake.setPosition(Constants.AlgaeIntake.verticalPos);
+    algaeIntake.setPosition(Constants.AlgaeIntake.verticalPos);
   }
-  
+
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-      timer.stop();
-      timer.reset();
+    timer.stop();
+    timer.reset();
   }
 
   // Returns true when the command should end.

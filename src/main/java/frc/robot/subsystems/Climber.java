@@ -15,49 +15,50 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
-public class Climber extends SubsystemBase{
-    
+public class Climber extends SubsystemBase {
+
     private SparkMax climberMotor;
     private SparkMaxConfig mClimberConfig;
     private RelativeEncoder climberEncoder;
 
-    public Climber(){
+    public Climber() {
         climberMotor = new SparkMax(Constants.Climber.climberMotorID, MotorType.kBrushless);
         climberEncoder = climberMotor.getEncoder();
         configClimber();
     }
 
-    public void configClimber(){
+    public void configClimber() {
         mClimberConfig = new SparkMaxConfig();
         mClimberConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-        .pid(Constants.Climber.climberMotorKP, Constants.Climber.climberMotorKI, Constants.Climber.climberMotorKD);
+                .pid(Constants.Climber.climberMotorKP, Constants.Climber.climberMotorKI,
+                        Constants.Climber.climberMotorKD);
 
         climberMotor.configure(mClimberConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         climberEncoder.setPosition(0);
     }
 
-    public void setPosition(double position){
+    public void setPosition(double position) {
         climberMotor.getClosedLoopController().setReference(position, ControlType.kPosition, ClosedLoopSlot.kSlot0);
     }
 
-    public void climberUpManual(){
+    public void climberUpManual() {
         climberMotor.set(Constants.Climber.manualSpeed);
     }
 
-    public void climberDownManual(){
+    public void climberDownManual() {
         climberMotor.set(-Constants.Climber.manualSpeed);
     }
 
-    public void climberStop(){
+    public void climberStop() {
         climberMotor.set(0);
     }
 
-    public void resetEncoder(){
+    public void resetEncoder() {
         climberEncoder.setPosition(0);
     }
 
     @Override
-    public void periodic(){
+    public void periodic() {
         SmartDashboard.putNumber("climber Encoder Value: ", climberEncoder.getPosition());
     }
 
