@@ -5,21 +5,40 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "deadline",
           "data": {
-            "pathName": "middleToReef"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "middleToReef"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "L4Auto"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "LimelightAlignX"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "RGL4Auto"
           }
         },
         {
           "type": "path",
           "data": {
             "pathName": "reefToSource"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "sourceToSecondReef"
           }
         }
       ]

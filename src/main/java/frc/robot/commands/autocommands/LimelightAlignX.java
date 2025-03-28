@@ -11,11 +11,11 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
-public class LimelightAlignAuto extends Command {    
+public class LimelightAlignX extends Command {    
     private Swerve s_Swerve;  
     private Timer timer; 
 
-    public LimelightAlignAuto(Swerve s_Swerve){
+    public LimelightAlignX(Swerve s_Swerve){
         this.s_Swerve = s_Swerve; 
         this.timer = new Timer();
         addRequirements(s_Swerve);
@@ -32,18 +32,16 @@ public class LimelightAlignAuto extends Command {
     public void execute() {
             //if(LimelightHelpers.getFiducialID("limelight") != -1){
             s_Swerve.drive(
-                new Translation2d(0.2, RobotContainer.limelight_aim_proportional("limelight-b")).times(Constants.Swerve.maxSpeed), 
+                new Translation2d(0, RobotContainer.limelight_aim_proportional("limelight-b")).times(Constants.Swerve.maxSpeed), 
                 0,//RobotContainer.limelight_range_proportional()*1.25, 
                 false, 
                 true
-            );
-            LimelightHelpers.setPipelineIndex("limelight", 0);  
+            ); 
     }
 
       // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
-        SmartDashboard.putBoolean("FINISHED", isFinished());
         timer.stop();
         timer.reset();
         s_Swerve.drive(
@@ -55,7 +53,7 @@ public class LimelightAlignAuto extends Command {
 
     @Override
     public boolean isFinished(){
-        if(LimelightHelpers.getTA("limelight") > 17){
+        if(Math.abs(LimelightHelpers.getTX("limelight-b")) < 2 && LimelightHelpers.getFiducialID("limelight-b") != -1){
             return true;
         }
         else if(timer.get() > 4){

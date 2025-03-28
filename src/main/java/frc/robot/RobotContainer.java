@@ -105,6 +105,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("RGL4Auto", new RGL4Auto(rainGutter));
         NamedCommands.registerCommand("RGResetAuto", new RGResetAuto(rainGutter));
         NamedCommands.registerCommand("L0Auto", new L0Auto(elevator));
+        NamedCommands.registerCommand("LimelightAlignX", new LimelightAlignX(swerve));
 
         if(translationAxis < Math.abs(0.1)){
             translationAxis = 0;
@@ -186,7 +187,7 @@ public class RobotContainer {
     // "proportional control" is a control algorithm in which the output is proportional to the error.
     // in this case, we are going to return an angular velocity that is proportional to the 
     // "tx" value from the Limelight.
-    public static double limelight_aim_proportional(){    
+    public static double limelight_aim_proportional(String limelightName){    
         // kP (constant of proportionality)
         // this is a hand-tuned number that determines the aggressiveness of our proportional control loop
         // if it is too high, the robot will oscillate.
@@ -196,7 +197,7 @@ public class RobotContainer {
     
         // tx ranges from (-hfov/2) to (hfov/2) in degrees. If your target is on the rightmost edge of 
         // your limelight 3 feed, tx should return roughly 31 degrees.
-        double targetingAngularVelocity = LimelightHelpers.getTX("limelight") * kP;
+        double targetingAngularVelocity = LimelightHelpers.getTX(limelightName) * kP;
     
         // convert to radians per second for our drive method
         targetingAngularVelocity *= Constants.Swerve.maxAngularVelocity;
@@ -210,9 +211,9 @@ public class RobotContainer {
     // simple proportional ranging control with Limelight's "ty" value
     // this works best if your Limelight's mount height and target mount height are different.
     // if your limelight and target are mounted at the same or similar heights, use "ta" (area) for target ranging rather than "ty"
-    public static double limelight_range_proportional(){    
+    public static double limelight_range_proportional(String limelightName){    
         double kP = -.05;
-        double targetingForwardSpeed = LimelightHelpers.getTY("limelight") * kP;
+        double targetingForwardSpeed = LimelightHelpers.getTY(limelightName) * kP;
         targetingForwardSpeed *= Math.PI;
         targetingForwardSpeed *= 0.05;
         return targetingForwardSpeed;
