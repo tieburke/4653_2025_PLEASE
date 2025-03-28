@@ -26,12 +26,6 @@
         {
           "type": "named",
           "data": {
-            "name": "LimelightAlignX"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "RGL4Auto"
           }
         },
