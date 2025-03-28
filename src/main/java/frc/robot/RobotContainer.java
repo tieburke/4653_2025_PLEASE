@@ -4,7 +4,6 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import javax.sql.rowset.JoinRowSet;
-
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
@@ -76,7 +75,8 @@ public class RobotContainer {
     private final JoystickButton elevl2Button = new JoystickButton(operator, XboxController.Button.kX.value);
     private final JoystickButton elevl1Button = new JoystickButton(operator, XboxController.Button.kLeftStick.value);
     private final JoystickButton resetAIntakeButton = new JoystickButton(operator, XboxController.Button.kBack.value);
-    private int elevUpDown = XboxController.Axis.kRightY.value;
+    private int elevUpDown 
+    = XboxController.Axis.kRightY.value;
     private final JoystickButton climbButtonUp = new JoystickButton(operator, XboxController.Button.kA.value);
     private final JoystickButton climbButtonDown = new JoystickButton(operator, XboxController.Button.kRightStick.value);
     private final JoystickButton aIntakeVert = new JoystickButton(operator, XboxController.Button.kLeftBumper.value);
@@ -232,10 +232,9 @@ public class RobotContainer {
                     new AIntakeUpAuto(aIntake)
                 ),
                 new LimelightAlignAuto(swerve),
-                new ParallelCommandGroup(
-                    new L4Auto(elevator),
-                    new RGL4Auto(rainGutter)
-                ),
+                new L4Auto(elevator),
+                new RGL4Auto(rainGutter),
+                new WaitCommand(2),
                 new ParallelCommandGroup(
                     new L0Auto(elevator),
                     new RGResetAuto(rainGutter)

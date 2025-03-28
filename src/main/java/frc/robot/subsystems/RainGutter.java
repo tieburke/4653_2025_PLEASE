@@ -15,11 +15,11 @@ public class RainGutter extends SubsystemBase{
     }
 
     public void setRotateL4(){
-        rotateServo.setAngle(160);
+        rotateServo.setAngle(155);
     }
 
     public void setRotateLOther(){
-        rotateServo.setAngle(170);
+        rotateServo.setAngle(165);
     }
 
     public void setRotateIntake(){

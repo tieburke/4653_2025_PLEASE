@@ -4,24 +4,12 @@
 
 package frc.robot;
 
-import static edu.wpi.first.units.Units.InchesPerSecond;
-import static edu.wpi.first.units.Units.Meters;
-
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.cscore.VideoSink;
 import frc.robot.commands.defaultcommands.DefaultClimber;
-import frc.robot.subsystems.Swerve;
 import edu.wpi.first.net.PortForwarder;
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.AddressableLED;
-import edu.wpi.first.wpilibj.AddressableLEDBuffer;
-import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.LEDPattern.GradientType;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -35,65 +23,24 @@ public class Robot extends TimedRobot {
   private UsbCamera camera;
   private UsbCamera camera2;
   VideoSink server;
-  private boolean toggle = false;
+  
+  private boolean toggle;
 
   private Command m_autonomousCommand;
-
-  // private String trajectory1JSON = "paths/MoveToFirstBlock.wpilib.json";
-  // private Trajectory trajectory1 = new Trajectory();
-
-  // private String trajectory2JSON = "MoveToFirstCone.wpilib.json";
-  // private Trajectory trajectory2 = new Trajectory();
-
-  private RobotContainer m_robotContainer;
-  // private UsbCamera camera;
+  private RobotContainer m_robotContainer;  
 
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
    */
 
-// PWM port 
-// Must be a PWM header, not MXP or DIO
-AddressableLED m_led = new AddressableLED(9);
-// AddressableLED m_led1 = new AddressableLED(8);
-
-// Reuse buffer
-// Default to a length of 60, start empty output
-// Length is expensive to set, so only set it once, then just update data
-AddressableLEDBuffer m_ledBuffer = new AddressableLEDBuffer(310-199);
-// AddressableLEDBuffer m_ledBuffer1 = new AddressableLEDBuffer(100);
-
   @Override
   public void robotInit() {
 
-m_led.setLength(m_ledBuffer.getLength());
-// m_led1.setLength(m_ledBuffer1.getLength());
-
-//LEDPattern base = LEDPattern.gradient(GradientType.kDiscontinuous, Color.kDarkGreen, Color.kWhite);
-//LEDPattern pattern = base.scrollAtAbsoluteSpeed(InchesPerSecond.of(10), Meters.of(1.0/60));
-LEDPattern pattern = LEDPattern.solid(Color.kDarkGreen);
-// Apply the LED pattern to the data buffer
-pattern.applyTo(m_ledBuffer);
-// pattern.applyTo(m_ledBuffer1);
-
-// Set the data
-m_led.setData(m_ledBuffer);
-// m_led1.setData(m_ledBuffer1);
-m_led.start();
-// m_led1.start();
-	  
     //Initialize USB camera
     for(int port = 5800; port <= 5805; port++){
       PortForwarder.add(port, "limelight.local", port);
     }
-
-    // http://roborio-4860-frc.local:5801/
-
-    
-    // camera = new UsbCamera("USBCam", 1);
-
-    // CameraServer.startAutomaticCapture();
 
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
@@ -102,20 +49,6 @@ m_led.start();
     camera = CameraServer.startAutomaticCapture(0);
     camera2 = CameraServer.startAutomaticCapture(1);
     server = CameraServer.getServer();
-
-    // try {
-    //   Path trajectoryPath1 = Filesystem.getDeployDirectory().toPath().resolve(trajectory1JSON);
-    //   trajectory1 = TrajectoryUtil.fromPathweaverJson(trajectoryPath1);
-    // } catch (IOException ex) {
-    //   DriverStation.reportError("Unable to open trajectory: " + trajectory1JSON, ex.getStackTrace());
-    // }
-
-    // try {
-    //   Path trajectoryPath2 = Filesystem.getDeployDirectory().toPath().resolve(trajectory2JSON);
-    //   trajectory2 = TrajectoryUtil.fromPathweaverJson(trajectoryPath2);
-    // } catch (IOException ex) {
-    //   DriverStation.reportError("Unable to open trajectory: " + trajectory2JSON, ex.getStackTrace());
-    // }
   }
 
   /**
@@ -147,9 +80,6 @@ m_led.start();
 	public void autonomousInit() {
 		if(m_robotContainer.getAutonomousCommand() != null) {
 			m_robotContainer.getAutonomousCommand().schedule();
-
-			// Reset Odometry and Gyro
-			//robotContainer.getResetCommand().schedule();
 		}
 	}
 
@@ -181,7 +111,6 @@ m_led.start();
         server.setSource(camera2);
         toggle = false;
       }
-      SmartDashboard.putBoolean("cameraToggle: ", DefaultClimber.cameraSwitch);
   }
 
   @Override

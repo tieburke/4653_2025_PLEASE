@@ -28,10 +28,12 @@ public class DefaultClimber extends Command{
 
         if(manualUp.getAsBoolean()){
             climber.setPosition(Constants.Climber.positionClimb);
+            // climber.climberUpManual();
         }   
 
         else if(manualDown.getAsBoolean()){
             climber.climberDownManual();
+            // climber.setPosition(0);
         }
 
         else{

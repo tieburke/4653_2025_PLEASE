@@ -64,54 +64,6 @@ public class DefaultElevator extends Command{
             elevator.setPosition(Constants.Elevator.positionL1);
             manualControl = false;
         }
-        // if(L1.getAsBoolean() && !kickedAlready){
-        //     elevator.initialKick(Constants.Elevator.positionL1);
-        // }
-        // else if(L1.getAsBoolean() && clock.get() >= elevator.endTime){
-        //     if(!killedAlready){
-        //         elevator.elevatorStop();
-        //         killedAlready = true;
-        //     }
-        //     elevator.setPosition(Constants.Elevator.positionL1);
-        //     manualControl = false;
-        // }
-        
-        // if(L2.getAsBoolean() && !kickedAlready){
-        //     elevator.initialKick(Constants.Elevator.positionL2);
-        // }
-        // else if(L2.getAsBoolean() && clock.get() >= elevator.endTime){
-        //     if(!killedAlready){
-        //         elevator.elevatorStop();
-        //         killedAlready = true;
-        //     }
-        //     elevator.setPosition(Constants.Elevator.positionL2);
-        //     manualControl = false;
-        // }
-        
-        // if(L3.getAsBoolean() && !kickedAlready){
-        //     elevator.initialKick(Constants.Elevator.positionL3);
-        // }
-        // else if(L3.getAsBoolean() && clock.get() >= elevator.endTime){
-        //     if(!killedAlready){
-        //         elevator.elevatorStop();
-        //         killedAlready = true;
-        //     }
-        //     elevator.setPosition(Constants.Elevator.positionL3);
-        //     manualControl = false;
-        // }
-        
-        // if(L4.getAsBoolean() && !kickedAlready){
-        //     elevator.initialKick(Constants.Elevator.positionL4);
-        // }
-        // else if(L4.getAsBoolean() && clock.get() >= elevator.endTime){
-        //     if(!killedAlready){
-        //         elevator.elevatorStop();
-        //         killedAlready = true;
-        //     }
-        //     elevator.setPosition(Constants.Elevator.positionL4);
-        //     manualControl = false;
-        // }
-        
         if(manualDrive.getAsDouble() < -0.1){
             elevator.elevatorUpManual();
             manualControl = true;
@@ -123,7 +75,8 @@ public class DefaultElevator extends Command{
         }
 
         else if(!RobotContainer.elevUp && manualControl){
-            elevator.elevatorStop();
+            //elevator.elevatorStop();
+            elevator.setPosition(elevator.getPosition());
         }
 
         if(!RobotContainer.elevUp && !manualControl && !kickedAlready){
@@ -136,6 +89,7 @@ public class DefaultElevator extends Command{
             }
             elevator.setPosition(Constants.Elevator.positionL0);
         }
+        elevator.setLEDColor();
     }
 
     @Override

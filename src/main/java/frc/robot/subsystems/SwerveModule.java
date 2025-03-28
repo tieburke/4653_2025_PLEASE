@@ -157,6 +157,8 @@ public void configAngleMotor() {
     .pidf(Constants.Swerve.angleKP, Constants.Swerve.angleKI, 
     Constants.Swerve.angleKD, Constants.Swerve.angleKF);
 
+    // mAngleConfig.smartCurrentLimit(30);
+
     mAngleMotor.configure(mAngleConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 }
 
@@ -173,6 +175,8 @@ public void configDriveMotor(){
     mDriveConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
     .pidf(Constants.Swerve.driveKP, Constants.Swerve.driveKI, 
     Constants.Swerve.driveKD, Constants.Swerve.driveKF, ClosedLoopSlot.kSlot0);
+
+    mDriveConfig.smartCurrentLimit(80);
 
     mDriveMotor.configure(mDriveConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 }
@@ -210,8 +214,7 @@ public SwerveModulePosition getPosition(){
 } 
 
     public void getItRight(){
-        mAngleMotor.getClosedLoopController().setReference((mAngleEncoder.getPosition() % 360) + (getAbsoluteAngle().getDegrees())
-        , ControlType.kPosition);
+        mAngleMotor.getClosedLoopController().setReference((mAngleEncoder.getPosition() % 360) + (getAbsoluteAngle().getDegrees()), ControlType.kPosition);
     }
 
     public double getAngleOffset(){

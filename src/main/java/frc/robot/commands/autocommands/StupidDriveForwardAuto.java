@@ -8,8 +8,6 @@ import frc.robot.RobotContainer;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
 
 public class StupidDriveForwardAuto extends Command {    
     private Swerve s_Swerve;  

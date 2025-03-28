@@ -203,7 +203,6 @@ public class Swerve extends SubsystemBase {
     public Pose2d getPose() {
         SmartDashboard.putNumber("XPose", swerveOdometry.getPoseMeters().getX());
         SmartDashboard.putNumber("Ypose", swerveOdometry.getPoseMeters().getY());
-        // return swerveOdometry.update(getYaw(), getModulePositions());
         return swerveOdometry.getPoseMeters();
     }
 
@@ -281,7 +280,7 @@ public class Swerve extends SubsystemBase {
     public boolean checkRight(){
         boolean right = true;
         for(SwerveModule mod : mSwerveMods){
-            if((Math.abs(mod.getAbsoluteAngle().getDegrees()) > 5) && (Math.abs(mod.getAbsoluteAngle().getDegrees()) < 355)){
+            if((Math.abs(mod.getAbsoluteAngle().getDegrees()) > 1) && (Math.abs(mod.getAbsoluteAngle().getDegrees()) < 359)){
                 right = false;
             }
         }
@@ -299,16 +298,12 @@ public class Swerve extends SubsystemBase {
     public void periodic(){
 
         swerveOdometry.update(getYaw(), getModulePositions()); 
-        
-        SmartDashboard.putNumber("XPose", swerveOdometry.getPoseMeters().getX());
-        SmartDashboard.putNumber("Ypose", swerveOdometry.getPoseMeters().getY());
-        
         SmartDashboard.putNumber("yaw: ", getYaw().getDegrees());
 
         for(SwerveModule mod : mSwerveMods){
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Cancoder", mod.getCanCoder().getDegrees());            
-            SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);    
-            SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Angle", mod.getState().angle.getDegrees());       
+        //     SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);    
+        //     SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Angle", mod.getState().angle.getDegrees());       
 
         }
 
