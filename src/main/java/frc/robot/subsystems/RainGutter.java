@@ -4,32 +4,33 @@ import edu.wpi.first.wpilibj.Servo;
 import frc.robot.Constants;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class RainGutter extends SubsystemBase{
-    
+public class RainGutter extends SubsystemBase {
+
     Servo rotateServo;
     Servo releaseServo;
-    
-    public RainGutter(){
+
+    public RainGutter() {
         rotateServo = new Servo(Constants.RainGutter.rotateServoID);
         releaseServo = new Servo(Constants.RainGutter.releaseServoID);
     }
 
-    public void setRotateL4(){
+    public void setRotateL4() {
         rotateServo.setAngle(160);
     }
 
-    public void setRotateLOther(){
+    public void setRotateLOther() {
         rotateServo.setAngle(170);
     }
 
-    public void setRotateIntake(){
+    public void setRotateIntake() {
         rotateServo.setAngle(180);
     }
 
-    public void open(){
+    public void open() {
         releaseServo.setAngle(90);
     }
-    public void close(){
+
+    public void close() {
         releaseServo.setAngle(0);
     }
 }

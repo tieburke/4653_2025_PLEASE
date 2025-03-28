@@ -10,19 +10,18 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+public class LimelightAlignAuto extends Command {
+    private Swerve s_Swerve;
+    private Timer timer;
 
-public class LimelightAlignAuto extends Command {    
-    private Swerve s_Swerve;  
-    private Timer timer; 
-
-    public LimelightAlignAuto(Swerve s_Swerve){
-        this.s_Swerve = s_Swerve; 
+    public LimelightAlignAuto(Swerve s_Swerve) {
+        this.s_Swerve = s_Swerve;
         this.timer = new Timer();
         addRequirements(s_Swerve);
     }
 
     @Override
-    public void initialize(){
+    public void initialize() {
         timer.reset();
         timer.start();
         s_Swerve.zeroGyro();
@@ -40,28 +39,25 @@ public class LimelightAlignAuto extends Command {
             LimelightHelpers.setPipelineIndex("limelight", 0);  
     }
 
-      // Called once the command ends or is interrupted.
+    // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
         SmartDashboard.putBoolean("FINISHED", isFinished());
         timer.stop();
         timer.reset();
         s_Swerve.drive(
-            new Translation2d(0, 0),0, 
-            false, 
-            true
-        );
+                new Translation2d(0, 0), 0,
+                false,
+                true);
     }
 
     @Override
-    public boolean isFinished(){
-        if(LimelightHelpers.getTA("limelight") > 17){
+    public boolean isFinished() {
+        if (LimelightHelpers.getTA("limelight") > 17) {
             return true;
-        }
-        else if(timer.get() > 4){
+        } else if (timer.get() > 4) {
             return true;
-        }
-        else{
+        } else {
             return false;
         }
     }

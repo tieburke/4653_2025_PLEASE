@@ -13,7 +13,7 @@ public class L0Auto extends Command {
   /** Creates a new TimedDriveOut. */
   private Elevator elevator;
   private Timer timer;
-  
+
   public L0Auto(Elevator elevator) {
     this.elevator = elevator;
     this.timer = new Timer();
@@ -29,23 +29,22 @@ public class L0Auto extends Command {
     timer.start();
   }
 
-
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-        elevator.setPosition(Constants.Elevator.positionL0);
+    elevator.setPosition(Constants.Elevator.positionL0);
   }
-  
+
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-      timer.stop();
-      timer.reset();
+    timer.stop();
+    timer.reset();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return ((Constants.Elevator.positionL0 > elevator.getPosition()-2) || timer.get() > 5);
+    return ((Constants.Elevator.positionL0 > elevator.getPosition() - 2) || timer.get() > 5);
   }
 }
