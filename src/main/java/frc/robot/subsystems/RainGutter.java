@@ -14,12 +14,12 @@ public class RainGutter extends SubsystemBase {
         releaseServo = new Servo(Constants.RainGutter.releaseServoID);
     }
 
-    public void setRotateL4() {
-        rotateServo.setAngle(160);
+    public void setRotateL4(){
+        rotateServo.setAngle(155);
     }
 
-    public void setRotateLOther() {
-        rotateServo.setAngle(170);
+    public void setRotateLOther(){
+        rotateServo.setAngle(165);
     }
 
     public void setRotateIntake() {

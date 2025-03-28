@@ -34,6 +34,7 @@ public class DefaultClimber extends Command {
 
         else if (manualDown.getAsBoolean()) {
             climber.climberDownManual();
+            // climber.setPosition(0);
         }
 
         else {

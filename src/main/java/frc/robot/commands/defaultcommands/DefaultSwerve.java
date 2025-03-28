@@ -10,6 +10,7 @@ import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -23,6 +24,9 @@ public class DefaultSwerve extends Command {
     private BooleanSupplier robotCentricSup, setToZero1, setToZero2, limelightAlignL, limelightAlignR;
     private boolean limelight, elevUp;
     private boolean resetAlready;
+    private boolean started;
+    private double initialPoseX;
+    private double initialPoseY;
 
     public DefaultSwerve(Swerve s_Swerve, DoubleSupplier translationSup, DoubleSupplier strafeSup,
             DoubleSupplier rotationSup, BooleanSupplier robotCentricSup, BooleanSupplier setToZeroOne,
@@ -43,6 +47,7 @@ public class DefaultSwerve extends Command {
         limelightAlignR = limlightR;
 
         elevUp = lSomething;
+
     }
 
     @Override
@@ -54,11 +59,9 @@ public class DefaultSwerve extends Command {
     @Override
     public void execute() {
 
-        SmartDashboard.putBoolean("l checker", elevUp);
-
-        /* Get Values, Deadband */
-        // Linear version:
-
+        /* Get Values, Deadband*/
+        //Linear version:
+        
         double translationVal = MathUtil.applyDeadband(translationSup.getAsDouble(), Constants.stickDeadband);
         double strafeVal = MathUtil.applyDeadband(strafeSup.getAsDouble(), Constants.stickDeadband);
         double rotationVal = limelight ? rotationSup.getAsDouble()
@@ -93,16 +96,8 @@ public class DefaultSwerve extends Command {
                     true);
         }
 
-        else if ((limelightAlignL.getAsBoolean()) && !resetAlready) {
-            // s_Swerve.drive(
-            // new Translation2d(RobotContainer.limelight_aim_proportional(),
-            // strafeVal).times(Constants.Swerve.maxSpeed),
-            // RobotContainer.limelight_range_proportional() *
-            // Constants.Swerve.maxAngularVelocity,
-            // false ,
-            // true
-            // );
-            LimelightHelpers.setPipelineIndex("limelight-b", 0);
+        else if((limelightAlignL.getAsBoolean()) && !resetAlready){
+            LimelightHelpers.setPipelineIndex("limelight", 0);
             s_Swerve.drive(
                 new Translation2d(translationVal, RobotContainer.limelight_aim_proportional("limelight-b")).times(Constants.Swerve.maxSpeed), 
                 rotationVal * Constants.Swerve.maxAngularVelocity, 
@@ -110,16 +105,46 @@ public class DefaultSwerve extends Command {
                 true
             );
         }
+
         else if(limelightAlignR.getAsBoolean() && !resetAlready){
-            LimelightHelpers.setPipelineIndex("limelight", 1);
+            LimelightHelpers.setPipelineIndex("limelight", 0);
+            if(LimelightHelpers.getTA("limelight") > 22 || started == true){
+                if(!started){
+                    initialPoseY = s_Swerve.getPose().getY();
+                    initialPoseX = s_Swerve.getPose().getX();
+                }
+                started = true;
+                //if(s_Swerve.getPose().getY() <= initialPose + 0.007){
+                if(Math.sqrt(Math.pow(s_Swerve.getPose().getY() - initialPoseY, 2) + Math.pow(s_Swerve.getPose().getX() - initialPoseX, 2)) <= 0.007){
+                s_Swerve.drive(new Translation2d(0, 0.6), 0, false, true);
+                }
+                else{
+                    started = false;
+                }
+                // SmartDashboard.putNumber("initialPose", initialPose);
+                // SmartDashboard.putNumber("currentPose", s_Swerve.getPose().getX());
+                // if(!started){
+                //     started = true;
+                //     timer.reset();
+                //     timer.start();
+                // }
+                // else if(timer.get() < 0.8 && LimelightHelpers.getTX("limelight") < 2){
+                //     s_Swerve.drive(new Translation2d(0, 0.6), 0, false, true);
+                // }
+        }   
+            else{
             s_Swerve.drive(
                 new Translation2d(0.2, RobotContainer.limelight_aim_proportional("limelight")).times(Constants.Swerve.maxSpeed), 
                 rotationVal * Constants.Swerve.maxAngularVelocity, 
                 false, 
                 true
             );
+            }
         }
 
+        if(setToZero1.getAsBoolean() && setToZero2.getAsBoolean()){
+            s_Swerve.getEmRight();
+        }
         if (setToZero1.getAsBoolean() && setToZero2.getAsBoolean()) {
             s_Swerve.getEmRight();
             resetAlready = true;
@@ -131,7 +156,8 @@ public class DefaultSwerve extends Command {
         // }
 
         s_Swerve.getRobotRelativeSpeeds();
-
+        s_Swerve.getPose();
+        SmartDashboard.putBoolean("resetAlready", resetAlready);
     }
 
 }

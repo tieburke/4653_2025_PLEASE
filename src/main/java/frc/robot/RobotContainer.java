@@ -4,7 +4,6 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import javax.sql.rowset.JoinRowSet;
-
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
@@ -80,7 +79,8 @@ public class RobotContainer {
     private final JoystickButton elevl2Button = new JoystickButton(operator, XboxController.Button.kX.value);
     private final JoystickButton elevl1Button = new JoystickButton(operator, XboxController.Button.kLeftStick.value);
     private final JoystickButton resetAIntakeButton = new JoystickButton(operator, XboxController.Button.kBack.value);
-    private int elevUpDown = XboxController.Axis.kRightY.value;
+    private int elevUpDown 
+    = XboxController.Axis.kRightY.value;
     private final JoystickButton climbButtonUp = new JoystickButton(operator, XboxController.Button.kA.value);
     private final JoystickButton climbButtonDown = new JoystickButton(operator,
             XboxController.Button.kRightStick.value);
@@ -240,17 +240,22 @@ public class RobotContainer {
         chooser.setDefaultOption("Nothing", null);
 
         chooser.addOption(
-                "Limelight1Piece",
-                new SequentialCommandGroup(
-                        new ParallelCommandGroup(
-                                new LPartiallyUp(elevator),
-                                new AIntakeUpAuto(aIntake)),
-                        new LimelightAlignAuto(swerve),
-                        new L4Auto(elevator),
-                        new RGL4Auto(rainGutter),
-                        new ParallelCommandGroup(
-                                new L0Auto(elevator),
-                                new RGResetAuto(rainGutter))));
+            "Limelight1Piece",
+            new SequentialCommandGroup(
+                new ParallelCommandGroup(
+                    new LPartiallyUp(elevator),
+                    new AIntakeUpAuto(aIntake)
+                ),
+                new LimelightAlignAuto(swerve),
+                new L4Auto(elevator),
+                new RGL4Auto(rainGutter),
+                new WaitCommand(2),
+                new ParallelCommandGroup(
+                    new L0Auto(elevator),
+                    new RGResetAuto(rainGutter)
+                )
+            )
+        );
 
         chooser.addOption("StupidDriveOut",
                 new SequentialCommandGroup(

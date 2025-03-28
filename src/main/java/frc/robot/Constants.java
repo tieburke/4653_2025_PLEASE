@@ -155,22 +155,29 @@ public final class Constants {
     public static final class Elevator {
         public static final int winchMotorID = 9;
 
+        /*Old values*/
         public static final double winchMotorKP = 0.01;
         public static final double winchMotorKI = 0;
         public static final double winchMotorKD = 0.3;
         public static final double winchMotorFF = 0.002;
 
-        // public static final double winchMotorVKP = 0.05;
-        // public static final double winchMotorVKI = 0;
-        // public static final double winchMotorVKD = 0.1;
+        // public static final double winchMotorKP = 0.011815;
+        // public static final double winchMotorKI = 0;
+        // public static final double winchMotorKD = 0.3;
+         
+        /* Drive Motor Characterization Values 
+        * Divide SYSID values by 12 to convert from volts to percent output for CTRE */
+        public static final double winchMotorKS = (4.8259 / 12);
+        public static final double winchMotorKV = (0.019311 / 12);
+        public static final double winchMotorKA = (0.0043659 / 12);
 
         public static final double L0Velo = 0.1;
 
         public static final double positionL0 = 0;
-        public static final double positionL1 = 50 * (9.0 / 64);
-        public static final double positionL2 = 42 * (9.0 / 64);
-        public static final double positionL3 = 186.5 * (9.0 / 64);
-        public static final double positionL4 = 435 * (9.0 / 64);
+        public static final double positionL1 = 50*(9.0/64);
+        public static final double positionL2 = 42*(9.0/64);
+        public static final double positionL3 = 195*(9.0/64);
+        public static final double positionL4 = 450*(9.0/64);
 
         public static final double manualSpeed = 0.3;
     }
@@ -197,8 +204,8 @@ public final class Constants {
         public static final double climberMotorKP = 0.05;
         public static final double climberMotorKI = 0;
         public static final double climberMotorKD = 0;
-
-        public static final int positionClimb = 330;
+        
+        public static final int positionClimb = 310;
 
         public static final double manualSpeed = 0.7;
     }
