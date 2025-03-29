@@ -215,11 +215,13 @@ public class Swerve extends SubsystemBase {
         if(LimelightHelpers.getFiducialID("limelight-b") != -1){
             lastPoseLimelight = true;
             lastPose = LimelightHelpers.getBotPose2d("limelight-b");
+            lastPose.minus(new Pose2d(-4.025,-8.775, new Rotation2d()));
             return lastPose;
         }
         else if(LimelightHelpers.getFiducialID("limelight") != -1){
             lastPoseLimelight = true;
             lastPose = LimelightHelpers.getBotPose2d("limelight");
+            lastPose.minus(new Pose2d(-4.025,-8.775, new Rotation2d()));
             return lastPose;
         }
         else{
