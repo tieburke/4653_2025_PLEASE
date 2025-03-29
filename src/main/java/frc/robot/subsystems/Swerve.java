@@ -2,7 +2,7 @@ package frc.robot.subsystems;
 
 import frc.lib.math.Conversions;
 import frc.robot.Constants;
-
+import frc.robot.util.LimelightHelpers;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
@@ -35,6 +35,8 @@ public class Swerve extends SubsystemBase {
     public SwerveModule[] mSwerveMods;
     public AHRS gyro;
     private Field2d field = new Field2d();
+    private boolean lastPoseLimelight = false;
+    private Pose2d lastPose;
 
     public Swerve() {
 
@@ -72,7 +74,7 @@ public class Swerve extends SubsystemBase {
 
             // Configure AutoBuilder last
             AutoBuilder.configure(
-                    this::getPose, // Robot pose supplier
+                    this::getPosePP, // Robot pose supplier
                     this::resetOdometryPP, // Method to reset odometry (will be called if your auto has a starting pose)
                     this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
                     (speeds, feedforwards) -> driveRobotRelativePP(speeds), // Method that will drive the robot given
@@ -203,6 +205,27 @@ public class Swerve extends SubsystemBase {
         SmartDashboard.putNumber("XPose", swerveOdometry.getPoseMeters().getX());
         SmartDashboard.putNumber("Ypose", swerveOdometry.getPoseMeters().getY());
         return swerveOdometry.getPoseMeters();
+    }
+
+    public Pose2d getPosePP(){
+        if(lastPoseLimelight && (LimelightHelpers.getFiducialID("limelight-b") == -1 || LimelightHelpers.getFiducialID("limelight") == -1)){
+            resetOdometryPP(lastPose);
+        }
+
+        if(LimelightHelpers.getFiducialID("limelight-b") != -1){
+            lastPoseLimelight = true;
+            lastPose = LimelightHelpers.getBotPose2d("limelight-b");
+            return lastPose;
+        }
+        else if(LimelightHelpers.getFiducialID("limelight") != -1){
+            lastPoseLimelight = true;
+            lastPose = LimelightHelpers.getBotPose2d("limelight");
+            return lastPose;
+        }
+        else{
+            lastPoseLimelight = false;
+            return swerveOdometry.getPoseMeters();
+        }
     }
 
     public void resetOdometry() {
