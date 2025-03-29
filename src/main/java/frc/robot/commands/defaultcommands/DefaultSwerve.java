@@ -97,49 +97,21 @@ public class DefaultSwerve extends Command {
         }
 
         else if((limelightAlignL.getAsBoolean()) && !resetAlready){
-            LimelightHelpers.setPipelineIndex("limelight", 0);
             s_Swerve.drive(
-                new Translation2d(translationVal, RobotContainer.limelight_aim_proportional("limelight-b")).times(Constants.Swerve.maxSpeed), 
+                new Translation2d(translationVal, RobotContainer.limelight_aim_proportional("limelight")).times(Constants.Swerve.maxSpeed), 
                 rotationVal * Constants.Swerve.maxAngularVelocity, 
                 false, 
                 true
             );
         }
 
-        else if(limelightAlignR.getAsBoolean() && !resetAlready){
-            LimelightHelpers.setPipelineIndex("limelight", 0);
-            if(LimelightHelpers.getTA("limelight") > 22 || started == true){
-                if(!started){
-                    initialPoseY = s_Swerve.getPose().getY();
-                    initialPoseX = s_Swerve.getPose().getX();
-                }
-                started = true;
-                //if(s_Swerve.getPose().getY() <= initialPose + 0.007){
-                if(Math.sqrt(Math.pow(s_Swerve.getPose().getY() - initialPoseY, 2) + Math.pow(s_Swerve.getPose().getX() - initialPoseX, 2)) <= 0.007){
-                s_Swerve.drive(new Translation2d(0, 0.6), 0, false, true);
-                }
-                else{
-                    started = false;
-                }
-                // SmartDashboard.putNumber("initialPose", initialPose);
-                // SmartDashboard.putNumber("currentPose", s_Swerve.getPose().getX());
-                // if(!started){
-                //     started = true;
-                //     timer.reset();
-                //     timer.start();
-                // }
-                // else if(timer.get() < 0.8 && LimelightHelpers.getTX("limelight") < 2){
-                //     s_Swerve.drive(new Translation2d(0, 0.6), 0, false, true);
-                // }
-        }   
-            else{
+        else if((limelightAlignR.getAsBoolean()) && !resetAlready){
             s_Swerve.drive(
-                new Translation2d(0.2, RobotContainer.limelight_aim_proportional("limelight")).times(Constants.Swerve.maxSpeed), 
+                new Translation2d(translationVal, RobotContainer.limelight_aim_proportional("limelight-b")).times(Constants.Swerve.maxSpeed), 
                 rotationVal * Constants.Swerve.maxAngularVelocity, 
                 false, 
                 true
             );
-            }
         }
 
         if(setToZero1.getAsBoolean() && setToZero2.getAsBoolean()){

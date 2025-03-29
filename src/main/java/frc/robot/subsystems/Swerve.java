@@ -202,8 +202,8 @@ public class Swerve extends SubsystemBase {
     }
 
     public Pose2d getPose() {
-        SmartDashboard.putNumber("XPose", swerveOdometry.getPoseMeters().getX());
-        SmartDashboard.putNumber("Ypose", swerveOdometry.getPoseMeters().getY());
+        // SmartDashboard.putNumber("XPose", swerveOdometry.getPoseMeters().getX());
+        // SmartDashboard.putNumber("Ypose", swerveOdometry.getPoseMeters().getY());
         return swerveOdometry.getPoseMeters();
     }
 
@@ -324,6 +324,9 @@ public class Swerve extends SubsystemBase {
 
         swerveOdometry.update(getYaw(), getModulePositions()); 
         SmartDashboard.putNumber("yaw: ", getYaw().getDegrees());
+        SmartDashboard.putNumber("XPose", getPosePP().getX());
+        SmartDashboard.putNumber("Ypose", getPosePP().getY());
+        
 
         for(SwerveModule mod : mSwerveMods){
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Cancoder", mod.getCanCoder().getDegrees());            
