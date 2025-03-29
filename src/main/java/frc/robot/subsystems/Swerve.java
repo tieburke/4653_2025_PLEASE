@@ -15,6 +15,7 @@ import com.pathplanner.lib.config.PIDConstants;
 import com.studica.frc.AHRS;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.units.measure.MutDistance;
@@ -36,7 +37,7 @@ public class Swerve extends SubsystemBase {
     public AHRS gyro;
     private Field2d field = new Field2d();
     private boolean lastPoseLimelight = false;
-    private Pose2d lastPose;
+    private Pose2d lastPose = new Pose2d();
 
     public Swerve() {
 
@@ -214,14 +215,14 @@ public class Swerve extends SubsystemBase {
 
         if(LimelightHelpers.getFiducialID("limelight-b") != -1){
             lastPoseLimelight = true;
-            lastPose = LimelightHelpers.getBotPose2d("limelight-b");
-            lastPose.minus(new Pose2d(-4.025,-8.775, new Rotation2d()));
+            lastPose = LimelightHelpers.getBotPose2d_wpiBlue("limelight-b");
+            // lastPose = lastPose.plus(new Transform2d(8.775, 4.025, getYaw()));
             return lastPose;
         }
         else if(LimelightHelpers.getFiducialID("limelight") != -1){
             lastPoseLimelight = true;
-            lastPose = LimelightHelpers.getBotPose2d("limelight");
-            lastPose.minus(new Pose2d(-4.025,-8.775, new Rotation2d()));
+            lastPose = LimelightHelpers.getBotPose2d_wpiBlue("limelight");
+            // lastPose = lastPose.plus(new Transform2d(8.775, 4.025, getYaw()));
             return lastPose;
         }
         else{
