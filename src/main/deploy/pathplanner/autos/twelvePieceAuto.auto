@@ -36,6 +36,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "L0Auto"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "reefToSource"

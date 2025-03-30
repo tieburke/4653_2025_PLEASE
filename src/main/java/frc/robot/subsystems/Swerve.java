@@ -13,11 +13,15 @@ import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.config.PIDConstants;
 import com.studica.frc.AHRS;
+
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.MutDistance;
 import edu.wpi.first.units.measure.MutLinearVelocity;
 import edu.wpi.first.units.measure.MutVoltage;
@@ -35,9 +39,12 @@ public class Swerve extends SubsystemBase {
     private final SwerveDriveKinematics kinematics;
     public SwerveModule[] mSwerveMods;
     public AHRS gyro;
-    private Field2d field = new Field2d();
     private boolean lastPoseLimelight = false;
     private Pose2d lastPose = new Pose2d();
+    
+    /* Here we use SwerveDrivePoseEstimator so that we can fuse odometry readings. The numbers used
+  below are robot specific, and should be tuned. */
+  private final SwerveDrivePoseEstimator m_poseEstimator;
 
     public Swerve() {
 
@@ -57,6 +64,21 @@ public class Swerve extends SubsystemBase {
                 Constants.Swerve.frModuleOffset,
                 Constants.Swerve.blModuleOffset,
                 Constants.Swerve.brModuleOffset);
+
+        m_poseEstimator =       
+        new SwerveDrivePoseEstimator(
+            kinematics,
+            gyro.getRotation2d(),
+            new SwerveModulePosition[] {
+              mSwerveMods[0].getPosition(),
+              mSwerveMods[1].getPosition(),
+              mSwerveMods[2].getPosition(),
+              mSwerveMods[3].getPosition()
+            },
+            new Pose2d(),
+            VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5)),
+            VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(30)));
+  
 
         /*
          * By pausing init for a second before setting module offsets, we avoid a bug
@@ -133,7 +155,8 @@ public class Swerve extends SubsystemBase {
 
     public void resetOdometryPP(Pose2d pose) {
         // swerveOdometry.resetPosition(getYaw(), getModulePositions(), new Pose2d());
-        swerveOdometry.resetPose(pose);
+        // swerveOdometry.resetPose(pose);
+        m_poseEstimator.resetPose(pose);
     }
 
     /* Other methods */
@@ -209,6 +232,7 @@ public class Swerve extends SubsystemBase {
     }
 
     public Pose2d getPosePP(){
+        /*
         if(lastPoseLimelight && (LimelightHelpers.getFiducialID("limelight-b") == -1 || LimelightHelpers.getFiducialID("limelight") == -1)){
             resetOdometryPP(lastPose);
         }
@@ -216,19 +240,55 @@ public class Swerve extends SubsystemBase {
         if(LimelightHelpers.getFiducialID("limelight-b") != -1){
             lastPoseLimelight = true;
             lastPose = LimelightHelpers.getBotPose2d_wpiBlue("limelight-b");
-            // lastPose = lastPose.plus(new Transform2d(8.775, 4.025, getYaw()));
             return lastPose;
         }
         else if(LimelightHelpers.getFiducialID("limelight") != -1){
             lastPoseLimelight = true;
             lastPose = LimelightHelpers.getBotPose2d_wpiBlue("limelight");
-            // lastPose = lastPose.plus(new Transform2d(8.775, 4.025, getYaw()));
             return lastPose;
         }
         else{
             lastPoseLimelight = false;
             return swerveOdometry.getPoseMeters();
         }
+            */
+        m_poseEstimator.update(
+            gyro.getRotation2d(),
+            new SwerveModulePosition[] {
+                mSwerveMods[0].getPosition(),
+                mSwerveMods[1].getPosition(),
+                mSwerveMods[2].getPosition(),
+                mSwerveMods[3].getPosition()
+            });
+
+        boolean doRejectUpdate = false;
+
+        LimelightHelpers.PoseEstimate mt1 = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight");
+        if(mt1.tagCount == 1 && mt1.rawFiducials.length == 1)
+        {
+            if(mt1.rawFiducials[0].ambiguity > .7)
+            {
+            doRejectUpdate = true;
+            }
+            if(mt1.rawFiducials[0].distToCamera > 3)
+            {
+            doRejectUpdate = true;
+            }
+        }
+        if(mt1.tagCount == 0)
+        {
+            doRejectUpdate = true;
+        }
+
+        if(!doRejectUpdate)
+        {
+            m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.5,.5,9999999));
+            m_poseEstimator.addVisionMeasurement(
+                mt1.pose,
+                mt1.timestampSeconds);
+        }
+
+        return m_poseEstimator.getEstimatedPosition();
     }
 
     public void resetOdometry() {
