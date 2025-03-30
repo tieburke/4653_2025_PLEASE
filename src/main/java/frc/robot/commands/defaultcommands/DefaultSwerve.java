@@ -121,6 +121,10 @@ public class DefaultSwerve extends Command {
             s_Swerve.getEmRight();
             resetAlready = true;
         }
+        //un-self-destruct in case of emergency
+        if(setToZero1.getAsBoolean() && setToZero2.getAsBoolean() && limelightAlignL.getAsBoolean()){
+            resetAlready = false;
+        }
 
         // if(resetAlready && s_Swerve.checkRight()){
         // s_Swerve.resetOdometry();

@@ -155,8 +155,8 @@ public class Swerve extends SubsystemBase {
 
     public void resetOdometryPP(Pose2d pose) {
         // swerveOdometry.resetPosition(getYaw(), getModulePositions(), new Pose2d());
-        // swerveOdometry.resetPose(pose);
-        m_poseEstimator.resetPose(pose);
+        swerveOdometry.resetPose(pose);
+        // m_poseEstimator.resetPose(pose);
     }
 
     /* Other methods */
@@ -252,43 +252,45 @@ public class Swerve extends SubsystemBase {
             return swerveOdometry.getPoseMeters();
         }
             */
-        m_poseEstimator.update(
-            gyro.getRotation2d(),
-            new SwerveModulePosition[] {
-                mSwerveMods[0].getPosition(),
-                mSwerveMods[1].getPosition(),
-                mSwerveMods[2].getPosition(),
-                mSwerveMods[3].getPosition()
-            });
+        // m_poseEstimator.update(
+        //     gyro.getRotation2d(),
+        //     new SwerveModulePosition[] {
+        //         mSwerveMods[0].getPosition(),
+        //         mSwerveMods[1].getPosition(),
+        //         mSwerveMods[2].getPosition(),
+        //         mSwerveMods[3].getPosition()
+        //     });
 
-        boolean doRejectUpdate = false;
+        // boolean doRejectUpdate = false;
 
-        LimelightHelpers.PoseEstimate mt1 = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight");
-        if(mt1.tagCount == 1 && mt1.rawFiducials.length == 1)
-        {
-            if(mt1.rawFiducials[0].ambiguity > .7)
-            {
-            doRejectUpdate = true;
-            }
-            if(mt1.rawFiducials[0].distToCamera > 3)
-            {
-            doRejectUpdate = true;
-            }
-        }
-        if(mt1.tagCount == 0)
-        {
-            doRejectUpdate = true;
-        }
+        // LimelightHelpers.PoseEstimate mt1 = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight");
+        // if(mt1.tagCount == 1 && mt1.rawFiducials.length == 1)
+        // {
+        //     if(mt1.rawFiducials[0].ambiguity > .7)
+        //     {
+        //     doRejectUpdate = true;
+        //     }
+        //     if(mt1.rawFiducials[0].distToCamera > 3)
+        //     {
+        //     doRejectUpdate = true;
+        //     }
+        // }
+        // if(mt1.tagCount == 0)
+        // {
+        //     doRejectUpdate = true;
+        // }
 
-        if(!doRejectUpdate)
-        {
-            m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.5,.5,9999999));
-            m_poseEstimator.addVisionMeasurement(
-                mt1.pose,
-                mt1.timestampSeconds);
-        }
+        // if(!doRejectUpdate)
+        // {
+        //     //m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(0.5,0.5, 999999));
+        //     m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(0.1, 0.1, 1));
+        //     m_poseEstimator.addVisionMeasurement(
+        //         mt1.pose,
+        //         mt1.timestampSeconds);
+        // }
 
-        return m_poseEstimator.getEstimatedPosition();
+        // return m_poseEstimator.getEstimatedPosition();
+        return swerveOdometry.getPoseMeters();
     }
 
     public void resetOdometry() {
@@ -390,6 +392,8 @@ public class Swerve extends SubsystemBase {
         SmartDashboard.putNumber("XPose", getPosePP().getX());
         SmartDashboard.putNumber("Ypose", getPosePP().getY());
         
+        var alliance = DriverStation.getAlliance();
+        SmartDashboard.putBoolean("Alliance is red?", alliance.get() == DriverStation.Alliance.Red);
 
         for(SwerveModule mod : mSwerveMods){
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Cancoder", mod.getCanCoder().getDegrees());            

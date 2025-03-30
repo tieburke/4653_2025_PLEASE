@@ -30,16 +30,15 @@ public class LimelightAlignX extends Command {
 
     @Override
     public void execute() {
-            //if(LimelightHelpers.getFiducialID("limelight") != -1){
             s_Swerve.drive(
-                new Translation2d(0, RobotContainer.limelight_aim_proportional("limelight-b")).times(Constants.Swerve.maxSpeed), 
-                0,//RobotContainer.limelight_range_proportional()*1.25, 
+                new Translation2d(0, RobotContainer.limelight_aim_proportional("limelight")).times(Constants.Swerve.maxSpeed), 
+                0,
                 false, 
                 true
             ); 
     }
 
-      // Called once the command ends or is interrupted.
+    // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
         timer.stop();
@@ -49,14 +48,17 @@ public class LimelightAlignX extends Command {
             false, 
             true
         );
+        if(LimelightHelpers.getFiducialID("limelight") != -1){
+            s_Swerve.resetOdometryPP(LimelightHelpers.getBotPose2d_wpiBlue("limelight"));
+        }
     }
 
     @Override
     public boolean isFinished(){
-        if(Math.abs(LimelightHelpers.getTX("limelight-b")) < 2 && LimelightHelpers.getFiducialID("limelight-b") != -1){
+        if(Math.abs(LimelightHelpers.getTX("limelight")) < 2 && LimelightHelpers.getFiducialID("limelight") != -1){
             return true;
         }
-        else if(timer.get() > 4){
+        else if(timer.get() > 2){
             return true;
         }
         else{
