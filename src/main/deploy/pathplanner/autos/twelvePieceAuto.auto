@@ -42,6 +42,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "RGL0Auto"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "reefToSource"
