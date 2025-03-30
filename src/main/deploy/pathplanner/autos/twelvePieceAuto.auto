@@ -28,25 +28,6 @@
           "data": {
             "name": "RGL4Auto"
           }
-        },
-        {
-          "type": "deadline",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "L0Auto"
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "reefToSource"
-                }
-              }
-            ]
-          }
         }
       ]
     }
