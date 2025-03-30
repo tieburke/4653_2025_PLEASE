@@ -65,6 +65,12 @@
           "data": {
             "pathName": "reefToSource"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "sourceToSecondReef"
+          }
         }
       ]
     }
