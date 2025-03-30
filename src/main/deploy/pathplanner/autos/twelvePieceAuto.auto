@@ -28,6 +28,12 @@
           "data": {
             "name": "RGL4Auto"
           }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 2.0
+          }
         }
       ]
     }
