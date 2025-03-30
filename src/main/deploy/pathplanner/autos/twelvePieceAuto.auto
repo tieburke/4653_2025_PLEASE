@@ -11,7 +11,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "middleToReef"
+                  "pathName": "rightToReef"
                 }
               },
               {
@@ -32,19 +32,26 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 2.0
+            "waitTime": 0.5
           }
         },
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "L0Auto"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "RGResetAuto"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "L0Auto"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "RGResetAuto"
+                }
+              }
+            ]
           }
         },
         {
