@@ -56,14 +56,14 @@
                 "data": {
                   "name": "RGResetAuto"
                 }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "reefToSource"
+                }
               }
             ]
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "reefToSource"
           }
         },
         {
@@ -101,6 +101,62 @@
           "type": "wait",
           "data": {
             "waitTime": 0.5
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "L0Auto"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "RGResetAuto"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "secondReefToSource"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "sourceToSecondReef"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "L4Auto"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "LimelightAlignX"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "RGL4Auto"
           }
         },
         {
