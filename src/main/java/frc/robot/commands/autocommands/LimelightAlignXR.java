@@ -11,11 +11,11 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
-public class LimelightAlignX extends Command {    
+public class LimelightAlignXR extends Command {    
     private Swerve s_Swerve;  
-    private Timer timer; 
+    private Timer timer;
 
-    public LimelightAlignX(Swerve s_Swerve){
+    public LimelightAlignXR(Swerve s_Swerve){
         this.s_Swerve = s_Swerve; 
         this.timer = new Timer();
         addRequirements(s_Swerve);
@@ -30,9 +30,9 @@ public class LimelightAlignX extends Command {
 
     @Override
     public void execute() {
-        if(LimelightHelpers.getTA("limelight") < 22){
+        if(LimelightHelpers.getTA("limelight-b") < 22){
             s_Swerve.drive(
-                    new Translation2d(0.2, RobotContainer.limelight_aim_proportional("limelight", 0.05)).times(Constants.Swerve.maxSpeed), 
+                    new Translation2d(0.2, RobotContainer.limelight_aim_proportional("limelight-b", 0.05)).times(Constants.Swerve.maxSpeed), 
                     0,
                     false, 
                     true
@@ -40,7 +40,7 @@ public class LimelightAlignX extends Command {
         }
         else{
             s_Swerve.drive(
-                new Translation2d(0.0, RobotContainer.limelight_aim_proportional("limelight", 0.04)).times(Constants.Swerve.maxSpeed), 
+                new Translation2d(0.0, RobotContainer.limelight_aim_proportional("limelight-b", 0.04)).times(Constants.Swerve.maxSpeed), 
                 0,
                 false, 
                 true
@@ -58,14 +58,14 @@ public class LimelightAlignX extends Command {
             false, 
             true
         );
-        if(LimelightHelpers.getFiducialID("limelight") != -1){
-            s_Swerve.resetOdometryPP(LimelightHelpers.getBotPose2d_wpiBlue("limelight"));
+        if(LimelightHelpers.getFiducialID("limelight-b") != -1){
+            s_Swerve.resetOdometryPP(LimelightHelpers.getBotPose2d_wpiBlue("limelight-b"));
         }
     }
 
     @Override
     public boolean isFinished(){
-        if(Math.abs(LimelightHelpers.getTX("limelight")) < 1.5 && LimelightHelpers.getFiducialID("limelight") != -1 && Math.abs(s_Swerve.getSpeeds()) < 0.1){
+        if(Math.abs(LimelightHelpers.getTX("limelight-b")) < 1.5 && LimelightHelpers.getFiducialID("limelight-b") != -1 && Math.abs(s_Swerve.getSpeeds()) < 0.1){
             return true;
         }
         // else if(timer.get() > 2){

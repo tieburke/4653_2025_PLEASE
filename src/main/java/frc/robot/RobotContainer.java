@@ -112,7 +112,8 @@ public class RobotContainer {
         NamedCommands.registerCommand("RGL4Auto", new RGL4Auto(rainGutter));
         NamedCommands.registerCommand("RGResetAuto", new RGResetAuto(rainGutter));
         NamedCommands.registerCommand("L0Auto", new L0Auto(elevator));
-        NamedCommands.registerCommand("LimelightAlignX", new LimelightAlignX(swerve));
+        NamedCommands.registerCommand("LimelightAlignXL", new LimelightAlignXL(swerve));
+        NamedCommands.registerCommand("LimelightAlignXR", new LimelightAlignXR(swerve));
 
         if (translationAxis < Math.abs(0.1)) {
             translationAxis = 0;
@@ -179,7 +180,7 @@ public class RobotContainer {
         /* Driver Buttons */
         zeroGyro.onTrue(new InstantCommand(() -> swerve.resetEverything()));
         robotCentric.toggleOnTrue(new InstantCommand(() -> toggleRobotCentric()));
-        QF.whileTrue(new InstantCommand(() -> new LimelightAlignX(swerve)));
+        QF.whileTrue(new InstantCommand(() -> new LimelightAlignXL(swerve)));
         // QF.whileTrue(elevator.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
         // QR.whileTrue(elevator.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
         // setToZero1.whileTrue(elevator.sysIdDynamic(SysIdRoutine.Direction.kForward));
@@ -266,7 +267,7 @@ public class RobotContainer {
         chooser.addOption("limelightTester", 
                 new SequentialCommandGroup(
                     new LPartiallyUp(elevator),
-                    new LimelightAlignX(swerve))
+                    new LimelightAlignXL(swerve))
                 );
 
         chooser.addOption("PPTest", getPathPlannerAutoTest());
