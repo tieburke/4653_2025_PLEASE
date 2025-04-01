@@ -8,13 +8,18 @@ import frc.robot.subsystems.RainGutter;
 
 public class DefaultRainGutter extends Command {
     private RainGutter rainGutter;
-    private DoubleSupplier L4, LOther;
+    private DoubleSupplier L4RG, LOtherRG;
+    private BooleanSupplier L4, L3, L2, OverrideAutoDump;
 
-    public DefaultRainGutter(DoubleSupplier l4, DoubleSupplier lOther, RainGutter rainGutterThing) {
+    public DefaultRainGutter(BooleanSupplier l4, BooleanSupplier l3, BooleanSupplier l2, DoubleSupplier l4RG, DoubleSupplier lOtherRG, BooleanSupplier Override, RainGutter rainGutterThing) {
 
         L4 = l4;
-        LOther = lOther;
+        L3 = l3;
+        L2 = l2;
+        L4RG = l4RG;
+        LOtherRG = lOtherRG;
         rainGutter = rainGutterThing;
+        OverrideAutoDump = Override;
 
         addRequirements(rainGutter);
     }
@@ -25,14 +30,26 @@ public class DefaultRainGutter extends Command {
 
     @Override
     public void execute() {
-        if (L4.getAsDouble() > 0.2) {
+        // if(L4.getAsBoolean()){
+        //     rainGutter.setRotateL4();
+        // }
+        // else if(L3.getAsBoolean() || L2.getAsBoolean()){
+        //     rainGutter.setRotateLOther();
+        // }
+        
+        if (L4RG.getAsDouble() > 0.2) {
             rainGutter.setRotateL4();
             rainGutter.open();
-        } else if (LOther.getAsDouble() > 0.2) {
+        } 
+        else if (LOtherRG.getAsDouble() > 0.2) {
             rainGutter.setRotateLOther();
             rainGutter.open();
-        } else {
+        } 
+        else if(!L4.getAsBoolean() && !L3.getAsBoolean() && !L2.getAsBoolean()) {
             rainGutter.setRotateIntake();
+            rainGutter.close();
+        }
+        else{
             rainGutter.close();
         }
     }

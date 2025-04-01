@@ -30,9 +30,9 @@ public class LimelightAlignXL extends Command {
 
     @Override
     public void execute() {
-        if(LimelightHelpers.getTA("limelight") < 22){
+        if(LimelightHelpers.getTA("limelight-b") < 22){
             s_Swerve.drive(
-                    new Translation2d(0.2, RobotContainer.limelight_aim_proportional("limelight", 0.05)).times(Constants.Swerve.maxSpeed), 
+                    new Translation2d(0.2, RobotContainer.limelight_aim_proportional("limelight-b", 0.05)).times(Constants.Swerve.maxSpeed), 
                     0,
                     false, 
                     true
@@ -40,7 +40,7 @@ public class LimelightAlignXL extends Command {
         }
         else{
             s_Swerve.drive(
-                new Translation2d(0.0, RobotContainer.limelight_aim_proportional("limelight", 0.04)).times(Constants.Swerve.maxSpeed), 
+                new Translation2d(0.0, RobotContainer.limelight_aim_proportional("limelight-b", 0.04)).times(Constants.Swerve.maxSpeed), 
                 0,
                 false, 
                 true
@@ -58,14 +58,14 @@ public class LimelightAlignXL extends Command {
             false, 
             true
         );
-        if(LimelightHelpers.getFiducialID("limelight") != -1){
-            s_Swerve.resetOdometryPP(LimelightHelpers.getBotPose2d_wpiBlue("limelight"));
+        if(LimelightHelpers.getFiducialID("limelight-b") != -1){
+            s_Swerve.resetOdometryPP(LimelightHelpers.getBotPose2d_wpiBlue("limelight-b"));
         }
     }
 
     @Override
     public boolean isFinished(){
-        if(Math.abs(LimelightHelpers.getTX("limelight")) < 1.5 && LimelightHelpers.getFiducialID("limelight") != -1 && Math.abs(s_Swerve.getSpeeds()) < 0.1){
+        if(Math.abs(LimelightHelpers.getTX("limelight-b")) < 1.5 && LimelightHelpers.getFiducialID("limelight-b") != -1 && Math.abs(s_Swerve.getSpeeds()) < 0.1){
             return true;
         }
         // else if(timer.get() > 2){

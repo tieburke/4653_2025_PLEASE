@@ -96,23 +96,23 @@ public class DefaultSwerve extends Command {
                     true);
         }
 
-        else if((limelightAlignL.getAsBoolean()) && !resetAlready){
-            s_Swerve.drive(
-                new Translation2d(translationVal, RobotContainer.limelight_aim_proportional("limelight", 0.03)).times(Constants.Swerve.maxSpeed), 
-                rotationVal * Constants.Swerve.maxAngularVelocity, 
-                false, 
-                true
-            );
-        }
+        // else if((limelightAlignL.getAsBoolean()) && !resetAlready){
+        //     s_Swerve.drive(
+        //         new Translation2d(translationVal, RobotContainer.limelight_aim_proportional("limelight", 0.03)).times(Constants.Swerve.maxSpeed), 
+        //         rotationVal * Constants.Swerve.maxAngularVelocity, 
+        //         false, 
+        //         true
+        //     );
+        // }
 
-        else if((limelightAlignR.getAsBoolean()) && !resetAlready){
-            s_Swerve.drive(
-                new Translation2d(translationVal, RobotContainer.limelight_aim_proportional("limelight-b", 0.03)).times(Constants.Swerve.maxSpeed), 
-                rotationVal * Constants.Swerve.maxAngularVelocity, 
-                false, 
-                true
-            );
-        }
+        // else if((limelightAlignR.getAsBoolean()) && !resetAlready){
+        //     s_Swerve.drive(
+        //         new Translation2d(translationVal, RobotContainer.limelight_aim_proportional("limelight-b", 0.03)).times(Constants.Swerve.maxSpeed), 
+        //         rotationVal * Constants.Swerve.maxAngularVelocity, 
+        //         false, 
+        //         true
+        //     );
+        // }
 
         if(setToZero1.getAsBoolean() && setToZero2.getAsBoolean()){
             s_Swerve.getEmRight();

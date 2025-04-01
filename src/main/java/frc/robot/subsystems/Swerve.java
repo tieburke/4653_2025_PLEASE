@@ -376,9 +376,7 @@ public class Swerve extends SubsystemBase {
         SmartDashboard.putNumber("yaw: ", getYaw().getDegrees());
         SmartDashboard.putNumber("XPose", getPosePP().getX());
         SmartDashboard.putNumber("Ypose", getPosePP().getY());
-
-        SmartDashboard.putNumber("speeds", getSpeeds());
-        
+     
         var alliance = DriverStation.getAlliance();
         SmartDashboard.putBoolean("Alliance is red?", alliance.get() == DriverStation.Alliance.Red);
 

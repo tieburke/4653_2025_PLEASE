@@ -25,6 +25,8 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.subsystems.*;
 import frc.robot.util.LimelightHelpers;
 import frc.robot.commands.defaultcommands.*;
+import frc.robot.commands.AlignToReefTagRelativeL;
+import frc.robot.commands.AlignToReefTagRelativeR;
 import frc.robot.commands.autocommands.*;
 
 /**
@@ -112,9 +114,8 @@ public class RobotContainer {
         NamedCommands.registerCommand("RGL4Auto", new RGL4Auto(rainGutter));
         NamedCommands.registerCommand("RGResetAuto", new RGResetAuto(rainGutter));
         NamedCommands.registerCommand("L0Auto", new L0Auto(elevator));
-        NamedCommands.registerCommand("LimelightAlignXL", new LimelightAlignXL(swerve));
         NamedCommands.registerCommand("LimelightAlignXR", new LimelightAlignXR(swerve));
-
+        NamedCommands.registerCommand("LimelightAlignXL", new LimelightAlignXL(swerve));
         if (translationAxis < Math.abs(0.1)) {
             translationAxis = 0;
         }
@@ -143,8 +144,8 @@ public class RobotContainer {
                 () -> operator.getRawAxis(elevUpDown), elevator));
         aIntake.setDefaultCommand(new DefaultAlgaeIntake(aIntakeHor, aIntakeVert, resetAIntakeButton,
                 () -> operator.getRawAxis(aIntakeInOut), () -> operator.getRawAxis(aIntakeUpDown), aIntake));
-        rainGutter.setDefaultCommand(new DefaultRainGutter(() -> operator.getRawAxis(rGL4),
-                () -> operator.getRawAxis(rGLOther), rainGutter));
+        rainGutter.setDefaultCommand(new DefaultRainGutter(elevl4Button, elevl3Button, elevl2Button, () -> operator.getRawAxis(rGL4),
+                () -> operator.getRawAxis(rGLOther), cameraToggle, rainGutter));
 
         // flipAxes.whileTrue(
         // new DefaultSwerve(
@@ -180,7 +181,8 @@ public class RobotContainer {
         /* Driver Buttons */
         zeroGyro.onTrue(new InstantCommand(() -> swerve.resetEverything()));
         robotCentric.toggleOnTrue(new InstantCommand(() -> toggleRobotCentric()));
-        QF.whileTrue(new InstantCommand(() -> new LimelightAlignXL(swerve)));
+        limelightAlignLeft.whileTrue(new AlignToReefTagRelativeR(swerve));
+        limelightAlignRight.whileTrue(new AlignToReefTagRelativeL(swerve));
         // QF.whileTrue(elevator.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
         // QR.whileTrue(elevator.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
         // setToZero1.whileTrue(elevator.sysIdDynamic(SysIdRoutine.Direction.kForward));
@@ -267,7 +269,7 @@ public class RobotContainer {
         chooser.addOption("limelightTester", 
                 new SequentialCommandGroup(
                     new LPartiallyUp(elevator),
-                    new LimelightAlignXL(swerve))
+                    new LimelightAlignXR(swerve))
                 );
 
         chooser.addOption("PPTest", getPathPlannerAutoTest());
