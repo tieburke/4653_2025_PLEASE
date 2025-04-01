@@ -154,9 +154,7 @@ public class Swerve extends SubsystemBase {
     }
 
     public void resetOdometryPP(Pose2d pose) {
-        // swerveOdometry.resetPosition(getYaw(), getModulePositions(), new Pose2d());
-        swerveOdometry.resetPose(pose);
-        // m_poseEstimator.resetPose(pose);
+        m_poseEstimator.resetPose(pose);
     }
 
     /* Other methods */
@@ -232,65 +230,44 @@ public class Swerve extends SubsystemBase {
     }
 
     public Pose2d getPosePP(){
-        /*
-        if(lastPoseLimelight && (LimelightHelpers.getFiducialID("limelight-b") == -1 || LimelightHelpers.getFiducialID("limelight") == -1)){
-            resetOdometryPP(lastPose);
+        m_poseEstimator.update(
+            gyro.getRotation2d(),
+            new SwerveModulePosition[] {
+                mSwerveMods[0].getPosition(),
+                mSwerveMods[1].getPosition(),
+                mSwerveMods[2].getPosition(),
+                mSwerveMods[3].getPosition()
+            });
+
+        boolean doRejectUpdate = false;
+
+        LimelightHelpers.PoseEstimate mt1 = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight");
+        if(mt1.tagCount == 1 && mt1.rawFiducials.length == 1)
+        {
+            if(mt1.rawFiducials[0].ambiguity > .7)
+            {
+            doRejectUpdate = true;
+            }
+            if(mt1.rawFiducials[0].distToCamera > 3)
+            {
+            doRejectUpdate = true;
+            }
+        }
+        if(mt1.tagCount == 0)
+        {
+            doRejectUpdate = true;
         }
 
-        if(LimelightHelpers.getFiducialID("limelight-b") != -1){
-            lastPoseLimelight = true;
-            lastPose = LimelightHelpers.getBotPose2d_wpiBlue("limelight-b");
-            return lastPose;
+        if(!doRejectUpdate)
+        {
+            //m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(0.5,0.5, 999999));
+            m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(0.1, 0.1, 1));
+            m_poseEstimator.addVisionMeasurement(
+                mt1.pose,
+                mt1.timestampSeconds);
         }
-        else if(LimelightHelpers.getFiducialID("limelight") != -1){
-            lastPoseLimelight = true;
-            lastPose = LimelightHelpers.getBotPose2d_wpiBlue("limelight");
-            return lastPose;
-        }
-        else{
-            lastPoseLimelight = false;
-            return swerveOdometry.getPoseMeters();
-        }
-            */
-        // m_poseEstimator.update(
-        //     gyro.getRotation2d(),
-        //     new SwerveModulePosition[] {
-        //         mSwerveMods[0].getPosition(),
-        //         mSwerveMods[1].getPosition(),
-        //         mSwerveMods[2].getPosition(),
-        //         mSwerveMods[3].getPosition()
-        //     });
 
-        // boolean doRejectUpdate = false;
-
-        // LimelightHelpers.PoseEstimate mt1 = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight");
-        // if(mt1.tagCount == 1 && mt1.rawFiducials.length == 1)
-        // {
-        //     if(mt1.rawFiducials[0].ambiguity > .7)
-        //     {
-        //     doRejectUpdate = true;
-        //     }
-        //     if(mt1.rawFiducials[0].distToCamera > 3)
-        //     {
-        //     doRejectUpdate = true;
-        //     }
-        // }
-        // if(mt1.tagCount == 0)
-        // {
-        //     doRejectUpdate = true;
-        // }
-
-        // if(!doRejectUpdate)
-        // {
-        //     //m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(0.5,0.5, 999999));
-        //     m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(0.1, 0.1, 1));
-        //     m_poseEstimator.addVisionMeasurement(
-        //         mt1.pose,
-        //         mt1.timestampSeconds);
-        // }
-
-        // return m_poseEstimator.getEstimatedPosition();
-        return swerveOdometry.getPoseMeters();
+        return m_poseEstimator.getEstimatedPosition();
     }
 
     public void resetOdometry() {
@@ -384,6 +361,14 @@ public class Swerve extends SubsystemBase {
     // }
     // }
 
+    public double getSpeeds(){
+        double averageAbsSpeed = 0;
+        for(SwerveModule mod: mSwerveMods){
+            averageAbsSpeed += mod.getDriveEncoder().getVelocity();
+        }
+        return (averageAbsSpeed / 4.0);
+    }
+
     @Override
     public void periodic() {
 
@@ -391,6 +376,8 @@ public class Swerve extends SubsystemBase {
         SmartDashboard.putNumber("yaw: ", getYaw().getDegrees());
         SmartDashboard.putNumber("XPose", getPosePP().getX());
         SmartDashboard.putNumber("Ypose", getPosePP().getY());
+
+        SmartDashboard.putNumber("speeds", getSpeeds());
         
         var alliance = DriverStation.getAlliance();
         SmartDashboard.putBoolean("Alliance is red?", alliance.get() == DriverStation.Alliance.Red);

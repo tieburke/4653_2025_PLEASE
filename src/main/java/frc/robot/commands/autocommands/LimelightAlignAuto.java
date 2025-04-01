@@ -30,7 +30,7 @@ public class LimelightAlignAuto extends Command {
     public void execute() {
             //if(LimelightHelpers.getFiducialID("limelight") != -1){
             s_Swerve.drive(
-                new Translation2d(0.2, RobotContainer.limelight_aim_proportional("limelight-b")).times(Constants.Swerve.maxSpeed), 
+                new Translation2d(0.2, RobotContainer.limelight_aim_proportional("limelight-b", 0.05)).times(Constants.Swerve.maxSpeed), 
                 0,//RobotContainer.limelight_range_proportional()*1.25, 
                 false, 
                 true

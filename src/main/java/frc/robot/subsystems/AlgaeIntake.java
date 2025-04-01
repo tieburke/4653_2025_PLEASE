@@ -47,8 +47,8 @@ public class AlgaeIntake extends SubsystemBase {
         lastPosition = position;
     }
 
-    public void intakeUpManual() {
-        if (lastPosition < -0.2) {
+    public void intakeUpManual(boolean override) {
+        if (lastPosition < -0.4 || override) {
             setPosition(lastPosition + 0.5);
         }
     }

@@ -35,14 +35,10 @@ public class DefaultAlgaeIntake extends Command {
     @Override
     public void execute() {
         if (horizontal.getAsBoolean()) {
-            // Constants.AlgaeIntake.articulateKP = 0.04;
-            // aIntake.configAlgae();
             aIntake.setPosition(Constants.AlgaeIntake.horizontalPos);
         }
 
-        if (vertical.getAsBoolean()) {
-            // Constants.AlgaeIntake.articulateKP = 0.08;
-            // aIntake.configAlgae();
+        if (vertical.getAsBoolean() && manualUpDown.getAsDouble() < 0.1) {
             aIntake.setPosition(Constants.AlgaeIntake.verticalPos);
         }
 
@@ -51,7 +47,7 @@ public class DefaultAlgaeIntake extends Command {
         }
 
         if (manualUpDown.getAsDouble() > 0.1) {
-            aIntake.intakeUpManual();
+            aIntake.intakeUpManual(vertical.getAsBoolean());
         }
 
         else if (manualUpDown.getAsDouble() < -0.1) {

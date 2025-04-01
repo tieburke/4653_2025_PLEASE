@@ -98,7 +98,7 @@ public class DefaultSwerve extends Command {
 
         else if((limelightAlignL.getAsBoolean()) && !resetAlready){
             s_Swerve.drive(
-                new Translation2d(translationVal, RobotContainer.limelight_aim_proportional("limelight")).times(Constants.Swerve.maxSpeed), 
+                new Translation2d(translationVal, RobotContainer.limelight_aim_proportional("limelight", 0.03)).times(Constants.Swerve.maxSpeed), 
                 rotationVal * Constants.Swerve.maxAngularVelocity, 
                 false, 
                 true
@@ -107,7 +107,7 @@ public class DefaultSwerve extends Command {
 
         else if((limelightAlignR.getAsBoolean()) && !resetAlready){
             s_Swerve.drive(
-                new Translation2d(translationVal, RobotContainer.limelight_aim_proportional("limelight-b")).times(Constants.Swerve.maxSpeed), 
+                new Translation2d(translationVal, RobotContainer.limelight_aim_proportional("limelight-b", 0.03)).times(Constants.Swerve.maxSpeed), 
                 rotationVal * Constants.Swerve.maxAngularVelocity, 
                 false, 
                 true

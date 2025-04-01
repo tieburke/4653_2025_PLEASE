@@ -179,6 +179,7 @@ public class RobotContainer {
         /* Driver Buttons */
         zeroGyro.onTrue(new InstantCommand(() -> swerve.resetEverything()));
         robotCentric.toggleOnTrue(new InstantCommand(() -> toggleRobotCentric()));
+        QF.whileTrue(new InstantCommand(() -> new LimelightAlignX(swerve)));
         // QF.whileTrue(elevator.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
         // QR.whileTrue(elevator.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
         // setToZero1.whileTrue(elevator.sysIdDynamic(SysIdRoutine.Direction.kForward));
@@ -197,14 +198,15 @@ public class RobotContainer {
     // in this case, we are going to return an angular velocity that is proportional
     // to the
     // "tx" value from the Limelight.
-    public static double limelight_aim_proportional(String limelightName){    
+    public static double limelight_aim_proportional(String limelightName, double kP){    
         // kP (constant of proportionality)
         // this is a hand-tuned number that determines the aggressiveness of our
         // proportional control loop
         // if it is too high, the robot will oscillate.
         // if it is too low, the robot will never reach its target
         // if the robot never turns in the correct direction, kP should be inverted.
-        double kP = .05;
+        
+        //double kP = .03;
 
         // tx ranges from (-hfov/2) to (hfov/2) in degrees. If your target is on the
         // rightmost edge of
@@ -224,7 +226,7 @@ public class RobotContainer {
     // this works best if your Limelight's mount height and target mount height are different.
     // if your limelight and target are mounted at the same or similar heights, use "ta" (area) for target ranging rather than "ty"
     public static double limelight_range_proportional(String limelightName){    
-        double kP = -.05;
+        double kP = -.03;
         double targetingForwardSpeed = LimelightHelpers.getTY(limelightName) * kP;
         targetingForwardSpeed *= Math.PI;
         targetingForwardSpeed *= 0.05;
@@ -260,6 +262,12 @@ public class RobotContainer {
         chooser.addOption("StupidDriveOut",
                 new SequentialCommandGroup(
                         new StupidDriveForwardAuto(swerve)));
+
+        chooser.addOption("limelightTester", 
+                new SequentialCommandGroup(
+                    new LPartiallyUp(elevator),
+                    new LimelightAlignX(swerve))
+                );
 
         chooser.addOption("PPTest", getPathPlannerAutoTest());
         chooser.addOption("twelvePiece", getPathPlannerAutoTwelvePiece());

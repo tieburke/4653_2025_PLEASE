@@ -30,12 +30,22 @@ public class LimelightAlignX extends Command {
 
     @Override
     public void execute() {
+        if(LimelightHelpers.getTA("limelight") < 22){
             s_Swerve.drive(
-                new Translation2d(0, RobotContainer.limelight_aim_proportional("limelight")).times(Constants.Swerve.maxSpeed), 
+                    new Translation2d(0.2, RobotContainer.limelight_aim_proportional("limelight", 0.05)).times(Constants.Swerve.maxSpeed), 
+                    0,
+                    false, 
+                    true
+            );
+        }
+        else{
+            s_Swerve.drive(
+                new Translation2d(0.0, RobotContainer.limelight_aim_proportional("limelight", 0.04)).times(Constants.Swerve.maxSpeed), 
                 0,
                 false, 
                 true
-            ); 
+            );
+        }
     }
 
     // Called once the command ends or is interrupted.
@@ -55,12 +65,12 @@ public class LimelightAlignX extends Command {
 
     @Override
     public boolean isFinished(){
-        if(Math.abs(LimelightHelpers.getTX("limelight")) < 2 && LimelightHelpers.getFiducialID("limelight") != -1){
+        if(Math.abs(LimelightHelpers.getTX("limelight")) < 1.5 && LimelightHelpers.getFiducialID("limelight") != -1 && Math.abs(s_Swerve.getSpeeds()) < 0.1){
             return true;
         }
-        else if(timer.get() > 2){
-            return true;
-        }
+        // else if(timer.get() > 2){
+        //     return true;
+        // }
         else{
             return false;
         }
