@@ -26,7 +26,7 @@
         {
           "type": "named",
           "data": {
-            "name": "LimelightAlignXR"
+            "name": "AlignToReefTagRelativeR"
           }
         },
         {
@@ -88,7 +88,7 @@
         {
           "type": "named",
           "data": {
-            "name": "LimelightAlignXR"
+            "name": "AlignToReefTagRelativeR"
           }
         },
         {
@@ -150,7 +150,7 @@
         {
           "type": "named",
           "data": {
-            "name": "LimelightAlignXL"
+            "name": "AlignToReefTagRelativeL"
           }
         },
         {

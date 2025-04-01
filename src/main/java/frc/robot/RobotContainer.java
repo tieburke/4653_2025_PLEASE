@@ -116,6 +116,9 @@ public class RobotContainer {
         NamedCommands.registerCommand("L0Auto", new L0Auto(elevator));
         NamedCommands.registerCommand("LimelightAlignXR", new LimelightAlignXR(swerve));
         NamedCommands.registerCommand("LimelightAlignXL", new LimelightAlignXL(swerve));
+        NamedCommands.registerCommand("AlignToReefTagRelativeL", new AlignToReefTagRelativeL(swerve));
+        NamedCommands.registerCommand("AlignToReefTagRelativeR", new AlignToReefTagRelativeR(swerve));
+        
         if (translationAxis < Math.abs(0.1)) {
             translationAxis = 0;
         }
