@@ -39,8 +39,6 @@ public class Swerve extends SubsystemBase {
     private final SwerveDriveKinematics kinematics;
     public SwerveModule[] mSwerveMods;
     public AHRS gyro;
-    private boolean lastPoseLimelight = false;
-    private Pose2d lastPose = new Pose2d();
     
     /* Here we use SwerveDrivePoseEstimator so that we can fuse odometry readings. The numbers used
   below are robot specific, and should be tuned. */
@@ -154,6 +152,8 @@ public class Swerve extends SubsystemBase {
     }
 
     public void resetOdometryPP(Pose2d pose) {
+        // swerveOdometry.resetPosition(getYaw(), getModulePositions(), new Pose2d());
+        // swerveOdometry.resetPose(pose);
         m_poseEstimator.resetPose(pose);
     }
 
@@ -230,6 +230,26 @@ public class Swerve extends SubsystemBase {
     }
 
     public Pose2d getPosePP(){
+        /*
+        if(lastPoseLimelight && (LimelightHelpers.getFiducialID("limelight-b") == -1 || LimelightHelpers.getFiducialID("limelight") == -1)){
+            resetOdometryPP(lastPose);
+        }
+
+        if(LimelightHelpers.getFiducialID("limelight-b") != -1){
+            lastPoseLimelight = true;
+            lastPose = LimelightHelpers.getBotPose2d_wpiBlue("limelight-b");
+            return lastPose;
+        }
+        else if(LimelightHelpers.getFiducialID("limelight") != -1){
+            lastPoseLimelight = true;
+            lastPose = LimelightHelpers.getBotPose2d_wpiBlue("limelight");
+            return lastPose;
+        }
+        else{
+            lastPoseLimelight = false;
+            return swerveOdometry.getPoseMeters();
+        }
+            */
         m_poseEstimator.update(
             gyro.getRotation2d(),
             new SwerveModulePosition[] {
@@ -260,8 +280,7 @@ public class Swerve extends SubsystemBase {
 
         if(!doRejectUpdate)
         {
-            //m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(0.5,0.5, 999999));
-            m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(0.1, 0.1, 1));
+            m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.5,.5,9999999));
             m_poseEstimator.addVisionMeasurement(
                 mt1.pose,
                 mt1.timestampSeconds);
@@ -361,14 +380,6 @@ public class Swerve extends SubsystemBase {
     // }
     // }
 
-    public double getSpeeds(){
-        double averageAbsSpeed = 0;
-        for(SwerveModule mod: mSwerveMods){
-            averageAbsSpeed += mod.getDriveEncoder().getVelocity();
-        }
-        return (averageAbsSpeed / 4.0);
-    }
-
     @Override
     public void periodic() {
 
@@ -376,9 +387,7 @@ public class Swerve extends SubsystemBase {
         SmartDashboard.putNumber("yaw: ", getYaw().getDegrees());
         SmartDashboard.putNumber("XPose", getPosePP().getX());
         SmartDashboard.putNumber("Ypose", getPosePP().getY());
-     
-        var alliance = DriverStation.getAlliance();
-        SmartDashboard.putBoolean("Alliance is red?", alliance.get() == DriverStation.Alliance.Red);
+        
 
         for(SwerveModule mod : mSwerveMods){
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Cancoder", mod.getCanCoder().getDegrees());            
