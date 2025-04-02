@@ -63,16 +63,16 @@ public class LimelightAlignXL extends Command {
         }
     }
 
-    @Override
-    public boolean isFinished(){
-        if(Math.abs(LimelightHelpers.getTX("limelight-b")) < 1.5 && LimelightHelpers.getFiducialID("limelight-b") != -1 && Math.abs(s_Swerve.getSpeeds()) < 0.1){
-            return true;
-        }
+    // @Override
+    // public boolean isFinished(){
+        // if(Math.abs(LimelightHelpers.getTX("limelight-b")) < 1.5 && LimelightHelpers.getFiducialID("limelight-b") != -1 && Math.abs(s_Swerve.getSpeeds()) < 0.1){
+        //     return true;
+        // }
         // else if(timer.get() > 2){
         //     return true;
         // }
-        else{
-            return false;
-        }
-    }
+        // else{
+        //     return false;
+        // }
+    // }
 }
