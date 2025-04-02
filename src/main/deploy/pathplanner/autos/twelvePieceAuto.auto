@@ -19,6 +19,12 @@
                 "data": {
                   "name": "L4Auto"
                 }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "RGL4Auto"
+                }
               }
             ]
           }
@@ -32,7 +38,7 @@
         {
           "type": "named",
           "data": {
-            "name": "RGL4Auto"
+            "name": "RGR4Auto"
           }
         },
         {
@@ -81,6 +87,12 @@
                 "data": {
                   "name": "L4Auto"
                 }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "RGL4Auto"
+                }
               }
             ]
           }
@@ -94,7 +106,7 @@
         {
           "type": "named",
           "data": {
-            "name": "RGL4Auto"
+            "name": "RGR4Auto"
           }
         },
         {
@@ -143,6 +155,12 @@
                 "data": {
                   "name": "L4Auto"
                 }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "RGL4Auto"
+                }
               }
             ]
           }
@@ -156,7 +174,7 @@
         {
           "type": "named",
           "data": {
-            "name": "RGL4Auto"
+            "name": "RGR4Auto"
           }
         },
         {

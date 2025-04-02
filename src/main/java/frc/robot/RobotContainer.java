@@ -112,6 +112,7 @@ public class RobotContainer {
 
         NamedCommands.registerCommand("L4Auto", new L4Auto(elevator));
         NamedCommands.registerCommand("RGL4Auto", new RGL4Auto(rainGutter));
+        NamedCommands.registerCommand("RGR4Auto", new RGR4Auto(rainGutter));
         NamedCommands.registerCommand("RGResetAuto", new RGResetAuto(rainGutter));
         NamedCommands.registerCommand("L0Auto", new L0Auto(elevator));
         NamedCommands.registerCommand("LimelightAlignXR", new LimelightAlignXR(swerve));
