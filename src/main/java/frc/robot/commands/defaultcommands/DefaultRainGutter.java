@@ -30,12 +30,12 @@ public class DefaultRainGutter extends Command {
 
     @Override
     public void execute() {
-        // if(L4.getAsBoolean()){
-        //     rainGutter.setRotateL4();
-        // }
-        // else if(L3.getAsBoolean() || L2.getAsBoolean()){
-        //     rainGutter.setRotateLOther();
-        // }
+        if(L4.getAsBoolean()){
+            rainGutter.setRotateL4();
+        }
+        else if(L3.getAsBoolean() || L2.getAsBoolean()){
+            rainGutter.setRotateLOther();
+        }
         
         if (L4RG.getAsDouble() > 0.2) {
             rainGutter.setRotateL4();
@@ -49,9 +49,9 @@ public class DefaultRainGutter extends Command {
             rainGutter.setRotateIntake();
             rainGutter.close();
         }
-        else{
-            rainGutter.close();
-        }
+        // else{
+        //     rainGutter.close();
+        // }
     }
 
     @Override

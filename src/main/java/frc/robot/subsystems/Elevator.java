@@ -162,7 +162,7 @@ public class Elevator extends SubsystemBase {
 
 
     public void setLEDColor(){
-        if (LimelightHelpers.getFiducialID("limelight") > 0 && Math.abs(LimelightHelpers.getTX("limelight")) < 2.0){
+        if (LimelightHelpers.getFiducialID("limelight") > 0 && Math.abs(LimelightHelpers.getTX("limelight")) < 3.0){
             LEDPattern pattern = LEDPattern.solid(Color.kRed);
             pattern.applyTo(m_ledBuffer);
             

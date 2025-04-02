@@ -27,10 +27,10 @@ public class RainGutter extends SubsystemBase {
     }
 
     public void open() {
-        releaseServo.setAngle(0);
+        releaseServo.setAngle(90);
     }
 
     public void close() {
-        releaseServo.setAngle(90);
+        releaseServo.setAngle(0);
     }
 }

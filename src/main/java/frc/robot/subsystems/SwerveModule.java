@@ -197,6 +197,8 @@ public class SwerveModule extends SubsystemBase {
                 .pidf(Constants.Swerve.driveKP, Constants.Swerve.driveKI,
                         Constants.Swerve.driveKD, Constants.Swerve.driveKF, ClosedLoopSlot.kSlot0);
 
+        mDriveConfig.smartCurrentLimit(60);
+
         mDriveMotor.configure(mDriveConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
