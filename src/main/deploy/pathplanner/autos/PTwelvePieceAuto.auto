@@ -5,13 +5,13 @@
     "data": {
       "commands": [
         {
-          "type": "deadline",
+          "type": "parallel",
           "data": {
             "commands": [
               {
                 "type": "path",
                 "data": {
-                  "pathName": "rightToReef"
+                  "pathName": "leftToReef"
                 }
               },
               {
@@ -66,20 +66,20 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "reefToSource"
+                  "pathName": "leftReefToSource"
                 }
               }
             ]
           }
         },
         {
-          "type": "deadline",
+          "type": "parallel",
           "data": {
             "commands": [
               {
                 "type": "path",
                 "data": {
-                  "pathName": "sourceToSecondReef"
+                  "pathName": "leftSourceToSecondReef"
                 }
               },
               {
@@ -134,7 +134,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "secondReefToSource"
+                  "pathName": "leftSecondReefToSource"
                 }
               }
             ]
@@ -147,7 +147,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "sourceToSecondReefL"
+                  "pathName": "leftSourceToSecondReefL"
                 }
               },
               {

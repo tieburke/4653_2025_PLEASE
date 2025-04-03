@@ -1,0 +1,211 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "rightToReef"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "L4Auto"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "RGL4Auto"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AlignToReefTagRelativeR"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "RGR4Auto"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "L0Auto"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "RGResetAuto"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "reefToSource"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "sourceToSecondReef"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "L4Auto"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "RGL4Auto"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AlignToReefTagRelativeR"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "RGR4Auto"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "L0Auto"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "RGResetAuto"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "secondReefToSource"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "sourceToSecondReefL"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "L4Auto"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "RGL4Auto"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AlignToReefTagRelativeL"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "RGR4Auto"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "L0Auto"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "RGResetAuto"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}
