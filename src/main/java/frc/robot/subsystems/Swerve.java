@@ -262,7 +262,8 @@ public class Swerve extends SubsystemBase {
         boolean doRejectUpdate = false;
 
         LimelightHelpers.PoseEstimate mt1 = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight");
-        if(mt1.tagCount == 1 && mt1.rawFiducials.length == 1)
+
+        if(DriverStation.isAutonomousEnabled() && mt1.tagCount == 1 && mt1.rawFiducials.length == 1)
         {
             if(mt1.rawFiducials[0].ambiguity > .7)
             {
@@ -273,12 +274,12 @@ public class Swerve extends SubsystemBase {
             doRejectUpdate = true;
             }
         }
-        if(mt1.tagCount == 0)
+        if(DriverStation.isAutonomousEnabled() && mt1.tagCount == 0)
         {
             doRejectUpdate = true;
         }
 
-        if(!doRejectUpdate)
+        if(DriverStation.isAutonomousEnabled() && !doRejectUpdate)
         {
             m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.5,.5,9999999));
             m_poseEstimator.addVisionMeasurement(

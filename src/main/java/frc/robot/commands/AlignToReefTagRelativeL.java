@@ -62,6 +62,10 @@ public class AlignToReefTagRelativeL extends Command {
       double ySpeed = -yController.calculate(positions[0]);
       double rotValue = -rotController.calculate(positions[4]);
 
+      if(DriverStation.isAutonomousEnabled()){
+        xSpeed *= 1.5;
+      }
+
       swerve.drive(new Translation2d(xSpeed, ySpeed), rotValue, false, true);
 
       if (!rotController.atSetpoint() ||
@@ -89,7 +93,7 @@ public class AlignToReefTagRelativeL extends Command {
     return this.dontSeeTagTimer.hasElapsed(1) ||
         stopTimer.hasElapsed(0.3) || 
         (LimelightHelpers.getTA("limelight-b") > 18 && Math.abs(LimelightHelpers.getTX("limelight-b")) < 2) ||
-        (DriverStation.isAutonomous() && overallTimer.hasElapsed(2));
+        (DriverStation.isAutonomous() && overallTimer.hasElapsed(1.5));
     }
 
 }
