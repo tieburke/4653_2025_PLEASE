@@ -19,6 +19,8 @@ public class AlignToReefTagRelativeR extends Command {
   private Timer dontSeeTagTimer, stopTimer, overallTimer;
   private Swerve swerve;
   private double tagID = -1;
+  private boolean into = false;
+  private boolean out = true;
 
   public AlignToReefTagRelativeR(Swerve swerve) {
     xController = new PIDController(2.8, 0.0, 0);  // Vertical movement
@@ -30,6 +32,12 @@ public class AlignToReefTagRelativeR extends Command {
 
   @Override
   public void initialize() {
+    into = true;
+    out = false;
+
+    SmartDashboard.putBoolean("intoTheAlignment (out)", out);
+    SmartDashboard.putBoolean("intoTheAlignment (into)", into);
+
     this.stopTimer = new Timer();
     this.stopTimer.start();
     this.dontSeeTagTimer = new Timer();
@@ -40,10 +48,10 @@ public class AlignToReefTagRelativeR extends Command {
     rotController.setSetpoint(0);
     rotController.setTolerance(1);
 
-    xController.setSetpoint(-0.4);
+    xController.setSetpoint(-0.431);
     xController.setTolerance(0.02);
 
-    yController.setSetpoint(-0.074);
+    yController.setSetpoint(-0.063);
     yController.setTolerance(0.02);
 
     tagID = LimelightHelpers.getFiducialID("limelight");
@@ -51,6 +59,7 @@ public class AlignToReefTagRelativeR extends Command {
 
   @Override
   public void execute() {
+   
     if (LimelightHelpers.getTV("limelight") && LimelightHelpers.getFiducialID("limelight") == tagID) {
       this.dontSeeTagTimer.reset();
 
@@ -81,7 +90,12 @@ public class AlignToReefTagRelativeR extends Command {
     if(LimelightHelpers.getFiducialID("limelight") != -1){
       swerve.resetOdometryPP(LimelightHelpers.getBotPose2d_wpiBlue("limelight"));
     }
-  }
+    into = false;
+    out = true;
+
+    SmartDashboard.putBoolean("intoTheAlignment (out)", out);
+    SmartDashboard.putBoolean("intoTheAlignment (into)", into);
+    }
 
   @Override
   public boolean isFinished() {

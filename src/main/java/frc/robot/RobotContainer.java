@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -119,6 +120,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("LimelightAlignXL", new LimelightAlignXL(swerve));
         NamedCommands.registerCommand("AlignToReefTagRelativeL", new AlignToReefTagRelativeL(swerve));
         NamedCommands.registerCommand("AlignToReefTagRelativeR", new AlignToReefTagRelativeR(swerve));
+        NamedCommands.registerCommand("DebugAlignCommand", new PrintCommand("Starting command"));
         
         if (translationAxis < Math.abs(0.1)) {
             translationAxis = 0;
@@ -258,6 +260,8 @@ public class RobotContainer {
                 new LimelightAlignAuto(swerve),
                 new L4Auto(elevator),
                 new RGL4Auto(rainGutter),
+                new WaitCommand(1.5),
+                new RGR4Auto(rainGutter),
                 new WaitCommand(2),
                 new ParallelCommandGroup(
                     new L0Auto(elevator),
@@ -277,7 +281,8 @@ public class RobotContainer {
                 );
 
         chooser.addOption("PPTest", getPathPlannerAutoTest());
-        chooser.addOption("twelvePiece", getPathPlannerAutoTwelvePiece());
+        chooser.addOption("NPTwelvePiece", getPathPlannerAutoTwelvePiece());
+        chooser.addOption("PTwelvePiece", getPathPlannerPAutoTwelvePiece());
 
         // chooser.addOption("onePiece", getPathPlannerAuto());
         // chooser.addOption("Test Auto", new testAuto(swerve));
@@ -298,7 +303,11 @@ public class RobotContainer {
     }
 
     public Command getPathPlannerAutoTwelvePiece() {
-        return AutoBuilder.buildAuto("twelvePieceAuto");
+        return AutoBuilder.buildAuto("NPTwelvePieceAuto");
+    }
+
+    public Command getPathPlannerPAutoTwelvePiece(){
+        return AutoBuilder.buildAuto("PTwelvePieceAuto");
     }
 
     public Command getPathPlannerPath() {

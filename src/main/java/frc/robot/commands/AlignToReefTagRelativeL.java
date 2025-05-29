@@ -19,6 +19,8 @@ public class AlignToReefTagRelativeL extends Command {
   private Timer dontSeeTagTimer, stopTimer, overallTimer;
   private Swerve swerve;
   private double tagID = -1;
+  private boolean into = false;
+  private boolean out = true;
 
   public AlignToReefTagRelativeL(Swerve swerve) {
     xController = new PIDController(2.8, 0.0, 0);  // Vertical movement
@@ -30,6 +32,12 @@ public class AlignToReefTagRelativeL extends Command {
 
   @Override
   public void initialize() {
+    into = true;
+    out = false;
+
+    SmartDashboard.putBoolean("intoTheAlignment (out)", out);
+    SmartDashboard.putBoolean("intoTheAlignment (into)", into);
+
     this.stopTimer = new Timer();
     this.stopTimer.start();
     this.dontSeeTagTimer = new Timer();
@@ -40,10 +48,10 @@ public class AlignToReefTagRelativeL extends Command {
     rotController.setSetpoint(-5);
     rotController.setTolerance(1);
 
-    xController.setSetpoint(-0.4);
+    xController.setSetpoint(-0.415);
     xController.setTolerance(0.02);
 
-    yController.setSetpoint(-0.379);
+    yController.setSetpoint(-0.353);
     yController.setTolerance(0.02);
 
     tagID = LimelightHelpers.getFiducialID("limelight-b");
@@ -51,6 +59,7 @@ public class AlignToReefTagRelativeL extends Command {
 
   @Override
   public void execute() {
+    
     if (LimelightHelpers.getTV("limelight-b") && LimelightHelpers.getFiducialID("limelight-b") == tagID) {
       this.dontSeeTagTimer.reset();
 
@@ -81,6 +90,11 @@ public class AlignToReefTagRelativeL extends Command {
     if(LimelightHelpers.getFiducialID("limelight-b") != -1){
       swerve.resetOdometryPP(LimelightHelpers.getBotPose2d_wpiBlue("limelight-b"));
     }
+    into = false;
+    out = true;
+
+    SmartDashboard.putBoolean("intoTheAlignment (out)", out);
+    SmartDashboard.putBoolean("intoTheAlignment (into)", into);
   }
 
   @Override
@@ -88,7 +102,7 @@ public class AlignToReefTagRelativeL extends Command {
     // Requires the robot to stay in the correct position for 0.3 seconds, as long as it gets a tag in the camera
     return this.dontSeeTagTimer.hasElapsed(1) ||
         stopTimer.hasElapsed(0.3) || 
-        (LimelightHelpers.getTA("limelight-b") > 18 && Math.abs(LimelightHelpers.getTX("limelight-b")) < 2) ||
+        (LimelightHelpers.getTA("limelight-b") > 18 && Math.abs(LimelightHelpers.getTX("limelight-b")) < 5) ||
         (DriverStation.isAutonomous() && overallTimer.hasElapsed(2));
     }
 

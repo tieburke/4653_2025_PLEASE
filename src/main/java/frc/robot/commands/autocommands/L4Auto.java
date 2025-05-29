@@ -5,6 +5,7 @@
 package frc.robot.commands.autocommands;
 
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.Elevator;
@@ -45,6 +46,8 @@ public class L4Auto extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return ((Constants.Elevator.positionL4 < elevator.getPosition() + 0.5) || timer.get() > 5);
+    SmartDashboard.putBoolean("finsihed thing", ((Constants.Elevator.positionL4 < elevator.getPosition() + 0.5) || timer.get() > 5));
+    // return ((Constants.Elevator.positionL4 < elevator.getPosition() + 0.5) || timer.get() > 5);
+    return ((Math.abs(elevator.getPosition() - Constants.Elevator.positionL4) < 1.1) || timer.get() > 5);
   }
 }

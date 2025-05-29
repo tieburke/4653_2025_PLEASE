@@ -49,7 +49,7 @@ public class Elevator extends SubsystemBase {
 
     //Making a subsystem for just the lights seemed ridiculous, so I put them here
     AddressableLED m_led = new AddressableLED(9);
-    AddressableLEDBuffer m_ledBuffer = new AddressableLEDBuffer(300);//310-199);
+    AddressableLEDBuffer m_ledBuffer = new AddressableLEDBuffer(100);//310-199);
     private boolean red = true;
 
     // Mutable holder for unit-safe voltage values, persisted to avoid reallocation.
@@ -119,6 +119,7 @@ public class Elevator extends SubsystemBase {
                 .maxAcceleration(20000)
                 .allowedClosedLoopError(1);
 
+
         mWinchConfig.inverted(true);
         winchMotor.configure(mWinchConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         winchEncoder.setPosition(0);
@@ -162,7 +163,7 @@ public class Elevator extends SubsystemBase {
 
 
     public void setLEDColor(){
-        if (LimelightHelpers.getFiducialID("limelight") > 0 && Math.abs(LimelightHelpers.getTX("limelight")) < 3.0){
+        if ((LimelightHelpers.getFiducialID("limelight") > 0 || LimelightHelpers.getFiducialID("limelight") > 0) && (Math.abs(LimelightHelpers.getTX("limelight")) < 3.0 || Math.abs(LimelightHelpers.getTX("limelight-b")) < 3.0)){
             LEDPattern pattern = LEDPattern.solid(Color.kRed);
             pattern.applyTo(m_ledBuffer);
             
